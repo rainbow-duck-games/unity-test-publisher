@@ -72,6 +72,8 @@ let createCheck = async function (githubToken, title, failIfNoTests, conclusion,
 }
 
 let convertReport = function (report) {
+    core.debug('Start analyzing report:');
+    core.debug(JSON.stringify(report));
     const run = report['test-run'];
     return convertSuite(run['test-suite']);
 }
@@ -80,7 +82,7 @@ let convertSuite = function (suite) {
     const annotations = [];
     if (Array.isArray(suite)) {
         for (const candidate of suite) {
-            annotations.push(...convertSuite(candidate, indent));
+            annotations.push(...convertSuite(candidate));
         }
         return annotations;
     }
