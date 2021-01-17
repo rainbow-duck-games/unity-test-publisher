@@ -50,7 +50,7 @@ let action = async function (path, githubToken, name, failOnFailedTests = false,
         status,
         conclusion,
         output: {
-            results,
+            title: results,
             summary: '',
             annotations: annotations.slice(0, 50)
         }
