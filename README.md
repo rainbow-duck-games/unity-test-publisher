@@ -6,6 +6,8 @@ tests. That's the reason why [my fork](https://github.com/rainbow-duck-games/uni
 
 For usage example check [test.yml](.github/workflows/test.yml) or documentation below
 
+Inspired by the beautiful [action-surefire-report](https://github.com/ScaCap/action-surefire-report)
+
 ## Development
 
 Install the dependencies
@@ -14,7 +16,7 @@ Install the dependencies
 npm install
 ```
 
-Run the tests :heavy_check_mark:
+Run the tests & build
 
 ```bash
 npm test

@@ -1,4 +1,4 @@
-name: 'Unity Test Report'
+name: 'Unity Test Publisher'
 author: 'Vladimir Kryukov'
 description: 'Analyze Unity Test Report and publish results'
 branding:
