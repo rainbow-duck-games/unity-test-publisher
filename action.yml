@@ -1,11 +1,23 @@
-name: 'Wait'
-description: 'Wait a designated number of milliseconds'
+name: 'Unity Test Report'
+description: 'Analyze Unity Test Report and publish results'
+# ToDo Branding?
 inputs:
-  milliseconds:  # id of input
-    description: 'number of milliseconds to wait'
+  github_token:
+    description: 'GITHUB_TOKEN'
     required: true
-    default: '1000'
-outputs:
+  report:
+    description: 'unity test report xml file to analyze'
+    required: true
+    # ToDo Default?
+  fail_on_test_failures: # ToDo
+    description: 'fail run if there were test failures'
+    required: false
+    default: 'false'
+  fail_if_no_tests: # ToDo
+    description: 'fail run if there were no test results found'
+    required: false
+    default: 'true'
+outputs: # ToDo
   time: # output will be available to future steps
     description: 'The message to output'
 runs:
