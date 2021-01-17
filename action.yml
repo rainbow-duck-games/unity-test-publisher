@@ -2,27 +2,30 @@ name: 'Unity Test Report'
 description: 'Analyze Unity Test Report and publish results'
 # ToDo Branding?
 inputs:
-  github_token:
+  githubToken:
     description: 'GITHUB_TOKEN'
     required: true
   report:
     description: 'unity test report xml file to analyze'
     required: true
-    # ToDo Default?
-  check_name:
+  workdirPrefix:
+    description: 'prefix on build machine to ignore in report'
+    required: false
+    default: ''
+  checkName:
     description: 'check name for test reports'
     required: false
     default: 'Test Report'
-  fail_on_test_failures:
+  failOnTestFailures:
     description: 'fail run if there were test failures'
     required: false
     default: 'false'
-  fail_if_no_tests:
+  failIfNoTests:
     description: 'fail run if there were no test results found'
     required: false
     default: 'true'
-outputs: # ToDo
-  time: # output will be available to future steps
+outputs:
+  time:
     description: 'The message to output'
 runs:
   using: 'node12'

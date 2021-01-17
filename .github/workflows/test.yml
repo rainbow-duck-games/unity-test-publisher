@@ -1,4 +1,4 @@
-name: "units-test"
+name: "Unity Tests"
 on:
   pull_request:
   push:
@@ -14,6 +14,7 @@ env:
 jobs:
   # unit tests
   units:
+    name: Unit Tests for Action
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
@@ -22,7 +23,7 @@ jobs:
       
   # run unity tests & analyze result
   test:
-    name: run tests & analyze
+    name: Run Tests & Analyze
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -39,5 +40,6 @@ jobs:
         name: 'Publish test results'
         if: ${{ always() }}
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          workdirPrefix: '/github/workspace/'
+          githubToken: ${{ secrets.GITHUB_TOKEN }}
           report: ${{ steps.tests.outputs.artifactsPath }}/playmode-results.xml

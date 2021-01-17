@@ -10,14 +10,14 @@ const github = __nccwpck_require__(5438);
 const fs = __nccwpck_require__(5747);
 const xmljs = __nccwpck_require__(8821);
 
-let action = async function (name, path, githubToken, failOnFailedTests = false, failIfNoTests = true) {
+let action = async function (name, path, workdirPrefix, githubToken, failOnFailedTests = false, failIfNoTests = true) {
     const {meta, report} = await getReport(path, failIfNoTests);
 
     let results = `${meta.result}: tests: ${meta.total}, skipped: ${meta.skipped}, failed: ${meta.failed}`;
     const conclusion = meta.failed === 0 && (meta.total > 0 || !failIfNoTests) ? 'success' : 'failure';
     core.info(results);
 
-    let annotations = convertToAnnotations(report);
+    let annotations = convertReport(report); // ToDo Consume projectPath
     await createCheck(githubToken, results, failIfNoTests, conclusion, annotations);
 
     if (failOnFailedTests && conclusion !== 'success') {
@@ -46,17 +46,14 @@ let getReport = async function (path, failIfNoTests) {
 let createCheck = async function (githubToken, title, failIfNoTests, conclusion, annotations) {
     const pullRequest = github.context.payload.pull_request;
     const link = (pullRequest && pullRequest.html_url) || github.context.ref;
-    const status = 'completed';
     const head_sha = (pullRequest && pullRequest.head.sha) || github.context.sha;
-    core.info(
-        `Posting status '${status}' with conclusion '${conclusion}' to ${link} (sha: ${head_sha})`
-    );
+    core.info(`Posting status 'completed' with conclusion '${conclusion}' to ${link} (sha: ${head_sha})`);
 
     const createCheckRequest = {
         ...github.context.repo,
         name,
         head_sha,
-        status,
+        status: 'completed',
         conclusion,
         output: {
             title: title,
@@ -74,19 +71,74 @@ let createCheck = async function (githubToken, title, failIfNoTests, conclusion,
     await octokit.checks.create(createCheckRequest);
 }
 
-let convertToAnnotations = function (report) {
-    // ToDo
+let convertReport = function (report) {
+    const run = report['test-run'];
+    return convertSuite(run['test-suite']);
+}
+
+let convertSuite = function (suite) {
     const annotations = [];
-    annotations.push({
-        path: 'unity-project/Assets/Tests/SamplePlayModeTest.cs',
-        start_line: 7,
-        end_line: 9,
-        annotation_level: 'failure',
-        title: 'Test failed stuff',
-        message: 'Test failed message',
-        raw_details: 'RAW ME PLS'
-    });
+    if (Array.isArray(suite)) {
+        for (const candidate of suite) {
+            annotations.push(...convertSuite(candidate, indent));
+        }
+        return annotations;
+    }
+
+    core.debug(`Analyze suite ${suite._attributes.type} / ${suite._attributes.fullname}`);
+    if (suite._attributes.failed === 0) {
+        core.debug(`No failed tests, skipping`);
+        return annotations;
+    }
+
+    let innerSuite = suite['test-suite'];
+    if (innerSuite) {
+        annotations.push(...convertSuite(innerSuite));
+    }
+
+    let tests = suite['test-case'];
+    if (tests) {
+        annotations.push(...convertTests(tests));
+    }
     return annotations;
+}
+
+let convertTests = function (tests) {
+    if (Array.isArray(tests)) {
+        const annotations = [];
+        for (const test of tests) {
+            if (test.failure) {
+                annotations.push(convertTestCase(test));
+            }
+        }
+        return annotations;
+    }
+
+    if (tests.failure) {
+        return [convertTestCase(tests)];
+    }
+
+    return [];
+}
+
+let convertTestCase = function (testCase) {
+    core.debug(`Convert data for test ${testCase._attributes.fullname}`);
+    let failure = testCase.failure;
+    let message = failure.message._cdata;
+    let trace = failure['stack-trace']._cdata;
+    let firstLine = trace.split('\n')[0];
+    let failPoint = firstLine.split(' in ')[1];
+    let [path, line] = failPoint.split(':');
+    
+    return {
+        path: path.replace('/github/workspace/', ''),
+        start_line: line,
+        end_line: line,
+        annotation_level: 'failure',
+        title: failure._attributes.fullname,
+        message,
+        raw_details: trace
+    };
 }
 
 module.exports = action;
@@ -101,13 +153,14 @@ const action = __nccwpck_require__(4582);
 
 (async () => {
     try {
-        const name = core.getInput('check_name');
+        const githubToken = core.getInput('githubToken');
         const report = core.getInput('report');
-        const githubToken = core.getInput('github_token');
-        const failOnFailedTests = core.getInput('fail_on_test_failures');
-        const failIfNoTests = core.getInput('fail_if_no_tests');
+        const workdirPrefix = core.getInput('workdirPrefix'); // TODo
+        const name = core.getInput('checkName');
+        const failOnFailedTests = core.getInput('failOnTestFailures');
+        const failIfNoTests = core.getInput('failIfNoTests');
         core.info(`Starting analyze ${report}...`);
-        await action(name, report, githubToken, failOnFailedTests, failIfNoTests);
+        await action(name, report, workdirPrefix, githubToken, failOnFailedTests, failIfNoTests);
     } catch (e) {
         core.setFailed(e.message);
     }
