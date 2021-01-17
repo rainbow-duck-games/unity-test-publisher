@@ -137,7 +137,7 @@ let convertTestCase = function (testCase) {
         start_line: line,
         end_line: line,
         annotation_level: 'failure',
-        title: failure._attributes.fullname,
+        title: testCase._attributes.fullname,
         message,
         raw_details: trace
     };

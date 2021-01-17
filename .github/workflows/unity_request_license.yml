@@ -1,4 +1,4 @@
-﻿name: "units-test"
+﻿name: "Unity - Request License"
 on:
   workflow_dispatch: {}
 
