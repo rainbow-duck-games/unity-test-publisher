@@ -34,11 +34,6 @@ jobs:
           customImage: erlioniel/unity-editor-lite:2020.2.1f1-base-0
           testMode: playmode
           customParameters: "-nographics"
-      - uses: actions/upload-artifact@v2
-        if: ${{ always() }}
-        with:
-          name: Test results
-          path: ${{ steps.tests.outputs.artifactsPath }}
       - uses: ./
         if: ${{ always() }}
         with:
