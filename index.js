@@ -5,7 +5,7 @@ const action = require('./action');
     try {
         const githubToken = core.getInput('githubToken');
         const report = core.getInput('report');
-        const workdirPrefix = core.getInput('workdirPrefix'); // TODo
+        const workdirPrefix = core.getInput('workdirPrefix');
         const name = core.getInput('checkName');
         const failOnFailedTests = core.getInput('failOnTestFailures');
         const failIfNoTests = core.getInput('failIfNoTests');

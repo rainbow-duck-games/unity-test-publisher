@@ -10,7 +10,8 @@ let action = async function (name, path, workdirPrefix, githubToken, failOnFaile
     const conclusion = meta.failed === 0 && (meta.total > 0 || !failIfNoTests) ? 'success' : 'failure';
     core.info(results);
 
-    let annotations = convertReport(report); // ToDo Consume projectPath
+    let annotations = convertReport(report);
+    cleanPaths(annotations, workdirPrefix);
     await createCheck(githubToken, name, results, failIfNoTests, conclusion, annotations);
 
     if (failOnFailedTests && conclusion !== 'success') {
@@ -136,6 +137,12 @@ let convertTestCase = function (testCase) {
     };
     core.info(`- ${annotation.path}:${annotation.start_line} - ${annotation.title}`);
     return annotation;
+}
+
+let cleanPaths = function(annotations, pathToClean) {
+    for (const annotation of annotations) {
+        annotation.path = annotation.path.replace(pathToClean, '')
+    }
 }
 
 module.exports = action;

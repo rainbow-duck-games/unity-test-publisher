@@ -1,6 +1,9 @@
 name: 'Unity Test Report'
+author: 'Vladimir Kryukov'
 description: 'Analyze Unity Test Report and publish results'
-# ToDo Branding?
+branding:
+  icon: 'check-circle'
+  color: 'red'
 inputs:
   githubToken:
     description: 'GITHUB_TOKEN'
