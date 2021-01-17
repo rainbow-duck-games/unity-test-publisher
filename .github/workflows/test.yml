@@ -27,6 +27,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: rainbow-duck-games/unity-test-runner@main
+        name: 'Run unity tests'
         id: tests
         with:
           projectPath: ${{ env.PROJECT_PATH }}
@@ -35,6 +36,7 @@ jobs:
           testMode: playmode
           customParameters: "-nographics"
       - uses: ./
+        name: 'Publish test results'
         if: ${{ always() }}
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}

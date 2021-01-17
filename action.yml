@@ -13,11 +13,11 @@ inputs:
     description: 'check name for test reports'
     required: false
     default: 'Test Report'
-  fail_on_test_failures: # ToDo
+  fail_on_test_failures:
     description: 'fail run if there were test failures'
     required: false
     default: 'false'
-  fail_if_no_tests: # ToDo
+  fail_if_no_tests:
     description: 'fail run if there were no test results found'
     required: false
     default: 'true'

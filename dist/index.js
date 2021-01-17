@@ -10,7 +10,7 @@ const github = __nccwpck_require__(5438);
 const fs = __nccwpck_require__(5747);
 const xmljs = __nccwpck_require__(8821);
 
-let action = async function (path, githubToken, name, failOnFailedTests = false, failIfNoTests = true) {
+let action = async function (name, path, githubToken, failOnFailedTests = false, failIfNoTests = true) {
     core.info(`Try to open ${path}`);
     const file = await fs.promises.readFile(path);
     const report = xmljs.xml2js(file, {compact: true});
@@ -43,7 +43,7 @@ let action = async function (path, githubToken, name, failOnFailedTests = false,
 
     const pullRequest = github.context.payload.pull_request;
     const link = (pullRequest && pullRequest.html_url) || github.context.ref;
-    const conclusion = meta.total > 0 || !failIfNoTests ? 'success' : 'failure';
+    const conclusion = meta.failed === 0 && (meta.total > 0 || !failIfNoTests) ? 'success' : 'failure';
     const status = 'completed';
     const head_sha = (pullRequest && pullRequest.head.sha) || github.context.sha;
     core.info(
@@ -71,7 +71,7 @@ let action = async function (path, githubToken, name, failOnFailedTests = false,
     const octokit = github.getOctokit(githubToken);
     await octokit.checks.create(createCheckRequest);
 
-    if (failOnFailedTests && meta.result !== 'Passed') {
+    if (failOnFailedTests && conclusion !== 'success') {
         core.setFailed(`There were ${meta.failed} failed tests`);
     }
 };
@@ -88,12 +88,13 @@ const action = __nccwpck_require__(4582);
 
 (async () => {
     try {
+        const name = core.getInput('check_name');
         const report = core.getInput('report');
         const githubToken = core.getInput('github_token');
         const failOnFailedTests = core.getInput('fail_on_test_failures');
         const failIfNoTests = core.getInput('fail_if_no_tests');
         core.info(`Starting analyze ${report}...`);
-        await action(report, githubToken, failOnFailedTests, failIfNoTests);
+        await action(name, report, githubToken, failOnFailedTests, failIfNoTests);
     } catch (e) {
         core.setFailed(e.message);
     }
