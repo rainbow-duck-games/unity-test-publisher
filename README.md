@@ -28,7 +28,7 @@ npm run-script prepare
 You can now consume the action by referencing the v1 branch
 
 ```yaml
-uses: rainbow-duck-games/unity-test-publisher
+uses: rainbow-duck-games/unity-test-publisher@v0.1
 name: 'Publish test results'
 if: ${{ always() }} # Avoid skipping on failed tests
 with:
