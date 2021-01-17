@@ -8,7 +8,7 @@ let action = async function (path, githubToken, failOnFailedTests = false, failI
 
     // Process results
     core.info(`File ${path} parsed...`);
-    const meta = report['test-run'];
+    const meta = report.test-run._attributes;
     if (!meta) {
         core.error('No metadata found in the file');
         if (failIfNoTests) {
