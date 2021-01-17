@@ -3,7 +3,7 @@ const github = require('@actions/github');
 const fs = require('fs');
 const xmljs = require('xml-js');
 
-let action = async function (path, githubToken, failOnFailedTests = false, failIfNoTests = true) {
+let action = async function (path, githubToken, name, failOnFailedTests = false, failIfNoTests = true) {
     core.info(`Try to open ${path}`);
     const file = await fs.promises.readFile(path);
     const report = xmljs.xml2js(file, {compact: true});

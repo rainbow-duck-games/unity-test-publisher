@@ -9,6 +9,10 @@ inputs:
     description: 'unity test report xml file to analyze'
     required: true
     # ToDo Default?
+  check_name:
+    description: 'check name for test reports'
+    required: false
+    default: 'Test Report'
   fail_on_test_failures: # ToDo
     description: 'fail run if there were test failures'
     required: false
