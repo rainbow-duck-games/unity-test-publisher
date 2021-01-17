@@ -11,7 +11,7 @@ let action = async function (name, path, workdirPrefix, githubToken, failOnFaile
     core.info(results);
 
     let annotations = convertReport(report); // ToDo Consume projectPath
-    await createCheck(githubToken, results, failIfNoTests, conclusion, annotations);
+    await createCheck(githubToken, name, results, failIfNoTests, conclusion, annotations);
 
     if (failOnFailedTests && conclusion !== 'success') {
         core.setFailed(`There were ${meta.failed} failed tests`);
@@ -36,7 +36,7 @@ let getReport = async function (path, failIfNoTests) {
     return {meta, report};
 }
 
-let createCheck = async function (githubToken, title, failIfNoTests, conclusion, annotations) {
+let createCheck = async function (githubToken, checkName, title, failIfNoTests, conclusion, annotations) {
     const pullRequest = github.context.payload.pull_request;
     const link = (pullRequest && pullRequest.html_url) || github.context.ref;
     const head_sha = (pullRequest && pullRequest.head.sha) || github.context.sha;
@@ -44,7 +44,7 @@ let createCheck = async function (githubToken, title, failIfNoTests, conclusion,
 
     const createCheckRequest = {
         ...github.context.repo,
-        name: title,
+        name: checkName,
         head_sha,
         status: 'completed',
         conclusion,
