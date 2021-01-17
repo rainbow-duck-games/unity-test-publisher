@@ -29,15 +29,19 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: rainbow-duck-games/unity-test-runner@main
-        id: testRunner
+        id: tests
         with:
           projectPath: ${{ env.PROJECT_PATH }}
           unityVersion: ${{ env.UNITY_VERSION }}
           customImage: erlioniel/unity-editor-lite:2020.2.1f1-base-0
           testMode: playmode
           customParameters: "-nographics"
+      - uses: actions/upload-artifact@v2
+        with:
+          name: Test results
+          path: ${{ steps.tests.outputs.artifactsPath }}/playmode-results.xml
       - uses: ./
         if: ${{ always() }}
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          report: ${{ steps.testRunner.outputs.artifactsPath }}/playmode-results.xml
+          report: ${{ steps.tests.outputs.artifactsPath }}/playmode-results.xml
