@@ -40,4 +40,4 @@ jobs:
         if: ${{ always() }}
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          report: ${{ steps.testRunner.outputs.artifactsPath }}
+          report: ${{ steps.testRunner.outputs.artifactsPath }}/playmode-results.xml

@@ -10,6 +10,7 @@ const fs = __nccwpck_require__(747);
 const xmljs = __nccwpck_require__(821);
 
 let action = async function (path, githubToken, failOnFailedTests = false, failIfNoTests = true) {
+    core.info(`Try to open ${path}`);
     const file = await fs.promises.readFile(path);
     const report = xmljs.xml2js(file, {compact: true});
 
