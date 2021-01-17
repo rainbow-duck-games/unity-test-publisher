@@ -61,7 +61,7 @@ let action = async function (path, githubToken, name, failOnFailedTests = false,
     // make conclusion consumable by downstream actions
     core.setOutput('conclusion', conclusion);
 
-    const octokit = new github.GitHub(githubToken);
+    const octokit = github.getOctokit(githubToken);
     await octokit.checks.create(createCheckRequest);
 
     if (failOnFailedTests && meta.result !== 'Passed') {
