@@ -44,7 +44,7 @@ let createCheck = async function (githubToken, title, failIfNoTests, conclusion,
 
     const createCheckRequest = {
         ...github.context.repo,
-        name,
+        title,
         head_sha,
         status: 'completed',
         conclusion,
