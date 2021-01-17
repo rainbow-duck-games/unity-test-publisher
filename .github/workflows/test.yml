@@ -26,9 +26,6 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
-      matrix:
-        projectPath:
-          - unity-project
     steps:
       - uses: actions/checkout@v2
       - uses: rainbow-duck-games/unity-test-runner@main
@@ -40,6 +37,7 @@ jobs:
           testMode: playmode
           customParameters: "-nographics"
       - uses: ./
+        if: ${{ always() }}
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           report: ${{ steps.testRunner.outputs.artifactsPath }}

@@ -1,6 +1,6 @@
 ﻿name: "units-test"
 on:
-  workflow_run: {}
+  workflow_dispatch: {}
 
 env:
   UNITY_VERSION: 2020.2.1f1
