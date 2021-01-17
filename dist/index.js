@@ -132,15 +132,17 @@ let convertTestCase = function (testCase) {
     let failPoint = firstLine.split(' in ')[1];
     let [path, line] = failPoint.split(':');
     
-    return {
+    let annotation = {
         path: path.replace('/github/workspace/', ''),
-        start_line: line,
-        end_line: line,
+        start_line: Number(line),
+        end_line: Number(line),
         annotation_level: 'failure',
         title: testCase._attributes.fullname,
         message,
         raw_details: trace
     };
+    core.info(`- ${annotation.path}:${annotation.start_line} - ${annotation.title}`);
+    return annotation;
 }
 
 module.exports = action;
