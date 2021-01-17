@@ -1,24 +1,34 @@
 name: 'Unity Test Report'
+author: 'Vladimir Kryukov'
 description: 'Analyze Unity Test Report and publish results'
-# ToDo Branding?
+branding:
+  icon: 'check-circle'
+  color: 'red'
 inputs:
-  github_token:
+  githubToken:
     description: 'GITHUB_TOKEN'
     required: true
   report:
     description: 'unity test report xml file to analyze'
     required: true
-    # ToDo Default?
-  fail_on_test_failures: # ToDo
+  workdirPrefix:
+    description: 'prefix on build machine to ignore in report'
+    required: false
+    default: ''
+  checkName:
+    description: 'check name for test reports'
+    required: false
+    default: 'Test Report'
+  failOnTestFailures:
     description: 'fail run if there were test failures'
     required: false
     default: 'false'
-  fail_if_no_tests: # ToDo
+  failIfNoTests:
     description: 'fail run if there were no test results found'
     required: false
     default: 'true'
-outputs: # ToDo
-  time: # output will be available to future steps
+outputs:
+  time:
     description: 'The message to output'
 runs:
   using: 'node12'

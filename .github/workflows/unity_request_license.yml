@@ -1,0 +1,20 @@
+﻿name: "Unity - Request License"
+on:
+  workflow_dispatch: {}
+
+env:
+  UNITY_VERSION: 2020.2.1f1
+
+jobs:
+  activation:
+    name: Request Activation
+    runs-on: ubuntu-latest
+    steps:
+      - uses: webbertakken/unity-request-manual-activation-file@main
+        id: getManualLicenseFile
+        with:
+          unityVersion: ${{ env.UNITY_VERSION }}
+      - uses: actions/upload-artifact@v1
+        with:
+          name: ${{ steps.getManualLicenseFile.outputs.filePath }}
+          path: ${{ steps.getManualLicenseFile.outputs.filePath }}
