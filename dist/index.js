@@ -5,14 +5,31 @@ require('./sourcemap-register.js');module.exports =
 /***/ 582:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
+const core = __nccwpck_require__(186);
 const fs = __nccwpck_require__(747);
 const xmljs = __nccwpck_require__(821);
 
-let action = async function (path) {
+let action = async function (path, githubToken, failOnFailedTests = false, failIfNoTests = true) {
     const file = await fs.promises.readFile(path);
     const report = xmljs.xml2js(file, {compact: true});
-    console.log(`File ${path} parsed:`);
-    console.log(JSON.stringify(report));
+
+    // Process results
+    core.info(`File ${path} parsed...`);
+    const meta = report['test-run'];
+    if (!meta) {
+        core.error('No metadata found in the file');
+        if (failIfNoTests) {
+            core.setFailed(`Not tests found in the report!`);
+        }
+        return;
+    }
+
+    let results = `${meta.result}: tests: ${meta.total}, skipped: ${meta.skipped}, failed: ${meta.failed}`;
+    core.info(results);
+
+    if (failOnFailedTests && meta.result !== 'Passed') {
+        core.setFailed(`There were ${meta.failed} failed tests`);
+    }
 };
 
 module.exports = action;
@@ -28,8 +45,11 @@ const action = __nccwpck_require__(582);
 (async () => {
     try {
         const report = core.getInput('report');
+        const githubToken = core.getInput('github_token');
+        const failOnFailedTests = core.getInput('fail_on_test_failures');
+        const failIfNoTests = core.getInput('fail_if_no_tests');
         core.info(`Starting analyze ${report}...`);
-        await action(report);
+        await action(report, githubToken, failOnFailedTests, failIfNoTests);
     } catch (e) {
         core.setFailed(e.message);
     }
