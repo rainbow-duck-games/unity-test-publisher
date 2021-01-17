@@ -3,8 +3,9 @@ const action = require('./action');
 
 (async () => {
     try {
-        core.info("Starting analyze...");
-        await action();
+        const report = core.getInput('report');
+        core.info(`Starting analyze ${report}...`);
+        await action(report);
     } catch (e) {
         core.setFailed(e.message);
     }

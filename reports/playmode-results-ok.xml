@@ -1,241 +1,528 @@
 <?xml version="1.0" encoding="utf-8"?>
-<test-run id="2" testcasecount="41" result="Passed" total="41" passed="41" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2021-01-16 23:14:09Z" end-time="2021-01-16 23:14:09Z" duration="0.2832126">
-  <test-suite type="TestSuite" id="1000" name="Truck Tycoon" fullname="Truck Tycoon" runstate="Runnable" testcasecount="41" result="Passed" start-time="2021-01-16 23:14:09Z" end-time="2021-01-16 23:14:09Z" duration="0.283213" total="41" passed="41" failed="0" inconclusive="0" skipped="0" asserts="0">
-    <properties />
-    <test-suite type="Assembly" id="1053" name="Assembly-CSharp.dll" fullname="/github/workspace/Library/ScriptAssemblies/Assembly-CSharp.dll" runstate="Runnable" testcasecount="41" result="Passed" start-time="2021-01-16 23:14:09Z" end-time="2021-01-16 23:14:09Z" duration="0.264608" total="41" passed="41" failed="0" inconclusive="0" skipped="0" asserts="0">
-      <properties>
-        <property name="_PID" value="82" />
-        <property name="_APPDOMAIN" value="Unity Child Domain" />
-        <property name="platform" value="PlayMode" />
-      </properties>
-      <test-suite type="TestSuite" id="1054" name="Tests" fullname="Tests" runstate="Runnable" testcasecount="41" result="Passed" start-time="2021-01-16 23:14:09Z" end-time="2021-01-16 23:14:09Z" duration="0.255146" total="41" passed="41" failed="0" inconclusive="0" skipped="0" asserts="0">
-        <properties />
-        <test-suite type="TestSuite" id="1061" name="Contracts" fullname="Tests.Contracts" runstate="Runnable" testcasecount="10" result="Passed" start-time="2021-01-16 23:14:09Z" end-time="2021-01-16 23:14:09Z" duration="0.108762" total="10" passed="10" failed="0" inconclusive="0" skipped="0" asserts="0">
-          <properties />
-          <test-suite type="TestFixture" id="1040" name="MarkerTruckButtonTest" fullname="Tests.Contracts.MarkerTruckButtonTest" classname="Tests.Contracts.MarkerTruckButtonTest" runstate="Runnable" testcasecount="4" result="Passed" start-time="2021-01-16 23:14:09Z" end-time="2021-01-16 23:14:09Z" duration="0.080712" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0">
-            <properties />
-            <test-case id="1044" name="DisableOverlayOnMouseExit" fullname="Tests.Contracts.MarkerTruckButtonTest.DisableOverlayOnMouseExit" methodname="DisableOverlayOnMouseExit" classname="Tests.Contracts.MarkerTruckButtonTest" runstate="Runnable" seed="28005411" result="Passed" start-time="2021-01-16 23:14:09Z" end-time="2021-01-16 23:14:09Z" duration="0.025873" asserts="0">
-              <properties />
-            </test-case>
-            <test-case id="1041" name="DisableOverlayOnStart" fullname="Tests.Contracts.MarkerTruckButtonTest.DisableOverlayOnStart" methodname="DisableOverlayOnStart" classname="Tests.Contracts.MarkerTruckButtonTest" runstate="Runnable" seed="865059523" result="Passed" start-time="2021-01-16 23:14:09Z" end-time="2021-01-16 23:14:09Z" duration="0.008820" asserts="0">
-              <properties>
-                <property name="_JOINTYPE" value="UnityCombinatorial" />
-              </properties>
-            </test-case>
-            <test-case id="1043" name="EnableOverlayOnMouseEnter" fullname="Tests.Contracts.MarkerTruckButtonTest.EnableOverlayOnMouseEnter" methodname="EnableOverlayOnMouseEnter" classname="Tests.Contracts.MarkerTruckButtonTest" runstate="Runnable" seed="1759683729" result="Passed" start-time="2021-01-16 23:14:09Z" end-time="2021-01-16 23:14:09Z" duration="0.000782" asserts="0">
-              <properties />
-            </test-case>
-            <test-case id="1042" name="SendScreeTruckSignalOnClick" fullname="Tests.Contracts.MarkerTruckButtonTest.SendScreeTruckSignalOnClick" methodname="SendScreeTruckSignalOnClick" classname="Tests.Contracts.MarkerTruckButtonTest" runstate="Runnable" seed="475454567" result="Passed" start-time="2021-01-16 23:14:09Z" end-time="2021-01-16 23:14:09Z" duration="0.008884" asserts="0">
-              <properties>
-                <property name="_JOINTYPE" value="UnityCombinatorial" />
-              </properties>
-            </test-case>
-          </test-suite>
-          <test-suite type="TestFixture" id="1045" name="MarkerTruckPayloadTest" fullname="Tests.Contracts.MarkerTruckPayloadTest" classname="Tests.Contracts.MarkerTruckPayloadTest" runstate="Runnable" testcasecount="2" result="Passed" start-time="2021-01-16 23:14:09Z" end-time="2021-01-16 23:14:09Z" duration="0.009199" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
-            <properties />
-            <test-case id="1046" name="SetContractPayloadIcon" fullname="Tests.Contracts.MarkerTruckPayloadTest.SetContractPayloadIcon" methodname="SetContractPayloadIcon" classname="Tests.Contracts.MarkerTruckPayloadTest" runstate="Runnable" seed="1479855355" result="Passed" start-time="2021-01-16 23:14:09Z" end-time="2021-01-16 23:14:09Z" duration="0.006454" asserts="0">
-              <properties>
-                <property name="_JOINTYPE" value="UnityCombinatorial" />
-              </properties>
-            </test-case>
-            <test-case id="1047" name="SetEmptyIconIfNoLoad" fullname="Tests.Contracts.MarkerTruckPayloadTest.SetEmptyIconIfNoLoad" methodname="SetEmptyIconIfNoLoad" classname="Tests.Contracts.MarkerTruckPayloadTest" runstate="Runnable" seed="1330003378" result="Passed" start-time="2021-01-16 23:14:09Z" end-time="2021-01-16 23:14:09Z" duration="0.001289" asserts="0">
-              <properties>
-                <property name="_JOINTYPE" value="UnityCombinatorial" />
-              </properties>
-            </test-case>
-          </test-suite>
-          <test-suite type="TestFixture" id="1048" name="MarkerWidgetTest" fullname="Tests.Contracts.MarkerWidgetTest" classname="Tests.Contracts.MarkerWidgetTest" runstate="Runnable" testcasecount="4" result="Passed" start-time="2021-01-16 23:14:09Z" end-time="2021-01-16 23:14:09Z" duration="0.014189" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0">
-            <properties />
-            <test-case id="1051" name="ChangePositionAndSpriteOnUpdate" fullname="Tests.Contracts.MarkerWidgetTest.ChangePositionAndSpriteOnUpdate" methodname="ChangePositionAndSpriteOnUpdate" classname="Tests.Contracts.MarkerWidgetTest" runstate="Runnable" seed="1107686671" result="Passed" start-time="2021-01-16 23:14:09Z" end-time="2021-01-16 23:14:09Z" duration="0.005396" asserts="0">
-              <properties>
-                <property name="_JOINTYPE" value="UnityCombinatorial" />
-              </properties>
-            </test-case>
-            <test-case id="1050" name="DestroyWidgetOnExecutorFinish" fullname="Tests.Contracts.MarkerWidgetTest.DestroyWidgetOnExecutorFinish" methodname="DestroyWidgetOnExecutorFinish" classname="Tests.Contracts.MarkerWidgetTest" runstate="Runnable" seed="698387834" result="Passed" start-time="2021-01-16 23:14:09Z" end-time="2021-01-16 23:14:09Z" duration="0.002015" asserts="0">
-              <properties>
-                <property name="_JOINTYPE" value="UnityCombinatorial" />
-              </properties>
-            </test-case>
-            <test-case id="1052" name="ResolveSpriteFromSpriteList" fullname="Tests.Contracts.MarkerWidgetTest.ResolveSpriteFromSpriteList" methodname="ResolveSpriteFromSpriteList" classname="Tests.Contracts.MarkerWidgetTest" runstate="Runnable" seed="901693168" result="Passed" start-time="2021-01-16 23:14:09Z" end-time="2021-01-16 23:14:09Z" duration="0.000700" asserts="0">
-              <properties />
-            </test-case>
-            <test-case id="1049" name="SubscribeOnStartUnsubscribeOnDestroy" fullname="Tests.Contracts.MarkerWidgetTest.SubscribeOnStartUnsubscribeOnDestroy" methodname="SubscribeOnStartUnsubscribeOnDestroy" classname="Tests.Contracts.MarkerWidgetTest" runstate="Runnable" seed="829599931" result="Passed" start-time="2021-01-16 23:14:09Z" end-time="2021-01-16 23:14:09Z" duration="0.003399" asserts="0">
-              <properties>
-                <property name="_JOINTYPE" value="UnityCombinatorial" />
-              </properties>
-            </test-case>
-          </test-suite>
-        </test-suite>
-        <test-suite type="TestSuite" id="1059" name="PlayMode" fullname="Tests.PlayMode" runstate="Runnable" testcasecount="7" result="Passed" start-time="2021-01-16 23:14:09Z" end-time="2021-01-16 23:14:09Z" duration="0.029022" total="7" passed="7" failed="0" inconclusive="0" skipped="0" asserts="0">
-          <properties />
-          <test-suite type="TestSuite" id="1060" name="Map" fullname="Tests.PlayMode.Map" runstate="Runnable" testcasecount="7" result="Passed" start-time="2021-01-16 23:14:09Z" end-time="2021-01-16 23:14:09Z" duration="0.027408" total="7" passed="7" failed="0" inconclusive="0" skipped="0" asserts="0">
-            <properties />
-            <test-suite type="TestFixture" id="1032" name="MapRoadsParserTest" fullname="Tests.PlayMode.Map.MapRoadsParserTest" classname="Tests.PlayMode.Map.MapRoadsParserTest" runstate="Runnable" testcasecount="7" result="Passed" start-time="2021-01-16 23:14:09Z" end-time="2021-01-16 23:14:09Z" duration="0.026016" total="7" passed="7" failed="0" inconclusive="0" skipped="0" asserts="0">
-              <properties />
-              <test-case id="1035" name="Nodes" fullname="Tests.PlayMode.Map.MapRoadsParserTest.Nodes" methodname="Nodes" classname="Tests.PlayMode.Map.MapRoadsParserTest" runstate="Runnable" seed="12979039" result="Passed" start-time="2021-01-16 23:14:09Z" end-time="2021-01-16 23:14:09Z" duration="0.005630" asserts="0">
-                <properties />
-              </test-case>
-              <test-case id="1037" name="NodesClearedUseless" fullname="Tests.PlayMode.Map.MapRoadsParserTest.NodesClearedUseless" methodname="NodesClearedUseless" classname="Tests.PlayMode.Map.MapRoadsParserTest" runstate="Runnable" seed="727281683" result="Passed" start-time="2021-01-16 23:14:09Z" end-time="2021-01-16 23:14:09Z" duration="0.006274" asserts="0">
-                <properties />
-              </test-case>
-              <test-case id="1033" name="NodesClosest" fullname="Tests.PlayMode.Map.MapRoadsParserTest.NodesClosest" methodname="NodesClosest" classname="Tests.PlayMode.Map.MapRoadsParserTest" runstate="Runnable" seed="601770384" result="Passed" start-time="2021-01-16 23:14:09Z" end-time="2021-01-16 23:14:09Z" duration="0.002680" asserts="0">
-                <properties />
-              </test-case>
-              <test-case id="1034" name="NodesDiagonal" fullname="Tests.PlayMode.Map.MapRoadsParserTest.NodesDiagonal" methodname="NodesDiagonal" classname="Tests.PlayMode.Map.MapRoadsParserTest" runstate="Runnable" seed="1384261786" result="Passed" start-time="2021-01-16 23:14:09Z" end-time="2021-01-16 23:14:09Z" duration="0.001571" asserts="0">
-                <properties />
-              </test-case>
-              <test-case id="1038" name="NodesIndexes" fullname="Tests.PlayMode.Map.MapRoadsParserTest.NodesIndexes" methodname="NodesIndexes" classname="Tests.PlayMode.Map.MapRoadsParserTest" runstate="Runnable" seed="1119761726" result="Passed" start-time="2021-01-16 23:14:09Z" end-time="2021-01-16 23:14:09Z" duration="0.002033" asserts="0">
-                <properties />
-              </test-case>
-              <test-case id="1036" name="NodesNeighbours" fullname="Tests.PlayMode.Map.MapRoadsParserTest.NodesNeighbours" methodname="NodesNeighbours" classname="Tests.PlayMode.Map.MapRoadsParserTest" runstate="Runnable" seed="885601313" result="Passed" start-time="2021-01-16 23:14:09Z" end-time="2021-01-16 23:14:09Z" duration="0.001991" asserts="0">
-                <properties />
-              </test-case>
-              <test-case id="1039" name="Roads" fullname="Tests.PlayMode.Map.MapRoadsParserTest.Roads" methodname="Roads" classname="Tests.PlayMode.Map.MapRoadsParserTest" runstate="Runnable" seed="725872512" result="Passed" start-time="2021-01-16 23:14:09Z" end-time="2021-01-16 23:14:09Z" duration="0.002105" asserts="0">
-                <properties />
-              </test-case>
-            </test-suite>
-          </test-suite>
-        </test-suite>
-        <test-suite type="TestSuite" id="1055" name="UI" fullname="Tests.UI" runstate="Runnable" testcasecount="24" result="Passed" start-time="2021-01-16 23:14:09Z" end-time="2021-01-16 23:14:09Z" duration="0.107815" total="24" passed="24" failed="0" inconclusive="0" skipped="0" asserts="0">
-          <properties />
-          <test-suite type="TestSuite" id="1058" name="ContextProxy" fullname="Tests.UI.ContextProxy" runstate="Runnable" testcasecount="15" result="Passed" start-time="2021-01-16 23:14:09Z" end-time="2021-01-16 23:14:09Z" duration="0.033225" total="15" passed="15" failed="0" inconclusive="0" skipped="0" asserts="0">
-            <properties />
-            <test-suite type="TestFixture" id="1013" name="AbstractContextProxyTest" fullname="Tests.UI.ContextProxy.AbstractContextProxyTest" classname="Tests.UI.ContextProxy.AbstractContextProxyTest" runstate="Runnable" testcasecount="5" result="Passed" start-time="2021-01-16 23:14:09Z" end-time="2021-01-16 23:14:09Z" duration="0.006177" total="5" passed="5" failed="0" inconclusive="0" skipped="0" asserts="0">
-              <properties />
-              <test-case id="1018" name="ChangeSubscriptionOnChangeEntity" fullname="Tests.UI.ContextProxy.AbstractContextProxyTest.ChangeSubscriptionOnChangeEntity" methodname="ChangeSubscriptionOnChangeEntity" classname="Tests.UI.ContextProxy.AbstractContextProxyTest" runstate="Runnable" seed="19578156" result="Passed" start-time="2021-01-16 23:14:09Z" end-time="2021-01-16 23:14:09Z" duration="0.001647" asserts="0">
-                <properties />
-              </test-case>
-              <test-case id="1014" name="SubscribeOnEnable" fullname="Tests.UI.ContextProxy.AbstractContextProxyTest.SubscribeOnEnable" methodname="SubscribeOnEnable" classname="Tests.UI.ContextProxy.AbstractContextProxyTest" runstate="Runnable" seed="213321507" result="Passed" start-time="2021-01-16 23:14:09Z" end-time="2021-01-16 23:14:09Z" duration="0.000607" asserts="0">
-                <properties />
-              </test-case>
-              <test-case id="1016" name="SubscribeOnSetEntity" fullname="Tests.UI.ContextProxy.AbstractContextProxyTest.SubscribeOnSetEntity" methodname="SubscribeOnSetEntity" classname="Tests.UI.ContextProxy.AbstractContextProxyTest" runstate="Runnable" seed="626839990" result="Passed" start-time="2021-01-16 23:14:09Z" end-time="2021-01-16 23:14:09Z" duration="0.000478" asserts="0">
-                <properties />
-              </test-case>
-              <test-case id="1015" name="UnsubscribeOnDisable" fullname="Tests.UI.ContextProxy.AbstractContextProxyTest.UnsubscribeOnDisable" methodname="UnsubscribeOnDisable" classname="Tests.UI.ContextProxy.AbstractContextProxyTest" runstate="Runnable" seed="876616698" result="Passed" start-time="2021-01-16 23:14:09Z" end-time="2021-01-16 23:14:09Z" duration="0.000419" asserts="0">
-                <properties />
-              </test-case>
-              <test-case id="1017" name="UnsubscribeOnSetNull" fullname="Tests.UI.ContextProxy.AbstractContextProxyTest.UnsubscribeOnSetNull" methodname="UnsubscribeOnSetNull" classname="Tests.UI.ContextProxy.AbstractContextProxyTest" runstate="Runnable" seed="1804931843" result="Passed" start-time="2021-01-16 23:14:09Z" end-time="2021-01-16 23:14:09Z" duration="0.000435" asserts="0">
-                <properties />
-              </test-case>
-            </test-suite>
-            <test-suite type="TestFixture" id="1019" name="ContractContextProxyTest" fullname="Tests.UI.ContextProxy.ContractContextProxyTest" classname="Tests.UI.ContextProxy.ContractContextProxyTest" runstate="Runnable" testcasecount="3" result="Passed" start-time="2021-01-16 23:14:09Z" end-time="2021-01-16 23:14:09Z" duration="0.007550" total="3" passed="3" failed="0" inconclusive="0" skipped="0" asserts="0">
-              <properties />
-              <test-case id="1022" name="ProxyContractDeliverySignal" fullname="Tests.UI.ContextProxy.ContractContextProxyTest.ProxyContractDeliverySignal" methodname="ProxyContractDeliverySignal" classname="Tests.UI.ContextProxy.ContractContextProxyTest" runstate="Runnable" seed="762162038" result="Passed" start-time="2021-01-16 23:14:09Z" end-time="2021-01-16 23:14:09Z" duration="0.002413" asserts="0">
-                <properties>
-                  <property name="_JOINTYPE" value="UnityCombinatorial" />
-                </properties>
-              </test-case>
-              <test-case id="1021" name="ProxyContractExecutorFinishSignal" fullname="Tests.UI.ContextProxy.ContractContextProxyTest.ProxyContractExecutorFinishSignal" methodname="ProxyContractExecutorFinishSignal" classname="Tests.UI.ContextProxy.ContractContextProxyTest" runstate="Runnable" seed="1417131874" result="Passed" start-time="2021-01-16 23:14:09Z" end-time="2021-01-16 23:14:09Z" duration="0.001554" asserts="0">
-                <properties>
-                  <property name="_JOINTYPE" value="UnityCombinatorial" />
-                </properties>
-              </test-case>
-              <test-case id="1020" name="ProxyContractExecutorStartSignal" fullname="Tests.UI.ContextProxy.ContractContextProxyTest.ProxyContractExecutorStartSignal" methodname="ProxyContractExecutorStartSignal" classname="Tests.UI.ContextProxy.ContractContextProxyTest" runstate="Runnable" seed="761020968" result="Passed" start-time="2021-01-16 23:14:09Z" end-time="2021-01-16 23:14:09Z" duration="0.001535" asserts="0">
-                <properties>
-                  <property name="_JOINTYPE" value="UnityCombinatorial" />
-                </properties>
-              </test-case>
-            </test-suite>
-            <test-suite type="TestFixture" id="1023" name="DriverContextProxyTest" fullname="Tests.UI.ContextProxy.DriverContextProxyTest" classname="Tests.UI.ContextProxy.DriverContextProxyTest" runstate="Runnable" testcasecount="4" result="Passed" start-time="2021-01-16 23:14:09Z" end-time="2021-01-16 23:14:09Z" duration="0.008113" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0">
-              <properties />
-              <test-case id="1026" name="ProxyDriverAddLicenseSignal" fullname="Tests.UI.ContextProxy.DriverContextProxyTest.ProxyDriverAddLicenseSignal" methodname="ProxyDriverAddLicenseSignal" classname="Tests.UI.ContextProxy.DriverContextProxyTest" runstate="Runnable" seed="1538176107" result="Passed" start-time="2021-01-16 23:14:09Z" end-time="2021-01-16 23:14:09Z" duration="0.001795" asserts="0">
-                <properties>
-                  <property name="_JOINTYPE" value="UnityCombinatorial" />
-                </properties>
-              </test-case>
-              <test-case id="1027" name="ProxyDriverAddSkillSignal" fullname="Tests.UI.ContextProxy.DriverContextProxyTest.ProxyDriverAddSkillSignal" methodname="ProxyDriverAddSkillSignal" classname="Tests.UI.ContextProxy.DriverContextProxyTest" runstate="Runnable" seed="131387029" result="Passed" start-time="2021-01-16 23:14:09Z" end-time="2021-01-16 23:14:09Z" duration="0.001417" asserts="0">
-                <properties>
-                  <property name="_JOINTYPE" value="UnityCombinatorial" />
-                </properties>
-              </test-case>
-              <test-case id="1024" name="ProxyDriverAssignTruckSignal" fullname="Tests.UI.ContextProxy.DriverContextProxyTest.ProxyDriverAssignTruckSignal" methodname="ProxyDriverAssignTruckSignal" classname="Tests.UI.ContextProxy.DriverContextProxyTest" runstate="Runnable" seed="1471664876" result="Passed" start-time="2021-01-16 23:14:09Z" end-time="2021-01-16 23:14:09Z" duration="0.001333" asserts="0">
-                <properties>
-                  <property name="_JOINTYPE" value="UnityCombinatorial" />
-                </properties>
-              </test-case>
-              <test-case id="1025" name="ProxyDriverReleaseTruckSignal" fullname="Tests.UI.ContextProxy.DriverContextProxyTest.ProxyDriverReleaseTruckSignal" methodname="ProxyDriverReleaseTruckSignal" classname="Tests.UI.ContextProxy.DriverContextProxyTest" runstate="Runnable" seed="1828869175" result="Passed" start-time="2021-01-16 23:14:09Z" end-time="2021-01-16 23:14:09Z" duration="0.001454" asserts="0">
-                <properties>
-                  <property name="_JOINTYPE" value="UnityCombinatorial" />
-                </properties>
-              </test-case>
-            </test-suite>
-            <test-suite type="TestFixture" id="1028" name="TruckContextProxyTest" fullname="Tests.UI.ContextProxy.TruckContextProxyTest" classname="Tests.UI.ContextProxy.TruckContextProxyTest" runstate="Runnable" testcasecount="3" result="Passed" start-time="2021-01-16 23:14:09Z" end-time="2021-01-16 23:14:09Z" duration="0.007582" total="3" passed="3" failed="0" inconclusive="0" skipped="0" asserts="0">
-              <properties />
-              <test-case id="1031" name="ProxyCargoChangeSignal" fullname="Tests.UI.ContextProxy.TruckContextProxyTest.ProxyCargoChangeSignal" methodname="ProxyCargoChangeSignal" classname="Tests.UI.ContextProxy.TruckContextProxyTest" runstate="Runnable" seed="747901088" result="Passed" start-time="2021-01-16 23:14:09Z" end-time="2021-01-16 23:14:09Z" duration="0.001786" asserts="0">
-                <properties>
-                  <property name="_JOINTYPE" value="UnityCombinatorial" />
-                </properties>
-              </test-case>
-              <test-case id="1029" name="ProxyDriverAssignSignal" fullname="Tests.UI.ContextProxy.TruckContextProxyTest.ProxyDriverAssignSignal" methodname="ProxyDriverAssignSignal" classname="Tests.UI.ContextProxy.TruckContextProxyTest" runstate="Runnable" seed="1685377404" result="Passed" start-time="2021-01-16 23:14:09Z" end-time="2021-01-16 23:14:09Z" duration="0.002118" asserts="0">
-                <properties>
-                  <property name="_JOINTYPE" value="UnityCombinatorial" />
-                </properties>
-              </test-case>
-              <test-case id="1030" name="ProxyReleaseDriverSignal" fullname="Tests.UI.ContextProxy.TruckContextProxyTest.ProxyReleaseDriverSignal" methodname="ProxyReleaseDriverSignal" classname="Tests.UI.ContextProxy.TruckContextProxyTest" runstate="Runnable" seed="1867100472" result="Passed" start-time="2021-01-16 23:14:09Z" end-time="2021-01-16 23:14:09Z" duration="0.001694" asserts="0">
-                <properties>
-                  <property name="_JOINTYPE" value="UnityCombinatorial" />
-                </properties>
-              </test-case>
-            </test-suite>
-          </test-suite>
-          <test-suite type="TestSuite" id="1057" name="Menus" fullname="Tests.UI.Menus" runstate="Runnable" testcasecount="8" result="Passed" start-time="2021-01-16 23:14:09Z" end-time="2021-01-16 23:14:09Z" duration="0.028723" total="8" passed="8" failed="0" inconclusive="0" skipped="0" asserts="0">
-            <properties />
-            <test-suite type="TestFixture" id="1003" name="PauseMenuPopupControllerTest" fullname="Tests.UI.Menus.PauseMenuPopupControllerTest" classname="Tests.UI.Menus.PauseMenuPopupControllerTest" runstate="Runnable" testcasecount="4" result="Passed" start-time="2021-01-16 23:14:09Z" end-time="2021-01-16 23:14:09Z" duration="0.020364" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0">
-              <properties />
-              <test-case id="1006" name="PauseMenuPopupLoad" fullname="Tests.UI.Menus.PauseMenuPopupControllerTest.PauseMenuPopupLoad" methodname="PauseMenuPopupLoad" classname="Tests.UI.Menus.PauseMenuPopupControllerTest" runstate="Runnable" seed="408011642" result="Passed" start-time="2021-01-16 23:14:09Z" end-time="2021-01-16 23:14:09Z" duration="0.012521" asserts="0">
-                <properties>
-                  <property name="_JOINTYPE" value="UnityCombinatorial" />
-                </properties>
-                <output><![CDATA[Game loading...
+<test-run id="2" testcasecount="41" result="Passed" total="41" passed="41" failed="0" inconclusive="0" skipped="0"
+          asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2021-01-16 23:14:09Z"
+          end-time="2021-01-16 23:14:09Z" duration="0.2832126">
+    <test-suite type="TestSuite" id="1000" name="Truck Tycoon" fullname="Truck Tycoon" runstate="Runnable"
+                testcasecount="41" result="Passed" start-time="2021-01-16 23:14:09Z" end-time="2021-01-16 23:14:09Z"
+                duration="0.283213" total="41" passed="41" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties/>
+        <test-suite type="Assembly" id="1053" name="Assembly-CSharp.dll"
+                    fullname="/github/workspace/Library/ScriptAssemblies/Assembly-CSharp.dll" runstate="Runnable"
+                    testcasecount="41" result="Passed" start-time="2021-01-16 23:14:09Z" end-time="2021-01-16 23:14:09Z"
+                    duration="0.264608" total="41" passed="41" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties>
+                <property name="_PID" value="82"/>
+                <property name="_APPDOMAIN" value="Unity Child Domain"/>
+                <property name="platform" value="PlayMode"/>
+            </properties>
+            <test-suite type="TestSuite" id="1054" name="Tests" fullname="Tests" runstate="Runnable" testcasecount="41"
+                        result="Passed" start-time="2021-01-16 23:14:09Z" end-time="2021-01-16 23:14:09Z"
+                        duration="0.255146" total="41" passed="41" failed="0" inconclusive="0" skipped="0" asserts="0">
+                <properties/>
+                <test-suite type="TestSuite" id="1061" name="Contracts" fullname="Tests.Contracts" runstate="Runnable"
+                            testcasecount="10" result="Passed" start-time="2021-01-16 23:14:09Z"
+                            end-time="2021-01-16 23:14:09Z" duration="0.108762" total="10" passed="10" failed="0"
+                            inconclusive="0" skipped="0" asserts="0">
+                    <properties/>
+                    <test-suite type="TestFixture" id="1040" name="MarkerTruckButtonTest"
+                                fullname="Tests.Contracts.MarkerTruckButtonTest"
+                                classname="Tests.Contracts.MarkerTruckButtonTest" runstate="Runnable" testcasecount="4"
+                                result="Passed" start-time="2021-01-16 23:14:09Z" end-time="2021-01-16 23:14:09Z"
+                                duration="0.080712" total="4" passed="4" failed="0" inconclusive="0" skipped="0"
+                                asserts="0">
+                        <properties/>
+                        <test-case id="1044" name="DisableOverlayOnMouseExit"
+                                   fullname="Tests.Contracts.MarkerTruckButtonTest.DisableOverlayOnMouseExit"
+                                   methodname="DisableOverlayOnMouseExit"
+                                   classname="Tests.Contracts.MarkerTruckButtonTest" runstate="Runnable" seed="28005411"
+                                   result="Passed" start-time="2021-01-16 23:14:09Z" end-time="2021-01-16 23:14:09Z"
+                                   duration="0.025873" asserts="0">
+                            <properties/>
+                        </test-case>
+                        <test-case id="1041" name="DisableOverlayOnStart"
+                                   fullname="Tests.Contracts.MarkerTruckButtonTest.DisableOverlayOnStart"
+                                   methodname="DisableOverlayOnStart" classname="Tests.Contracts.MarkerTruckButtonTest"
+                                   runstate="Runnable" seed="865059523" result="Passed"
+                                   start-time="2021-01-16 23:14:09Z" end-time="2021-01-16 23:14:09Z" duration="0.008820"
+                                   asserts="0">
+                            <properties>
+                                <property name="_JOINTYPE" value="UnityCombinatorial"/>
+                            </properties>
+                        </test-case>
+                        <test-case id="1043" name="EnableOverlayOnMouseEnter"
+                                   fullname="Tests.Contracts.MarkerTruckButtonTest.EnableOverlayOnMouseEnter"
+                                   methodname="EnableOverlayOnMouseEnter"
+                                   classname="Tests.Contracts.MarkerTruckButtonTest" runstate="Runnable"
+                                   seed="1759683729" result="Passed" start-time="2021-01-16 23:14:09Z"
+                                   end-time="2021-01-16 23:14:09Z" duration="0.000782" asserts="0">
+                            <properties/>
+                        </test-case>
+                        <test-case id="1042" name="SendScreeTruckSignalOnClick"
+                                   fullname="Tests.Contracts.MarkerTruckButtonTest.SendScreeTruckSignalOnClick"
+                                   methodname="SendScreeTruckSignalOnClick"
+                                   classname="Tests.Contracts.MarkerTruckButtonTest" runstate="Runnable"
+                                   seed="475454567" result="Passed" start-time="2021-01-16 23:14:09Z"
+                                   end-time="2021-01-16 23:14:09Z" duration="0.008884" asserts="0">
+                            <properties>
+                                <property name="_JOINTYPE" value="UnityCombinatorial"/>
+                            </properties>
+                        </test-case>
+                    </test-suite>
+                    <test-suite type="TestFixture" id="1045" name="MarkerTruckPayloadTest"
+                                fullname="Tests.Contracts.MarkerTruckPayloadTest"
+                                classname="Tests.Contracts.MarkerTruckPayloadTest" runstate="Runnable" testcasecount="2"
+                                result="Passed" start-time="2021-01-16 23:14:09Z" end-time="2021-01-16 23:14:09Z"
+                                duration="0.009199" total="2" passed="2" failed="0" inconclusive="0" skipped="0"
+                                asserts="0">
+                        <properties/>
+                        <test-case id="1046" name="SetContractPayloadIcon"
+                                   fullname="Tests.Contracts.MarkerTruckPayloadTest.SetContractPayloadIcon"
+                                   methodname="SetContractPayloadIcon"
+                                   classname="Tests.Contracts.MarkerTruckPayloadTest" runstate="Runnable"
+                                   seed="1479855355" result="Passed" start-time="2021-01-16 23:14:09Z"
+                                   end-time="2021-01-16 23:14:09Z" duration="0.006454" asserts="0">
+                            <properties>
+                                <property name="_JOINTYPE" value="UnityCombinatorial"/>
+                            </properties>
+                        </test-case>
+                        <test-case id="1047" name="SetEmptyIconIfNoLoad"
+                                   fullname="Tests.Contracts.MarkerTruckPayloadTest.SetEmptyIconIfNoLoad"
+                                   methodname="SetEmptyIconIfNoLoad" classname="Tests.Contracts.MarkerTruckPayloadTest"
+                                   runstate="Runnable" seed="1330003378" result="Passed"
+                                   start-time="2021-01-16 23:14:09Z" end-time="2021-01-16 23:14:09Z" duration="0.001289"
+                                   asserts="0">
+                            <properties>
+                                <property name="_JOINTYPE" value="UnityCombinatorial"/>
+                            </properties>
+                        </test-case>
+                    </test-suite>
+                    <test-suite type="TestFixture" id="1048" name="MarkerWidgetTest"
+                                fullname="Tests.Contracts.MarkerWidgetTest" classname="Tests.Contracts.MarkerWidgetTest"
+                                runstate="Runnable" testcasecount="4" result="Passed" start-time="2021-01-16 23:14:09Z"
+                                end-time="2021-01-16 23:14:09Z" duration="0.014189" total="4" passed="4" failed="0"
+                                inconclusive="0" skipped="0" asserts="0">
+                        <properties/>
+                        <test-case id="1051" name="ChangePositionAndSpriteOnUpdate"
+                                   fullname="Tests.Contracts.MarkerWidgetTest.ChangePositionAndSpriteOnUpdate"
+                                   methodname="ChangePositionAndSpriteOnUpdate"
+                                   classname="Tests.Contracts.MarkerWidgetTest" runstate="Runnable" seed="1107686671"
+                                   result="Passed" start-time="2021-01-16 23:14:09Z" end-time="2021-01-16 23:14:09Z"
+                                   duration="0.005396" asserts="0">
+                            <properties>
+                                <property name="_JOINTYPE" value="UnityCombinatorial"/>
+                            </properties>
+                        </test-case>
+                        <test-case id="1050" name="DestroyWidgetOnExecutorFinish"
+                                   fullname="Tests.Contracts.MarkerWidgetTest.DestroyWidgetOnExecutorFinish"
+                                   methodname="DestroyWidgetOnExecutorFinish"
+                                   classname="Tests.Contracts.MarkerWidgetTest" runstate="Runnable" seed="698387834"
+                                   result="Passed" start-time="2021-01-16 23:14:09Z" end-time="2021-01-16 23:14:09Z"
+                                   duration="0.002015" asserts="0">
+                            <properties>
+                                <property name="_JOINTYPE" value="UnityCombinatorial"/>
+                            </properties>
+                        </test-case>
+                        <test-case id="1052" name="ResolveSpriteFromSpriteList"
+                                   fullname="Tests.Contracts.MarkerWidgetTest.ResolveSpriteFromSpriteList"
+                                   methodname="ResolveSpriteFromSpriteList" classname="Tests.Contracts.MarkerWidgetTest"
+                                   runstate="Runnable" seed="901693168" result="Passed"
+                                   start-time="2021-01-16 23:14:09Z" end-time="2021-01-16 23:14:09Z" duration="0.000700"
+                                   asserts="0">
+                            <properties/>
+                        </test-case>
+                        <test-case id="1049" name="SubscribeOnStartUnsubscribeOnDestroy"
+                                   fullname="Tests.Contracts.MarkerWidgetTest.SubscribeOnStartUnsubscribeOnDestroy"
+                                   methodname="SubscribeOnStartUnsubscribeOnDestroy"
+                                   classname="Tests.Contracts.MarkerWidgetTest" runstate="Runnable" seed="829599931"
+                                   result="Passed" start-time="2021-01-16 23:14:09Z" end-time="2021-01-16 23:14:09Z"
+                                   duration="0.003399" asserts="0">
+                            <properties>
+                                <property name="_JOINTYPE" value="UnityCombinatorial"/>
+                            </properties>
+                        </test-case>
+                    </test-suite>
+                </test-suite>
+                <test-suite type="TestSuite" id="1059" name="PlayMode" fullname="Tests.PlayMode" runstate="Runnable"
+                            testcasecount="7" result="Passed" start-time="2021-01-16 23:14:09Z"
+                            end-time="2021-01-16 23:14:09Z" duration="0.029022" total="7" passed="7" failed="0"
+                            inconclusive="0" skipped="0" asserts="0">
+                    <properties/>
+                    <test-suite type="TestSuite" id="1060" name="Map" fullname="Tests.PlayMode.Map" runstate="Runnable"
+                                testcasecount="7" result="Passed" start-time="2021-01-16 23:14:09Z"
+                                end-time="2021-01-16 23:14:09Z" duration="0.027408" total="7" passed="7" failed="0"
+                                inconclusive="0" skipped="0" asserts="0">
+                        <properties/>
+                        <test-suite type="TestFixture" id="1032" name="MapRoadsParserTest"
+                                    fullname="Tests.PlayMode.Map.MapRoadsParserTest"
+                                    classname="Tests.PlayMode.Map.MapRoadsParserTest" runstate="Runnable"
+                                    testcasecount="7" result="Passed" start-time="2021-01-16 23:14:09Z"
+                                    end-time="2021-01-16 23:14:09Z" duration="0.026016" total="7" passed="7" failed="0"
+                                    inconclusive="0" skipped="0" asserts="0">
+                            <properties/>
+                            <test-case id="1035" name="Nodes" fullname="Tests.PlayMode.Map.MapRoadsParserTest.Nodes"
+                                       methodname="Nodes" classname="Tests.PlayMode.Map.MapRoadsParserTest"
+                                       runstate="Runnable" seed="12979039" result="Passed"
+                                       start-time="2021-01-16 23:14:09Z" end-time="2021-01-16 23:14:09Z"
+                                       duration="0.005630" asserts="0">
+                                <properties/>
+                            </test-case>
+                            <test-case id="1037" name="NodesClearedUseless"
+                                       fullname="Tests.PlayMode.Map.MapRoadsParserTest.NodesClearedUseless"
+                                       methodname="NodesClearedUseless"
+                                       classname="Tests.PlayMode.Map.MapRoadsParserTest" runstate="Runnable"
+                                       seed="727281683" result="Passed" start-time="2021-01-16 23:14:09Z"
+                                       end-time="2021-01-16 23:14:09Z" duration="0.006274" asserts="0">
+                                <properties/>
+                            </test-case>
+                            <test-case id="1033" name="NodesClosest"
+                                       fullname="Tests.PlayMode.Map.MapRoadsParserTest.NodesClosest"
+                                       methodname="NodesClosest" classname="Tests.PlayMode.Map.MapRoadsParserTest"
+                                       runstate="Runnable" seed="601770384" result="Passed"
+                                       start-time="2021-01-16 23:14:09Z" end-time="2021-01-16 23:14:09Z"
+                                       duration="0.002680" asserts="0">
+                                <properties/>
+                            </test-case>
+                            <test-case id="1034" name="NodesDiagonal"
+                                       fullname="Tests.PlayMode.Map.MapRoadsParserTest.NodesDiagonal"
+                                       methodname="NodesDiagonal" classname="Tests.PlayMode.Map.MapRoadsParserTest"
+                                       runstate="Runnable" seed="1384261786" result="Passed"
+                                       start-time="2021-01-16 23:14:09Z" end-time="2021-01-16 23:14:09Z"
+                                       duration="0.001571" asserts="0">
+                                <properties/>
+                            </test-case>
+                            <test-case id="1038" name="NodesIndexes"
+                                       fullname="Tests.PlayMode.Map.MapRoadsParserTest.NodesIndexes"
+                                       methodname="NodesIndexes" classname="Tests.PlayMode.Map.MapRoadsParserTest"
+                                       runstate="Runnable" seed="1119761726" result="Passed"
+                                       start-time="2021-01-16 23:14:09Z" end-time="2021-01-16 23:14:09Z"
+                                       duration="0.002033" asserts="0">
+                                <properties/>
+                            </test-case>
+                            <test-case id="1036" name="NodesNeighbours"
+                                       fullname="Tests.PlayMode.Map.MapRoadsParserTest.NodesNeighbours"
+                                       methodname="NodesNeighbours" classname="Tests.PlayMode.Map.MapRoadsParserTest"
+                                       runstate="Runnable" seed="885601313" result="Passed"
+                                       start-time="2021-01-16 23:14:09Z" end-time="2021-01-16 23:14:09Z"
+                                       duration="0.001991" asserts="0">
+                                <properties/>
+                            </test-case>
+                            <test-case id="1039" name="Roads" fullname="Tests.PlayMode.Map.MapRoadsParserTest.Roads"
+                                       methodname="Roads" classname="Tests.PlayMode.Map.MapRoadsParserTest"
+                                       runstate="Runnable" seed="725872512" result="Passed"
+                                       start-time="2021-01-16 23:14:09Z" end-time="2021-01-16 23:14:09Z"
+                                       duration="0.002105" asserts="0">
+                                <properties/>
+                            </test-case>
+                        </test-suite>
+                    </test-suite>
+                </test-suite>
+                <test-suite type="TestSuite" id="1055" name="UI" fullname="Tests.UI" runstate="Runnable"
+                            testcasecount="24" result="Passed" start-time="2021-01-16 23:14:09Z"
+                            end-time="2021-01-16 23:14:09Z" duration="0.107815" total="24" passed="24" failed="0"
+                            inconclusive="0" skipped="0" asserts="0">
+                    <properties/>
+                    <test-suite type="TestSuite" id="1058" name="ContextProxy" fullname="Tests.UI.ContextProxy"
+                                runstate="Runnable" testcasecount="15" result="Passed" start-time="2021-01-16 23:14:09Z"
+                                end-time="2021-01-16 23:14:09Z" duration="0.033225" total="15" passed="15" failed="0"
+                                inconclusive="0" skipped="0" asserts="0">
+                        <properties/>
+                        <test-suite type="TestFixture" id="1013" name="AbstractContextProxyTest"
+                                    fullname="Tests.UI.ContextProxy.AbstractContextProxyTest"
+                                    classname="Tests.UI.ContextProxy.AbstractContextProxyTest" runstate="Runnable"
+                                    testcasecount="5" result="Passed" start-time="2021-01-16 23:14:09Z"
+                                    end-time="2021-01-16 23:14:09Z" duration="0.006177" total="5" passed="5" failed="0"
+                                    inconclusive="0" skipped="0" asserts="0">
+                            <properties/>
+                            <test-case id="1018" name="ChangeSubscriptionOnChangeEntity"
+                                       fullname="Tests.UI.ContextProxy.AbstractContextProxyTest.ChangeSubscriptionOnChangeEntity"
+                                       methodname="ChangeSubscriptionOnChangeEntity"
+                                       classname="Tests.UI.ContextProxy.AbstractContextProxyTest" runstate="Runnable"
+                                       seed="19578156" result="Passed" start-time="2021-01-16 23:14:09Z"
+                                       end-time="2021-01-16 23:14:09Z" duration="0.001647" asserts="0">
+                                <properties/>
+                            </test-case>
+                            <test-case id="1014" name="SubscribeOnEnable"
+                                       fullname="Tests.UI.ContextProxy.AbstractContextProxyTest.SubscribeOnEnable"
+                                       methodname="SubscribeOnEnable"
+                                       classname="Tests.UI.ContextProxy.AbstractContextProxyTest" runstate="Runnable"
+                                       seed="213321507" result="Passed" start-time="2021-01-16 23:14:09Z"
+                                       end-time="2021-01-16 23:14:09Z" duration="0.000607" asserts="0">
+                                <properties/>
+                            </test-case>
+                            <test-case id="1016" name="SubscribeOnSetEntity"
+                                       fullname="Tests.UI.ContextProxy.AbstractContextProxyTest.SubscribeOnSetEntity"
+                                       methodname="SubscribeOnSetEntity"
+                                       classname="Tests.UI.ContextProxy.AbstractContextProxyTest" runstate="Runnable"
+                                       seed="626839990" result="Passed" start-time="2021-01-16 23:14:09Z"
+                                       end-time="2021-01-16 23:14:09Z" duration="0.000478" asserts="0">
+                                <properties/>
+                            </test-case>
+                            <test-case id="1015" name="UnsubscribeOnDisable"
+                                       fullname="Tests.UI.ContextProxy.AbstractContextProxyTest.UnsubscribeOnDisable"
+                                       methodname="UnsubscribeOnDisable"
+                                       classname="Tests.UI.ContextProxy.AbstractContextProxyTest" runstate="Runnable"
+                                       seed="876616698" result="Passed" start-time="2021-01-16 23:14:09Z"
+                                       end-time="2021-01-16 23:14:09Z" duration="0.000419" asserts="0">
+                                <properties/>
+                            </test-case>
+                            <test-case id="1017" name="UnsubscribeOnSetNull"
+                                       fullname="Tests.UI.ContextProxy.AbstractContextProxyTest.UnsubscribeOnSetNull"
+                                       methodname="UnsubscribeOnSetNull"
+                                       classname="Tests.UI.ContextProxy.AbstractContextProxyTest" runstate="Runnable"
+                                       seed="1804931843" result="Passed" start-time="2021-01-16 23:14:09Z"
+                                       end-time="2021-01-16 23:14:09Z" duration="0.000435" asserts="0">
+                                <properties/>
+                            </test-case>
+                        </test-suite>
+                        <test-suite type="TestFixture" id="1019" name="ContractContextProxyTest"
+                                    fullname="Tests.UI.ContextProxy.ContractContextProxyTest"
+                                    classname="Tests.UI.ContextProxy.ContractContextProxyTest" runstate="Runnable"
+                                    testcasecount="3" result="Passed" start-time="2021-01-16 23:14:09Z"
+                                    end-time="2021-01-16 23:14:09Z" duration="0.007550" total="3" passed="3" failed="0"
+                                    inconclusive="0" skipped="0" asserts="0">
+                            <properties/>
+                            <test-case id="1022" name="ProxyContractDeliverySignal"
+                                       fullname="Tests.UI.ContextProxy.ContractContextProxyTest.ProxyContractDeliverySignal"
+                                       methodname="ProxyContractDeliverySignal"
+                                       classname="Tests.UI.ContextProxy.ContractContextProxyTest" runstate="Runnable"
+                                       seed="762162038" result="Passed" start-time="2021-01-16 23:14:09Z"
+                                       end-time="2021-01-16 23:14:09Z" duration="0.002413" asserts="0">
+                                <properties>
+                                    <property name="_JOINTYPE" value="UnityCombinatorial"/>
+                                </properties>
+                            </test-case>
+                            <test-case id="1021" name="ProxyContractExecutorFinishSignal"
+                                       fullname="Tests.UI.ContextProxy.ContractContextProxyTest.ProxyContractExecutorFinishSignal"
+                                       methodname="ProxyContractExecutorFinishSignal"
+                                       classname="Tests.UI.ContextProxy.ContractContextProxyTest" runstate="Runnable"
+                                       seed="1417131874" result="Passed" start-time="2021-01-16 23:14:09Z"
+                                       end-time="2021-01-16 23:14:09Z" duration="0.001554" asserts="0">
+                                <properties>
+                                    <property name="_JOINTYPE" value="UnityCombinatorial"/>
+                                </properties>
+                            </test-case>
+                            <test-case id="1020" name="ProxyContractExecutorStartSignal"
+                                       fullname="Tests.UI.ContextProxy.ContractContextProxyTest.ProxyContractExecutorStartSignal"
+                                       methodname="ProxyContractExecutorStartSignal"
+                                       classname="Tests.UI.ContextProxy.ContractContextProxyTest" runstate="Runnable"
+                                       seed="761020968" result="Passed" start-time="2021-01-16 23:14:09Z"
+                                       end-time="2021-01-16 23:14:09Z" duration="0.001535" asserts="0">
+                                <properties>
+                                    <property name="_JOINTYPE" value="UnityCombinatorial"/>
+                                </properties>
+                            </test-case>
+                        </test-suite>
+                        <test-suite type="TestFixture" id="1023" name="DriverContextProxyTest"
+                                    fullname="Tests.UI.ContextProxy.DriverContextProxyTest"
+                                    classname="Tests.UI.ContextProxy.DriverContextProxyTest" runstate="Runnable"
+                                    testcasecount="4" result="Passed" start-time="2021-01-16 23:14:09Z"
+                                    end-time="2021-01-16 23:14:09Z" duration="0.008113" total="4" passed="4" failed="0"
+                                    inconclusive="0" skipped="0" asserts="0">
+                            <properties/>
+                            <test-case id="1026" name="ProxyDriverAddLicenseSignal"
+                                       fullname="Tests.UI.ContextProxy.DriverContextProxyTest.ProxyDriverAddLicenseSignal"
+                                       methodname="ProxyDriverAddLicenseSignal"
+                                       classname="Tests.UI.ContextProxy.DriverContextProxyTest" runstate="Runnable"
+                                       seed="1538176107" result="Passed" start-time="2021-01-16 23:14:09Z"
+                                       end-time="2021-01-16 23:14:09Z" duration="0.001795" asserts="0">
+                                <properties>
+                                    <property name="_JOINTYPE" value="UnityCombinatorial"/>
+                                </properties>
+                            </test-case>
+                            <test-case id="1027" name="ProxyDriverAddSkillSignal"
+                                       fullname="Tests.UI.ContextProxy.DriverContextProxyTest.ProxyDriverAddSkillSignal"
+                                       methodname="ProxyDriverAddSkillSignal"
+                                       classname="Tests.UI.ContextProxy.DriverContextProxyTest" runstate="Runnable"
+                                       seed="131387029" result="Passed" start-time="2021-01-16 23:14:09Z"
+                                       end-time="2021-01-16 23:14:09Z" duration="0.001417" asserts="0">
+                                <properties>
+                                    <property name="_JOINTYPE" value="UnityCombinatorial"/>
+                                </properties>
+                            </test-case>
+                            <test-case id="1024" name="ProxyDriverAssignTruckSignal"
+                                       fullname="Tests.UI.ContextProxy.DriverContextProxyTest.ProxyDriverAssignTruckSignal"
+                                       methodname="ProxyDriverAssignTruckSignal"
+                                       classname="Tests.UI.ContextProxy.DriverContextProxyTest" runstate="Runnable"
+                                       seed="1471664876" result="Passed" start-time="2021-01-16 23:14:09Z"
+                                       end-time="2021-01-16 23:14:09Z" duration="0.001333" asserts="0">
+                                <properties>
+                                    <property name="_JOINTYPE" value="UnityCombinatorial"/>
+                                </properties>
+                            </test-case>
+                            <test-case id="1025" name="ProxyDriverReleaseTruckSignal"
+                                       fullname="Tests.UI.ContextProxy.DriverContextProxyTest.ProxyDriverReleaseTruckSignal"
+                                       methodname="ProxyDriverReleaseTruckSignal"
+                                       classname="Tests.UI.ContextProxy.DriverContextProxyTest" runstate="Runnable"
+                                       seed="1828869175" result="Passed" start-time="2021-01-16 23:14:09Z"
+                                       end-time="2021-01-16 23:14:09Z" duration="0.001454" asserts="0">
+                                <properties>
+                                    <property name="_JOINTYPE" value="UnityCombinatorial"/>
+                                </properties>
+                            </test-case>
+                        </test-suite>
+                        <test-suite type="TestFixture" id="1028" name="TruckContextProxyTest"
+                                    fullname="Tests.UI.ContextProxy.TruckContextProxyTest"
+                                    classname="Tests.UI.ContextProxy.TruckContextProxyTest" runstate="Runnable"
+                                    testcasecount="3" result="Passed" start-time="2021-01-16 23:14:09Z"
+                                    end-time="2021-01-16 23:14:09Z" duration="0.007582" total="3" passed="3" failed="0"
+                                    inconclusive="0" skipped="0" asserts="0">
+                            <properties/>
+                            <test-case id="1031" name="ProxyCargoChangeSignal"
+                                       fullname="Tests.UI.ContextProxy.TruckContextProxyTest.ProxyCargoChangeSignal"
+                                       methodname="ProxyCargoChangeSignal"
+                                       classname="Tests.UI.ContextProxy.TruckContextProxyTest" runstate="Runnable"
+                                       seed="747901088" result="Passed" start-time="2021-01-16 23:14:09Z"
+                                       end-time="2021-01-16 23:14:09Z" duration="0.001786" asserts="0">
+                                <properties>
+                                    <property name="_JOINTYPE" value="UnityCombinatorial"/>
+                                </properties>
+                            </test-case>
+                            <test-case id="1029" name="ProxyDriverAssignSignal"
+                                       fullname="Tests.UI.ContextProxy.TruckContextProxyTest.ProxyDriverAssignSignal"
+                                       methodname="ProxyDriverAssignSignal"
+                                       classname="Tests.UI.ContextProxy.TruckContextProxyTest" runstate="Runnable"
+                                       seed="1685377404" result="Passed" start-time="2021-01-16 23:14:09Z"
+                                       end-time="2021-01-16 23:14:09Z" duration="0.002118" asserts="0">
+                                <properties>
+                                    <property name="_JOINTYPE" value="UnityCombinatorial"/>
+                                </properties>
+                            </test-case>
+                            <test-case id="1030" name="ProxyReleaseDriverSignal"
+                                       fullname="Tests.UI.ContextProxy.TruckContextProxyTest.ProxyReleaseDriverSignal"
+                                       methodname="ProxyReleaseDriverSignal"
+                                       classname="Tests.UI.ContextProxy.TruckContextProxyTest" runstate="Runnable"
+                                       seed="1867100472" result="Passed" start-time="2021-01-16 23:14:09Z"
+                                       end-time="2021-01-16 23:14:09Z" duration="0.001694" asserts="0">
+                                <properties>
+                                    <property name="_JOINTYPE" value="UnityCombinatorial"/>
+                                </properties>
+                            </test-case>
+                        </test-suite>
+                    </test-suite>
+                    <test-suite type="TestSuite" id="1057" name="Menus" fullname="Tests.UI.Menus" runstate="Runnable"
+                                testcasecount="8" result="Passed" start-time="2021-01-16 23:14:09Z"
+                                end-time="2021-01-16 23:14:09Z" duration="0.028723" total="8" passed="8" failed="0"
+                                inconclusive="0" skipped="0" asserts="0">
+                        <properties/>
+                        <test-suite type="TestFixture" id="1003" name="PauseMenuPopupControllerTest"
+                                    fullname="Tests.UI.Menus.PauseMenuPopupControllerTest"
+                                    classname="Tests.UI.Menus.PauseMenuPopupControllerTest" runstate="Runnable"
+                                    testcasecount="4" result="Passed" start-time="2021-01-16 23:14:09Z"
+                                    end-time="2021-01-16 23:14:09Z" duration="0.020364" total="4" passed="4" failed="0"
+                                    inconclusive="0" skipped="0" asserts="0">
+                            <properties/>
+                            <test-case id="1006" name="PauseMenuPopupLoad"
+                                       fullname="Tests.UI.Menus.PauseMenuPopupControllerTest.PauseMenuPopupLoad"
+                                       methodname="PauseMenuPopupLoad"
+                                       classname="Tests.UI.Menus.PauseMenuPopupControllerTest" runstate="Runnable"
+                                       seed="408011642" result="Passed" start-time="2021-01-16 23:14:09Z"
+                                       end-time="2021-01-16 23:14:09Z" duration="0.012521" asserts="0">
+                                <properties>
+                                    <property name="_JOINTYPE" value="UnityCombinatorial"/>
+                                </properties>
+                                <output><![CDATA[Game loading...
 ]]></output>
-              </test-case>
-              <test-case id="1007" name="PauseMenuPopupQuit" fullname="Tests.UI.Menus.PauseMenuPopupControllerTest.PauseMenuPopupQuit" methodname="PauseMenuPopupQuit" classname="Tests.UI.Menus.PauseMenuPopupControllerTest" runstate="Runnable" seed="389994903" result="Passed" start-time="2021-01-16 23:14:09Z" end-time="2021-01-16 23:14:09Z" duration="0.001600" asserts="0">
-                <properties>
-                  <property name="_JOINTYPE" value="UnityCombinatorial" />
-                </properties>
-              </test-case>
-              <test-case id="1005" name="PauseMenuPopupSave" fullname="Tests.UI.Menus.PauseMenuPopupControllerTest.PauseMenuPopupSave" methodname="PauseMenuPopupSave" classname="Tests.UI.Menus.PauseMenuPopupControllerTest" runstate="Runnable" seed="1123336030" result="Passed" start-time="2021-01-16 23:14:09Z" end-time="2021-01-16 23:14:09Z" duration="0.001911" asserts="0">
-                <properties>
-                  <property name="_JOINTYPE" value="UnityCombinatorial" />
-                </properties>
-                <output><![CDATA[Game saving...
+                            </test-case>
+                            <test-case id="1007" name="PauseMenuPopupQuit"
+                                       fullname="Tests.UI.Menus.PauseMenuPopupControllerTest.PauseMenuPopupQuit"
+                                       methodname="PauseMenuPopupQuit"
+                                       classname="Tests.UI.Menus.PauseMenuPopupControllerTest" runstate="Runnable"
+                                       seed="389994903" result="Passed" start-time="2021-01-16 23:14:09Z"
+                                       end-time="2021-01-16 23:14:09Z" duration="0.001600" asserts="0">
+                                <properties>
+                                    <property name="_JOINTYPE" value="UnityCombinatorial"/>
+                                </properties>
+                            </test-case>
+                            <test-case id="1005" name="PauseMenuPopupSave"
+                                       fullname="Tests.UI.Menus.PauseMenuPopupControllerTest.PauseMenuPopupSave"
+                                       methodname="PauseMenuPopupSave"
+                                       classname="Tests.UI.Menus.PauseMenuPopupControllerTest" runstate="Runnable"
+                                       seed="1123336030" result="Passed" start-time="2021-01-16 23:14:09Z"
+                                       end-time="2021-01-16 23:14:09Z" duration="0.001911" asserts="0">
+                                <properties>
+                                    <property name="_JOINTYPE" value="UnityCombinatorial"/>
+                                </properties>
+                                <output><![CDATA[Game saving...
 ]]></output>
-              </test-case>
-              <test-case id="1004" name="PauseMenuPopupVisibility" fullname="Tests.UI.Menus.PauseMenuPopupControllerTest.PauseMenuPopupVisibility" methodname="PauseMenuPopupVisibility" classname="Tests.UI.Menus.PauseMenuPopupControllerTest" runstate="Runnable" seed="1500013190" result="Passed" start-time="2021-01-16 23:14:09Z" end-time="2021-01-16 23:14:09Z" duration="0.001490" asserts="0">
-                <properties>
-                  <property name="_JOINTYPE" value="UnityCombinatorial" />
-                </properties>
-              </test-case>
+                            </test-case>
+                            <test-case id="1004" name="PauseMenuPopupVisibility"
+                                       fullname="Tests.UI.Menus.PauseMenuPopupControllerTest.PauseMenuPopupVisibility"
+                                       methodname="PauseMenuPopupVisibility"
+                                       classname="Tests.UI.Menus.PauseMenuPopupControllerTest" runstate="Runnable"
+                                       seed="1500013190" result="Passed" start-time="2021-01-16 23:14:09Z"
+                                       end-time="2021-01-16 23:14:09Z" duration="0.001490" asserts="0">
+                                <properties>
+                                    <property name="_JOINTYPE" value="UnityCombinatorial"/>
+                                </properties>
+                            </test-case>
+                        </test-suite>
+                        <test-suite type="TestFixture" id="1008" name="PauseMenuPopupTest"
+                                    fullname="Tests.UI.Menus.PauseMenuPopupTest"
+                                    classname="Tests.UI.Menus.PauseMenuPopupTest" runstate="Runnable" testcasecount="4"
+                                    result="Passed" start-time="2021-01-16 23:14:09Z" end-time="2021-01-16 23:14:09Z"
+                                    duration="0.006290" total="4" passed="4" failed="0" inconclusive="0" skipped="0"
+                                    asserts="0">
+                            <properties/>
+                            <test-case id="1011" name="PauseMenuLoadSignals"
+                                       fullname="Tests.UI.Menus.PauseMenuPopupTest.PauseMenuLoadSignals"
+                                       methodname="PauseMenuLoadSignals" classname="Tests.UI.Menus.PauseMenuPopupTest"
+                                       runstate="Runnable" seed="2007681043" result="Passed"
+                                       start-time="2021-01-16 23:14:09Z" end-time="2021-01-16 23:14:09Z"
+                                       duration="0.001465" asserts="0">
+                                <properties/>
+                            </test-case>
+                            <test-case id="1012" name="PauseMenuQuitSignals"
+                                       fullname="Tests.UI.Menus.PauseMenuPopupTest.PauseMenuQuitSignals"
+                                       methodname="PauseMenuQuitSignals" classname="Tests.UI.Menus.PauseMenuPopupTest"
+                                       runstate="Runnable" seed="1860866182" result="Passed"
+                                       start-time="2021-01-16 23:14:09Z" end-time="2021-01-16 23:14:09Z"
+                                       duration="0.000846" asserts="0">
+                                <properties/>
+                            </test-case>
+                            <test-case id="1009" name="PauseMenuResumeSignals"
+                                       fullname="Tests.UI.Menus.PauseMenuPopupTest.PauseMenuResumeSignals"
+                                       methodname="PauseMenuResumeSignals" classname="Tests.UI.Menus.PauseMenuPopupTest"
+                                       runstate="Runnable" seed="661641271" result="Passed"
+                                       start-time="2021-01-16 23:14:09Z" end-time="2021-01-16 23:14:09Z"
+                                       duration="0.000927" asserts="0">
+                                <properties/>
+                            </test-case>
+                            <test-case id="1010" name="PauseMenuSaveSignals"
+                                       fullname="Tests.UI.Menus.PauseMenuPopupTest.PauseMenuSaveSignals"
+                                       methodname="PauseMenuSaveSignals" classname="Tests.UI.Menus.PauseMenuPopupTest"
+                                       runstate="Runnable" seed="2145642364" result="Passed"
+                                       start-time="2021-01-16 23:14:09Z" end-time="2021-01-16 23:14:09Z"
+                                       duration="0.000928" asserts="0">
+                                <properties/>
+                            </test-case>
+                        </test-suite>
+                    </test-suite>
+                    <test-suite type="TestSuite" id="1056" name="Utility" fullname="Tests.UI.Utility"
+                                runstate="Runnable" testcasecount="1" result="Passed" start-time="2021-01-16 23:14:09Z"
+                                end-time="2021-01-16 23:14:09Z" duration="0.039488" total="1" passed="1" failed="0"
+                                inconclusive="0" skipped="0" asserts="0">
+                        <properties/>
+                        <test-suite type="TestFixture" id="1001" name="BuildLabelTest"
+                                    fullname="Tests.UI.Utility.BuildLabelTest"
+                                    classname="Tests.UI.Utility.BuildLabelTest" runstate="Runnable" testcasecount="1"
+                                    result="Passed" start-time="2021-01-16 23:14:09Z" end-time="2021-01-16 23:14:09Z"
+                                    duration="0.038696" total="1" passed="1" failed="0" inconclusive="0" skipped="0"
+                                    asserts="0">
+                            <properties/>
+                            <test-case id="1002" name="ShouldChangeTextLabel"
+                                       fullname="Tests.UI.Utility.BuildLabelTest.ShouldChangeTextLabel"
+                                       methodname="ShouldChangeTextLabel" classname="Tests.UI.Utility.BuildLabelTest"
+                                       runstate="Runnable" seed="1904389027" result="Passed"
+                                       start-time="2021-01-16 23:14:09Z" end-time="2021-01-16 23:14:09Z"
+                                       duration="0.037835" asserts="0">
+                                <properties>
+                                    <property name="_JOINTYPE" value="UnityCombinatorial"/>
+                                </properties>
+                            </test-case>
+                        </test-suite>
+                    </test-suite>
+                </test-suite>
             </test-suite>
-            <test-suite type="TestFixture" id="1008" name="PauseMenuPopupTest" fullname="Tests.UI.Menus.PauseMenuPopupTest" classname="Tests.UI.Menus.PauseMenuPopupTest" runstate="Runnable" testcasecount="4" result="Passed" start-time="2021-01-16 23:14:09Z" end-time="2021-01-16 23:14:09Z" duration="0.006290" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0">
-              <properties />
-              <test-case id="1011" name="PauseMenuLoadSignals" fullname="Tests.UI.Menus.PauseMenuPopupTest.PauseMenuLoadSignals" methodname="PauseMenuLoadSignals" classname="Tests.UI.Menus.PauseMenuPopupTest" runstate="Runnable" seed="2007681043" result="Passed" start-time="2021-01-16 23:14:09Z" end-time="2021-01-16 23:14:09Z" duration="0.001465" asserts="0">
-                <properties />
-              </test-case>
-              <test-case id="1012" name="PauseMenuQuitSignals" fullname="Tests.UI.Menus.PauseMenuPopupTest.PauseMenuQuitSignals" methodname="PauseMenuQuitSignals" classname="Tests.UI.Menus.PauseMenuPopupTest" runstate="Runnable" seed="1860866182" result="Passed" start-time="2021-01-16 23:14:09Z" end-time="2021-01-16 23:14:09Z" duration="0.000846" asserts="0">
-                <properties />
-              </test-case>
-              <test-case id="1009" name="PauseMenuResumeSignals" fullname="Tests.UI.Menus.PauseMenuPopupTest.PauseMenuResumeSignals" methodname="PauseMenuResumeSignals" classname="Tests.UI.Menus.PauseMenuPopupTest" runstate="Runnable" seed="661641271" result="Passed" start-time="2021-01-16 23:14:09Z" end-time="2021-01-16 23:14:09Z" duration="0.000927" asserts="0">
-                <properties />
-              </test-case>
-              <test-case id="1010" name="PauseMenuSaveSignals" fullname="Tests.UI.Menus.PauseMenuPopupTest.PauseMenuSaveSignals" methodname="PauseMenuSaveSignals" classname="Tests.UI.Menus.PauseMenuPopupTest" runstate="Runnable" seed="2145642364" result="Passed" start-time="2021-01-16 23:14:09Z" end-time="2021-01-16 23:14:09Z" duration="0.000928" asserts="0">
-                <properties />
-              </test-case>
-            </test-suite>
-          </test-suite>
-          <test-suite type="TestSuite" id="1056" name="Utility" fullname="Tests.UI.Utility" runstate="Runnable" testcasecount="1" result="Passed" start-time="2021-01-16 23:14:09Z" end-time="2021-01-16 23:14:09Z" duration="0.039488" total="1" passed="1" failed="0" inconclusive="0" skipped="0" asserts="0">
-            <properties />
-            <test-suite type="TestFixture" id="1001" name="BuildLabelTest" fullname="Tests.UI.Utility.BuildLabelTest" classname="Tests.UI.Utility.BuildLabelTest" runstate="Runnable" testcasecount="1" result="Passed" start-time="2021-01-16 23:14:09Z" end-time="2021-01-16 23:14:09Z" duration="0.038696" total="1" passed="1" failed="0" inconclusive="0" skipped="0" asserts="0">
-              <properties />
-              <test-case id="1002" name="ShouldChangeTextLabel" fullname="Tests.UI.Utility.BuildLabelTest.ShouldChangeTextLabel" methodname="ShouldChangeTextLabel" classname="Tests.UI.Utility.BuildLabelTest" runstate="Runnable" seed="1904389027" result="Passed" start-time="2021-01-16 23:14:09Z" end-time="2021-01-16 23:14:09Z" duration="0.037835" asserts="0">
-                <properties>
-                  <property name="_JOINTYPE" value="UnityCombinatorial" />
-                </properties>
-              </test-case>
-            </test-suite>
-          </test-suite>
         </test-suite>
-      </test-suite>
     </test-suite>
-  </test-suite>
 </test-run>

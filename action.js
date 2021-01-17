@@ -1,30 +1,11 @@
-let action = function (milliseconds) {
-  // ToDo
-  return new Promise((resolve) => {
-    if (typeof milliseconds !== 'number') {
-      throw new Error('milliseconds not a number');
-    }
-    setTimeout(() => resolve("done!"), milliseconds)
-  });
+const fs = require('fs');
+const xmljs = require('xml-js');
+
+let action = async function (path) {
+    const file = await fs.promises.readFile(path);
+    const report = xmljs.xml2js(file, {compact: true});
+    console.log(`File ${path} parsed:`);
+    console.log(JSON.stringify(report));
 };
 
 module.exports = action;
-
-//
-// // most @actions toolkit packages have async methods
-// async function run() {
-//     try {
-//         const ms = core.getInput('milliseconds');
-//         core.info(`Waiting ${ms} milliseconds ...`);
-//
-//         core.debug((new Date()).toTimeString()); // debug is only output if you set the secret `ACTIONS_RUNNER_DEBUG` to true
-//         await wait(parseInt(ms));
-//         core.info((new Date()).toTimeString());
-//
-//         core.setOutput('time', new Date().toTimeString());
-//     } catch (error) {
-//         core.setFailed(error.message);
-//     }
-// }
-//
-// run();
