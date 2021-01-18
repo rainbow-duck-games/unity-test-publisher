@@ -39,6 +39,6 @@ with:
 - `githubToken` (required) - GITHUB_TOKEN, in most cases keep it as `${{ secrets.GITHUB_TOKEN }}`
 - `report` (required) - unity test report xml file to analyze
 - `workdirPrefix` - prefix on build machine to ignore in report
-- `checkName` - check name for test reports
+- `checkName` - check name for test reports. Change it if you use more than one publisher step
 - `failOnTestFailures` - fail run if there were test failures
 - `failIfNoTests` - fail run if there were no test results found
