@@ -4,15 +4,14 @@ const fs = require('fs');
 const xmljs = require('xml-js');
 
 let action = async function (editModepath, playModePath, workdirPrefix, githubToken, failOnFailedTests = false, failIfNoTests = true) {
-    const {editModeMeta, editModeReport} = await getReport(editModepath, failIfNoTests);
-    const {playModeMeta, playModeReport} = await getReport(playModePath, failIfNoTests);
-    
-    if (editModeMeta != null && editModeReport != null) {
-        processReport(editModeMeta, editModeReport, 'EditMode Test Results', failOnFailedTests, failIfNoTests);
+    let {meta, report} = await getReport(editModepath, failIfNoTests);
+    if (meta != null && report != null) {
+        processReport(meta, report, 'EditMode Test Results', failOnFailedTests, failIfNoTests);
     } else {
         core.info(`No EditMode test report found...`);
     }
     
+    const {playModeMeta, playModeReport} = await getReport(playModePath, failIfNoTests);
     if (playModeMeta != null && playModeReport != null) {
         processReport(playModeMeta, playModeReport, 'PlayMode Test Results', failOnFailedTests, failIfNoTests);
     } else {
