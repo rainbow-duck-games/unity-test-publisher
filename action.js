@@ -46,7 +46,7 @@ let getReport = async function (path, failIfNoTests) {
 
 let processReport = async function (meta, report, checkName, githubToken, workdirPrefix, failOnFailedTests, failIfNoTests) {
     let results = `${meta.result}: tests: ${meta.total}, skipped: ${meta.skipped}, failed: ${meta.failed}`;
-    const conclusion = meta.failed === 0 && (meta.total > 0 || !failIfNoTests) ? 'success' : 'failure';
+    const conclusion = Number(meta.failed) === 0 && (Number(meta.total) > 0 || !failIfNoTests) ? 'success' : 'failure';
     core.info(results);
 
     let annotations = convertReport(report);

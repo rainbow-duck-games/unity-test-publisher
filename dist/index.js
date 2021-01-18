@@ -53,7 +53,7 @@ let getReport = async function (path, failIfNoTests) {
 
 let processReport = async function (meta, report, checkName, githubToken, workdirPrefix, failOnFailedTests, failIfNoTests) {
     let results = `${meta.result}: tests: ${meta.total}, skipped: ${meta.skipped}, failed: ${meta.failed}`;
-    const conclusion = meta.failed === 0 && (meta.total > 0 || !failIfNoTests) ? 'success' : 'failure';
+    const conclusion = Number(meta.failed) === 0 && (Number(meta.total) > 0 || !failIfNoTests) ? 'success' : 'failure';
     core.info(results);
 
     let annotations = convertReport(report);
@@ -189,8 +189,8 @@ const action = __nccwpck_require__(4582);
         const editModeReport = core.getInput('editModeReport');
         const playModeReport = core.getInput('playModeReport');
         const workdirPrefix = core.getInput('workdirPrefix');
-        const failOnFailedTests = core.getInput('failOnTestFailures');
-        const failIfNoTests = core.getInput('failIfNoTests');
+        const failOnFailedTests = core.getInput('failOnTestFailures') === 'true';
+        const failIfNoTests = core.getInput('failIfNoTests') === 'true';
         core.info(`Starting analyze ${editModeReport} and ${playModeReport}...`);
         await action(editModeReport, playModeReport, workdirPrefix, githubToken, failOnFailedTests, failIfNoTests);
     } catch (e) {
