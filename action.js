@@ -4,18 +4,19 @@ const fs = require('fs');
 const xmljs = require('xml-js');
 
 let action = async function (editModepath, playModePath, workdirPrefix, githubToken, failOnFailedTests = false, failIfNoTests = true) {
-    let {meta, report} = await getReport(editModepath, failIfNoTests);
-    if (meta != null && report != null) {
-        processReport(meta, report, 'EditMode Test Results', workdirPrefix, failOnFailedTests, failIfNoTests);
-    } else {
-        core.info(`No EditMode test report found...`);
-    }
+    let reports = [
+      {name: 'EditMode Test Results', path: editModepath},
+      {name: 'PlayMode Test Results', path: playModePath}
+    ]; 
     
-    const {playModeMeta, playModeReport} = await getReport(playModePath, failIfNoTests);
-    if (playModeMeta != null && playModeReport != null) {
-        processReport(playModeMeta, playModeReport, 'PlayMode Test Results', workdirPrefix, failOnFailedTests, failIfNoTests);
-    } else {
-        core.info(`No PlayMode test report found...`);
+    var i;
+    for (i = 0; i < reports.length; i++) {
+        let {meta, report} = await getReport(reports[i].path, failIfNoTests);
+        if (meta != null && report != null) {
+            processReport(meta, report, reports[i].name, githubToken, workdirPrefix, failOnFailedTests, failIfNoTests);
+        } else {
+            core.info(`No ${reports[i].name} found...`);
+        }
     }
 };
 
@@ -43,7 +44,7 @@ let getReport = async function (path, failIfNoTests) {
     return {meta, report};
 }
 
-let processReport = async function (meta, report, checkName, workdirPrefix, failOnFailedTests, failIfNoTests) {
+let processReport = async function (meta, report, checkName, githubToken, workdirPrefix, failOnFailedTests, failIfNoTests) {
     let results = `${meta.result}: tests: ${meta.total}, skipped: ${meta.skipped}, failed: ${meta.failed}`;
     const conclusion = meta.failed === 0 && (meta.total > 0 || !failIfNoTests) ? 'success' : 'failure';
     core.info(results);
