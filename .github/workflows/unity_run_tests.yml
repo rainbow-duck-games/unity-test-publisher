@@ -1,0 +1,54 @@
+name: "Unity - Run Tests & Checks"
+on:
+  workflow_dispatch: {}
+
+env:
+  UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+  UNITY_VERSION: 2020.2.1f1
+  PROJECT_PATH: ./unity-project
+  
+jobs:
+  # unit tests
+  units:
+    name: Unit Tests for Action
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - run: npm ci
+    - run: npm test
+      
+  # run unity tests & analyze result
+  test:
+    name: Run Tests & Analyze
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: game-ci/unity-test-runner@main
+        name: 'Run unity tests'
+        id: tests
+        with:
+          projectPath: ${{ env.PROJECT_PATH }}
+          unityVersion: ${{ env.UNITY_VERSION }}
+          testMode: all
+          customParameters: "-nographics"
+      - uses: actions/upload-artifact@v1
+        name: 'Upload test results'
+        with:
+          name: Test results (all)
+          path: ${{ steps.tests.outputs.artifactsPath }}
+      - uses: ./
+        name: 'Publish playmode results'
+        if: ${{ always() }}
+        with:
+          checkName: 'Test Results (playmode)'
+          workdirPrefix: '/github/workspace/'
+          githubToken: ${{ secrets.GITHUB_TOKEN }}
+          report: ${{ steps.tests.outputs.artifactsPath }}/playmode-results.xml
+      - uses: ./
+        name: 'Publish editmode results'
+        if: ${{ always() }}
+        with:
+          checkName: 'Test Results (editmode)'
+          workdirPrefix: '/github/workspace/'
+          githubToken: ${{ secrets.GITHUB_TOKEN }}
+          report: ${{ steps.tests.outputs.artifactsPath }}/editmode-results.xml
