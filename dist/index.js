@@ -10,11 +10,11 @@ const github = __nccwpck_require__(5438);
 const fs = __nccwpck_require__(5747);
 const xmljs = __nccwpck_require__(8821);
 
-let action = async function (name, path, workdirPrefix, githubToken, failOnFailedTests = false, failIfNoTests = true) {
+let action = async function (name, path, workdirPrefix, githubToken, failOnFailedTests = 'false', failIfNoTests = true) {
     const {meta, report} = await getReport(path, failIfNoTests);
 
     let results = `${meta.result}: tests: ${meta.total}, skipped: ${meta.skipped}, failed: ${meta.failed}`;
-    const conclusion = Number(meta.failed) === 0 && (Number(meta.total) > 0 || !failIfNoTests) ? 'success' : 'failure';
+    const conclusion = meta.failed === 0 && (meta.total > 0 || !failIfNoTests) ? 'success' : 'failure';
     core.info(results);
 
     let annotations = convertReport(report);
@@ -164,12 +164,12 @@ const action = __nccwpck_require__(4582);
 
 (async () => {
     try {
-        const githubToken = core.getInput('githubToken');
-        const report = core.getInput('report');
+        const githubToken = core.getInput('githubToken', {required: true});
+        const report = core.getInput('report', {required: true});
         const workdirPrefix = core.getInput('workdirPrefix');
         const name = core.getInput('checkName');
-        const failOnFailedTests = core.getInput('failOnTestFailures');
-        const failIfNoTests = core.getInput('failIfNoTests');
+        const failOnFailedTests = core.getInput('failOnTestFailures') === 'true';
+        const failIfNoTests = core.getInput('failIfNoTests') === 'true';
         core.info(`Starting analyze ${report}...`);
         await action(name, report, workdirPrefix, githubToken, failOnFailedTests, failIfNoTests);
     } catch (e) {
