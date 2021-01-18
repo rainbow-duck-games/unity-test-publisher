@@ -185,7 +185,7 @@ const action = __nccwpck_require__(4582);
 
 (async () => {
     try {
-        const githubToken = core.getInput('githubToken');
+        const githubToken = core.getInput('githubToken', {required: true});
         const editModeReport = core.getInput('editModeReport');
         const playModeReport = core.getInput('playModeReport');
         const workdirPrefix = core.getInput('workdirPrefix');

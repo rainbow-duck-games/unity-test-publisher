@@ -3,7 +3,7 @@ const action = require('./action');
 
 (async () => {
     try {
-        const githubToken = core.getInput('githubToken');
+        const githubToken = core.getInput('githubToken', {required: true});
         const editModeReport = core.getInput('editModeReport');
         const playModeReport = core.getInput('playModeReport');
         const workdirPrefix = core.getInput('workdirPrefix');
