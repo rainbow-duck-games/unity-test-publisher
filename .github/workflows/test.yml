@@ -23,18 +23,9 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: ./
-        name: 'Publish playmode results'
+        name: 'Publish test results'
         if: ${{ always() }}
         with:
-          checkName: 'Test Results (playmode)'
-          workdirPrefix: '/github/workspace/'
           githubToken: ${{ secrets.GITHUB_TOKEN }}
-          report: ./reports/playmode-results.xml
-      - uses: ./
-        name: 'Publish editmode results'
-        if: ${{ always() }}
-        with:
-          checkName: 'Test Results (editmode)'
-          workdirPrefix: '/github/workspace/'
-          githubToken: ${{ secrets.GITHUB_TOKEN }}
-          report: ./reports/editmode-results.xml
+          editModeReport: ./reports/editmode-results.xml
+          playModeReport: ./reports/playmode-results.xml
