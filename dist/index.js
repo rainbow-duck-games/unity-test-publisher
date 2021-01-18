@@ -191,7 +191,7 @@ const action = __nccwpck_require__(4582);
         const workdirPrefix = core.getInput('workdirPrefix');
         const failOnFailedTests = core.getInput('failOnTestFailures');
         const failIfNoTests = core.getInput('failIfNoTests');
-        core.info(`Starting analyze ${report}...`);
+        core.info(`Starting analyze ${editModeReport} and ${playModeReport}...`);
         await action(editModeReport, playModeReport, workdirPrefix, githubToken, failOnFailedTests, failIfNoTests);
     } catch (e) {
         core.setFailed(e.message);
