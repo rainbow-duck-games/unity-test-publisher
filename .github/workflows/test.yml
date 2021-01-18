@@ -1,4 +1,4 @@
-name: "Unity Tests"
+name: 'Unity Tests'
 on:
   pull_request:
   push:
@@ -9,7 +9,7 @@ on:
 jobs:
   # unit tests
   units:
-    name: Unit Tests for Action
+    name: 'Unit Tests for Action'
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
@@ -18,7 +18,7 @@ jobs:
       
   # run unity tests & analyze result
   test:
-    name: Run Tests & Analyze
+    name: 'Analyze Test Results'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
