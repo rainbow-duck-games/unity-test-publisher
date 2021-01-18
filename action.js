@@ -6,14 +6,14 @@ const xmljs = require('xml-js');
 let action = async function (editModepath, playModePath, workdirPrefix, githubToken, failOnFailedTests = false, failIfNoTests = true) {
     let {meta, report} = await getReport(editModepath, failIfNoTests);
     if (meta != null && report != null) {
-        processReport(meta, report, 'EditMode Test Results', failOnFailedTests, failIfNoTests);
+        processReport(meta, report, 'EditMode Test Results', workdirPrefix, failOnFailedTests, failIfNoTests);
     } else {
         core.info(`No EditMode test report found...`);
     }
     
     const {playModeMeta, playModeReport} = await getReport(playModePath, failIfNoTests);
     if (playModeMeta != null && playModeReport != null) {
-        processReport(playModeMeta, playModeReport, 'PlayMode Test Results', failOnFailedTests, failIfNoTests);
+        processReport(playModeMeta, playModeReport, 'PlayMode Test Results', workdirPrefix, failOnFailedTests, failIfNoTests);
     } else {
         core.info(`No PlayMode test report found...`);
     }
@@ -43,7 +43,7 @@ let getReport = async function (path, failIfNoTests) {
     return {meta, report};
 }
 
-let processReport = async function (meta, report, checkName, failOnFailedTests, failIfNoTests) {
+let processReport = async function (meta, report, checkName, workdirPrefix, failOnFailedTests, failIfNoTests) {
     let results = `${meta.result}: tests: ${meta.total}, skipped: ${meta.skipped}, failed: ${meta.failed}`;
     const conclusion = meta.failed === 0 && (meta.total > 0 || !failIfNoTests) ? 'success' : 'failure';
     core.info(results);
