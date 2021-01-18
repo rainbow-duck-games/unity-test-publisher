@@ -5,11 +5,6 @@ on:
     branches:
       - main
       - 'releases/*'
-
-env:
-  UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
-  UNITY_VERSION: 2020.2.1f1
-  PROJECT_PATH: ./unity-project
   
 jobs:
   # unit tests
@@ -27,18 +22,19 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: game-ci/unity-test-runner@main
-        name: 'Run unity tests'
-        id: tests
-        with:
-          projectPath: ${{ env.PROJECT_PATH }}
-          unityVersion: ${{ env.UNITY_VERSION }}
-          testMode: playmode
-          customParameters: "-nographics"
       - uses: ./
-        name: 'Publish test results'
+        name: 'Publish playmode results'
         if: ${{ always() }}
         with:
+          checkName: 'Test Results (playmode)'
           workdirPrefix: '/github/workspace/'
           githubToken: ${{ secrets.GITHUB_TOKEN }}
-          report: ${{ steps.tests.outputs.artifactsPath }}/playmode-results.xml
+          report: ./reports/playmode-results.xml
+      - uses: ./
+        name: 'Publish editmode results'
+        if: ${{ always() }}
+        with:
+          checkName: 'Test Results (editmode)'
+          workdirPrefix: '/github/workspace/'
+          githubToken: ${{ secrets.GITHUB_TOKEN }}
+          report: ./reports/editmode-results.xml

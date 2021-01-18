@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="6" result="Failed(Child)" total="6" passed="2" failed="2" inconclusive="0" skipped="2" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2021-01-18 10:10:39Z" end-time="2021-01-18 10:10:39Z" duration="0.1024737">
+  <test-suite type="TestSuite" id="1000" name="sample-project" fullname="sample-project" runstate="Runnable" testcasecount="6" result="Failed" site="Child" start-time="2021-01-18 10:10:39Z" end-time="2021-01-18 10:10:39Z" duration="0.102474" total="6" passed="2" failed="2" inconclusive="0" skipped="2" asserts="0">
+    <properties />
+    <failure>
+      <message><![CDATA[One or more child tests had errors]]></message>
+    </failure>
+    <test-suite type="Assembly" id="1008" name="Assembly-CSharp.dll" fullname="/github/workspace/unity-project/Library/ScriptAssemblies/Assembly-CSharp.dll" runstate="Runnable" testcasecount="6" result="Failed" site="Child" start-time="2021-01-18 10:10:39Z" end-time="2021-01-18 10:10:39Z" duration="0.088193" total="6" passed="2" failed="2" inconclusive="0" skipped="2" asserts="0">
+      <properties>
+        <property name="_PID" value="472" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+      </properties>
+      <failure>
+        <message><![CDATA[One or more child tests had errors]]></message>
+      </failure>
+      <test-suite type="TestSuite" id="1009" name="Tests" fullname="Tests" runstate="Runnable" testcasecount="6" result="Failed" site="Child" start-time="2021-01-18 10:10:39Z" end-time="2021-01-18 10:10:39Z" duration="0.086166" total="6" passed="2" failed="2" inconclusive="0" skipped="2" asserts="0">
+        <properties />
+        <failure>
+          <message><![CDATA[One or more child tests had errors]]></message>
+        </failure>
+        <test-suite type="TestFixture" id="1001" name="PlayModeTest" fullname="Tests.PlayModeTest" classname="Tests.PlayModeTest" runstate="Runnable" testcasecount="6" result="Failed" site="Child" start-time="2021-01-18 10:10:39Z" end-time="2021-01-18 10:10:39Z" duration="0.082733" total="6" passed="2" failed="2" inconclusive="0" skipped="2" asserts="0">
+          <properties />
+          <failure>
+            <message><![CDATA[One or more child tests had errors]]></message>
+          </failure>
+          <test-case id="1004" name="FailedTest" fullname="Tests.PlayModeTest.FailedTest" methodname="FailedTest" classname="Tests.PlayModeTest" runstate="Runnable" seed="1752932055" result="Failed" start-time="2021-01-18 10:10:39Z" end-time="2021-01-18 10:10:39Z" duration="0.036508" asserts="0">
+            <properties />
+            <failure>
+              <message><![CDATA[  Expected: True
+  But was:  False
+]]></message>
+              <stack-trace><![CDATA[at Tests.PlayModeTest.FailedTest () [0x00000] in /github/workspace/unity-project/Assets/Tests/PlayModeTest.cs:20
+]]></stack-trace>
+            </failure>
+          </test-case>
+          <test-case id="1007" name="FailedUnityTest" fullname="Tests.PlayModeTest.FailedUnityTest" methodname="FailedUnityTest" classname="Tests.PlayModeTest" runstate="Runnable" seed="939968496" result="Failed" start-time="2021-01-18 10:10:39Z" end-time="2021-01-18 10:10:39Z" duration="0.010759" asserts="0">
+            <properties>
+              <property name="_JOINTYPE" value="UnityCombinatorial" />
+            </properties>
+            <failure>
+              <message><![CDATA[  Expected: True
+  But was:  False
+]]></message>
+              <stack-trace><![CDATA[at Tests.PlayModeTest+<FailedUnityTest>d__5.MoveNext () [0x0002e] in /github/workspace/unity-project/Assets/Tests/PlayModeTest.cs:39
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__6.MoveNext () [0x00038] in /github/workspace/unity-project/Library/PackageCache/com.unity.test-framework@1.1.19/UnityEngine.TestRunner/NUnitExtensions/Attributes/TestEnumerator.cs:36
+]]></stack-trace>
+            </failure>
+          </test-case>
+          <test-case id="1003" name="IgnoredTest" fullname="Tests.PlayModeTest.IgnoredTest" methodname="IgnoredTest" classname="Tests.PlayModeTest" runstate="Ignored" seed="1368947042" result="Skipped" label="Ignored" start-time="2021-01-18 10:10:39Z" end-time="2021-01-18 10:10:39Z" duration="0.000250" asserts="0">
+            <properties>
+              <property name="_SKIPREASON" value="ignore" />
+            </properties>
+            <reason>
+              <message><![CDATA[ignore]]></message>
+            </reason>
+          </test-case>
+          <test-case id="1006" name="IgnoredUnityTest" fullname="Tests.PlayModeTest.IgnoredUnityTest" methodname="IgnoredUnityTest" classname="Tests.PlayModeTest" runstate="Ignored" seed="1825730447" result="Skipped" label="Ignored" start-time="2021-01-18 10:10:39Z" end-time="2021-01-18 10:10:39Z" duration="0.000004" asserts="0">
+            <properties>
+              <property name="_JOINTYPE" value="UnityCombinatorial" />
+              <property name="_SKIPREASON" value="ignore" />
+            </properties>
+            <reason>
+              <message><![CDATA[ignore]]></message>
+            </reason>
+          </test-case>
+          <test-case id="1002" name="PassedTest" fullname="Tests.PlayModeTest.PassedTest" methodname="PassedTest" classname="Tests.PlayModeTest" runstate="Runnable" seed="743162960" result="Passed" start-time="2021-01-18 10:10:39Z" end-time="2021-01-18 10:10:39Z" duration="0.000601" asserts="0">
+            <properties />
+          </test-case>
+          <test-case id="1005" name="PassedUnityTest" fullname="Tests.PlayModeTest.PassedUnityTest" methodname="PassedUnityTest" classname="Tests.PlayModeTest" runstate="Runnable" seed="1175736610" result="Passed" start-time="2021-01-18 10:10:39Z" end-time="2021-01-18 10:10:39Z" duration="0.001031" asserts="0">
+            <properties>
+              <property name="_JOINTYPE" value="UnityCombinatorial" />
+            </properties>
+          </test-case>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>
