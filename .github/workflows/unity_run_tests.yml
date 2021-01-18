@@ -33,6 +33,7 @@ jobs:
           customParameters: "-nographics"
       - uses: actions/upload-artifact@v1
         name: 'Upload test results'
+        if: ${{ always() }}
         with:
           name: Test results (all)
           path: ${{ steps.tests.outputs.artifactsPath }}

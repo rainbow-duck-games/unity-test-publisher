@@ -3,12 +3,12 @@ const action = require('./action');
 
 (async () => {
     try {
-        const githubToken = core.getInput('githubToken');
-        const report = core.getInput('report');
+        const githubToken = core.getInput('githubToken', {required: true});
+        const report = core.getInput('report', {required: true});
         const workdirPrefix = core.getInput('workdirPrefix');
         const name = core.getInput('checkName');
-        const failOnFailedTests = core.getInput('failOnTestFailures');
-        const failIfNoTests = core.getInput('failIfNoTests');
+        const failOnFailedTests = core.getInput('failOnTestFailures') === 'true';
+        const failIfNoTests = core.getInput('failIfNoTests') === 'true';
         core.info(`Starting analyze ${report}...`);
         await action(name, report, workdirPrefix, githubToken, failOnFailedTests, failIfNoTests);
     } catch (e) {

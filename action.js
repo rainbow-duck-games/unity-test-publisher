@@ -3,7 +3,7 @@ const github = require('@actions/github');
 const fs = require('fs');
 const xmljs = require('xml-js');
 
-let action = async function (name, path, workdirPrefix, githubToken, failOnFailedTests = false, failIfNoTests = true) {
+let action = async function (name, path, workdirPrefix, githubToken, failOnFailedTests = 'false', failIfNoTests = true) {
     const {meta, report} = await getReport(path, failIfNoTests);
 
     let results = `${meta.result}: tests: ${meta.total}, skipped: ${meta.skipped}, failed: ${meta.failed}`;
