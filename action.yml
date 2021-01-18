@@ -8,17 +8,16 @@ inputs:
   githubToken:
     description: 'GITHUB_TOKEN'
     required: true
-  report:
-    description: 'unity test report xml file to analyze'
-    required: true
+  editModeReport:
+    description: 'unity edit mode test report xml file to analyze'
+    required: false
+  playModeReport:
+    description: 'unity play mode test report xml file to analyze'
+    required: false
   workdirPrefix:
     description: 'prefix on build machine to ignore in report'
     required: false
-    default: ''
-  checkName:
-    description: 'check name for test reports'
-    required: false
-    default: 'Test Report'
+    default: '/github/workspace/'
   failOnTestFailures:
     description: 'fail run if there were test failures'
     required: false

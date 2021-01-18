@@ -10,38 +10,59 @@ const github = __nccwpck_require__(5438);
 const fs = __nccwpck_require__(5747);
 const xmljs = __nccwpck_require__(8821);
 
-let action = async function (name, path, workdirPrefix, githubToken, failOnFailedTests = false, failIfNoTests = true) {
-    const {meta, report} = await getReport(path, failIfNoTests);
-
-    let results = `${meta.result}: tests: ${meta.total}, skipped: ${meta.skipped}, failed: ${meta.failed}`;
-    const conclusion = Number(meta.failed) === 0 && (Number(meta.total) > 0 || !failIfNoTests) ? 'success' : 'failure';
-    core.info(results);
-
-    let annotations = convertReport(report);
-    cleanPaths(annotations, workdirPrefix);
-    await createCheck(githubToken, name, results, failIfNoTests, conclusion, annotations);
-
-    if (failOnFailedTests && conclusion !== 'success') {
-        core.setFailed(`There were ${meta.failed} failed tests`);
+let action = async function (editModepath, playModePath, workdirPrefix, githubToken, failOnFailedTests = false, failIfNoTests = true) {
+    const {editModeMeta, editModeReport} = await getReport(editModepath, failIfNoTests);
+    const {playModeMeta, playModeReport} = await getReport(playModePath, failIfNoTests);
+    
+    if (editModeMeta != null && editModeReport != null) {
+        processReport(editModeMeta, editModeReport, 'EditMode Test Results', failOnFailedTests, failIfNoTests);
+    } else {
+        core.info(`No EditMode test report found...`);
+    }
+    
+    if (playModeMeta != null && playModeReport != null) {
+        processReport(playModeMeta, playModeReport, 'PlayMode Test Results', failOnFailedTests, failIfNoTests);
+    } else {
+        core.info(`No PlayMode test report found...`);
     }
 };
 
 let getReport = async function (path, failIfNoTests) {
+    let meta = null;
+    let report = null;
+    if (!fs.existsSync(path)) {
+        return {meta, report};
+    }
+  
     core.info(`Try to open ${path}`);
     const file = await fs.promises.readFile(path);
-    const report = xmljs.xml2js(file, {compact: true});
+    report = xmljs.xml2js(file, {compact: true});
 
     // Process results
     core.info(`File ${path} parsed...`);
-    const meta = report['test-run']._attributes;
+    meta = report['test-run']._attributes;
     if (!meta) {
         core.error('No metadata found in the file');
         if (failIfNoTests) {
-            core.setFailed(`Not tests found in the report!`);
+            core.setFailed(`No tests found in the report!`);
         }
     }
 
     return {meta, report};
+}
+
+let processReport = async function (meta, report, checkName, failOnFailedTests, failIfNoTests) {
+    let results = `${meta.result}: tests: ${meta.total}, skipped: ${meta.skipped}, failed: ${meta.failed}`;
+    const conclusion = meta.failed === 0 && (meta.total > 0 || !failIfNoTests) ? 'success' : 'failure';
+    core.info(results);
+
+    let annotations = convertReport(report);
+    cleanPaths(annotations, workdirPrefix);
+    await createCheck(githubToken, checkName, results, failIfNoTests, conclusion, annotations);
+
+    if (failOnFailedTests && conclusion !== 'success') {
+        core.setFailed(`There were ${meta.failed} failed tests`);
+    }
 }
 
 let createCheck = async function (githubToken, checkName, title, failIfNoTests, conclusion, annotations) {
@@ -165,13 +186,13 @@ const action = __nccwpck_require__(4582);
 (async () => {
     try {
         const githubToken = core.getInput('githubToken');
-        const report = core.getInput('report');
+        const editModeReport = core.getInput('editModeReport');
+        const playModeReport = core.getInput('playModeReport');
         const workdirPrefix = core.getInput('workdirPrefix');
-        const name = core.getInput('checkName');
         const failOnFailedTests = core.getInput('failOnTestFailures');
         const failIfNoTests = core.getInput('failIfNoTests');
         core.info(`Starting analyze ${report}...`);
-        await action(name, report, workdirPrefix, githubToken, failOnFailedTests, failIfNoTests);
+        await action(editModeReport, playModeReport, workdirPrefix, githubToken, failOnFailedTests, failIfNoTests);
     } catch (e) {
         core.setFailed(e.message);
     }
