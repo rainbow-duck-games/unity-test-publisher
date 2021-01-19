@@ -41,7 +41,7 @@ let converter = {
         }
 
         if (tests.failure) {
-            const ann = this.convertTestCase(test);
+            const ann = this.convertTestCase(tests);
             if (ann.path) {
                 return [ann];
             }
