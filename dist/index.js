@@ -10599,15 +10599,15 @@ const { getReport } = __nccwpck_require__(7098);
         const annotations = [];
         for await (const file of globber.globGenerator()) {
             core.info(`Processing file ${file}...`);
-            const { fileMeta, fileAnnotations } = await getReport(file, failIfNoTests);
-            core.info(`Result: ${fileMeta.passed} / ${fileMeta.total}, skipped ${fileMeta.skipped}, failed ${fileMeta.failed}`);
+            const fileData = await getReport(file, failIfNoTests);
+            core.info(`Result: ${fileData.meta.passed} / ${fileData.meta.total}, skipped ${fileData.meta.skipped}, failed ${fileData.meta.failed}`);
 
-            meta.total += fileMeta.total;
-            meta.passed += fileMeta.passed;
-            meta.skipped += fileMeta.skipped;
-            meta.failed += fileMeta.failed;
+            meta.total += fileData.meta.total;
+            meta.passed += fileData.meta.passed;
+            meta.skipped += fileData.meta.skipped;
+            meta.failed += fileData.meta.failed;
 
-            annotations.push(...fileAnnotations);
+            annotations.push(...fileData.annotations);
         }
 
         // Convert meta
@@ -10630,7 +10630,6 @@ const { getReport } = __nccwpck_require__(7098);
         }
     } catch (e) {
         core.setFailed(e);
-        core.error(e);
     }
 })();
 
