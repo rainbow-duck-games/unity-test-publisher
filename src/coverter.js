@@ -1,11 +1,11 @@
-﻿const core = require(`@actions/core`);
+const core = require('@actions/core');
 
-let converter = {
+const converter = {
     convertReport: function (report) {
-        core.debug(`Start analyzing report:`);
+        core.debug('Start analyzing report:');
         core.debug(JSON.stringify(report));
-        const run = report[`test-run`];
-        return this.convertSuite(run[`test-suite`]);
+        const run = report['test-run'];
+        return this.convertSuite(run['test-suite']);
     },
 
     convertSuite: function (suite) {
@@ -15,17 +15,17 @@ let converter = {
 
         core.debug(`Analyze suite ${suite._attributes.type} / ${suite._attributes.fullname}`);
         if (suite._attributes.failed === 0) {
-            core.debug(`No failed tests, skipping`);
+            core.debug('No failed tests, skipping');
             return [];
         }
 
         const annotations = [];
-        let innerSuite = suite[`test-suite`];
+        const innerSuite = suite['test-suite'];
         if (innerSuite) {
             annotations.push(...this.convertSuite(innerSuite));
         }
 
-        let tests = suite[`test-case`];
+        const tests = suite['test-case'];
         if (tests) {
             annotations.push(...this.convertTests(tests));
         }
@@ -42,26 +42,26 @@ let converter = {
     },
 
     convertTestCase: function (testCase) {
-        let failure = testCase.failure;
+        const failure = testCase.failure;
         if (!failure) {
             core.debug(`Skip test ${testCase._attributes.fullname} without failure data`);
             return undefined;
         }
 
         core.debug(`Convert data for test ${testCase._attributes.fullname}`);
-        let trace = failure[`stack-trace`]._cdata;
-        let {path, line} = this.findAnnotationPoint(trace);
+        const trace = failure['stack-trace']._cdata;
+        const { path, line } = this.findAnnotationPoint(trace);
         if (!path) {
-            core.warning(`Not able to find entry point for failed test! Test trace:`);
+            core.warning('Not able to find entry point for failed test! Test trace:');
             core.warning(trace);
             return undefined;
         }
 
-        let annotation = {
+        const annotation = {
             path: path,
             start_line: line,
             end_line: line,
-            annotation_level: `failure`,
+            annotation_level: 'failure',
             title: testCase._attributes.fullname,
             message: failure.message._cdata,
             raw_details: trace
@@ -71,7 +71,7 @@ let converter = {
     },
 
     findAnnotationPoint: function (trace) {
-        let match = trace.match(/at .* in ((?<path>[^:]+):(?<line>\d+))/);
+        const match = trace.match(/at .* in ((?<path>[^:]+):(?<line>\d+))/);
         if (match) {
             return {
                 path: match.groups.path,
@@ -81,6 +81,6 @@ let converter = {
 
         return {};
     }
-}
+};
 
 module.exports = converter;

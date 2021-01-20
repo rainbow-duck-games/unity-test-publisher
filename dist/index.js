@@ -8235,55 +8235,55 @@ const fs = __nccwpck_require__(5747);
 const xmljs = __nccwpck_require__(8821);
 const converter = __nccwpck_require__(7006);
 
-let action = async function (name, path, workdirPrefix, githubToken, failOnFailedTests = `false`, failIfNoTests = true) {
-    const {meta, report} = await getReport(path, failIfNoTests);
+const action = async function (name, path, workdirPrefix, githubToken, failOnFailedTests = 'false', failIfNoTests = true) {
+    const { meta, report } = await getReport(path, failIfNoTests);
 
-    let results = `${meta.result}: tests: ${meta.total}, skipped: ${meta.skipped}, failed: ${meta.failed}`;
-    const conclusion = meta.failed === 0 && (meta.total > 0 || !failIfNoTests) ? `success` : `failure`;
+    const results = `${meta.result}: tests: ${meta.total}, skipped: ${meta.skipped}, failed: ${meta.failed}`;
+    const conclusion = meta.failed === 0 && (meta.total > 0 || !failIfNoTests) ? 'success' : 'failure';
     core.info(results);
 
-    let annotations = converter.convertReport(report);
+    const annotations = converter.convertReport(report);
     cleanPaths(annotations, workdirPrefix);
     await createCheck(githubToken, name, results, failIfNoTests, conclusion, annotations);
 
-    if (failOnFailedTests && conclusion !== `success`) {
+    if (failOnFailedTests && conclusion !== 'success') {
         core.setFailed(`There were ${meta.failed} failed tests`);
     }
 };
 
-let getReport = async function (path, failIfNoTests) {
+const getReport = async function (path, failIfNoTests) {
     core.info(`Try to open ${path}`);
     const file = await fs.promises.readFile(path);
-    const report = xmljs.xml2js(file, {compact: true});
+    const report = xmljs.xml2js(file, { compact: true });
 
     // Process results
     core.info(`File ${path} parsed...`);
-    const meta = report[`test-run`]._attributes;
+    const meta = report['test-run']._attributes;
     if (!meta) {
-        core.error(`No metadata found in the file`);
+        core.error('No metadata found in the file');
         if (failIfNoTests) {
-            core.setFailed(`Not tests found in the report!`);
+            core.setFailed('Not tests found in the report!');
         }
     }
 
-    return {meta, report};
-}
+    return { meta, report };
+};
 
-let createCheck = async function (githubToken, checkName, title, failIfNoTests, conclusion, annotations) {
+const createCheck = async function (githubToken, checkName, title, failIfNoTests, conclusion, annotations) {
     const pullRequest = github.context.payload.pull_request;
     const link = (pullRequest && pullRequest.html_url) || github.context.ref;
-    const head_sha = (pullRequest && pullRequest.head.sha) || github.context.sha;
-    core.info(`Posting status 'completed' with conclusion '${conclusion}' to ${link} (sha: ${head_sha})`);
+    const headSha = (pullRequest && pullRequest.head.sha) || github.context.sha;
+    core.info(`Posting status 'completed' with conclusion '${conclusion}' to ${link} (sha: ${headSha})`);
 
     const createCheckRequest = {
         ...github.context.repo,
         name: checkName,
-        head_sha,
-        status: `completed`,
+        head_sha: headSha,
+        status: 'completed',
         conclusion,
         output: {
             title: title,
-            summary: ``,
+            summary: '',
             annotations: annotations.slice(0, 50)
         }
     };
@@ -8291,19 +8291,20 @@ let createCheck = async function (githubToken, checkName, title, failIfNoTests, 
     core.debug(JSON.stringify(createCheckRequest, null, 2));
 
     // make conclusion consumable by downstream actions
-    core.setOutput(`conclusion`, conclusion);
+    core.setOutput('conclusion', conclusion);
 
     const octokit = github.getOctokit(githubToken);
     await octokit.checks.create(createCheckRequest);
-}
+};
 
-let cleanPaths = function (annotations, pathToClean) {
+const cleanPaths = function (annotations, pathToClean) {
     for (const annotation of annotations) {
-        annotation.path = annotation.path.replace(pathToClean, ``)
+        annotation.path = annotation.path.replace(pathToClean, '');
     }
-}
+};
 
 module.exports = action;
+
 
 /***/ }),
 
@@ -8312,12 +8313,12 @@ module.exports = action;
 
 const core = __nccwpck_require__(2186);
 
-let converter = {
+const converter = {
     convertReport: function (report) {
-        core.debug(`Start analyzing report:`);
+        core.debug('Start analyzing report:');
         core.debug(JSON.stringify(report));
-        const run = report[`test-run`];
-        return this.convertSuite(run[`test-suite`]);
+        const run = report['test-run'];
+        return this.convertSuite(run['test-suite']);
     },
 
     convertSuite: function (suite) {
@@ -8327,17 +8328,17 @@ let converter = {
 
         core.debug(`Analyze suite ${suite._attributes.type} / ${suite._attributes.fullname}`);
         if (suite._attributes.failed === 0) {
-            core.debug(`No failed tests, skipping`);
+            core.debug('No failed tests, skipping');
             return [];
         }
 
         const annotations = [];
-        let innerSuite = suite[`test-suite`];
+        const innerSuite = suite['test-suite'];
         if (innerSuite) {
             annotations.push(...this.convertSuite(innerSuite));
         }
 
-        let tests = suite[`test-case`];
+        const tests = suite['test-case'];
         if (tests) {
             annotations.push(...this.convertTests(tests));
         }
@@ -8354,26 +8355,26 @@ let converter = {
     },
 
     convertTestCase: function (testCase) {
-        let failure = testCase.failure;
+        const failure = testCase.failure;
         if (!failure) {
             core.debug(`Skip test ${testCase._attributes.fullname} without failure data`);
             return undefined;
         }
 
         core.debug(`Convert data for test ${testCase._attributes.fullname}`);
-        let trace = failure[`stack-trace`]._cdata;
-        let {path, line} = this.findAnnotationPoint(trace);
+        const trace = failure['stack-trace']._cdata;
+        const { path, line } = this.findAnnotationPoint(trace);
         if (!path) {
-            core.warning(`Not able to find entry point for failed test! Test trace:`);
+            core.warning('Not able to find entry point for failed test! Test trace:');
             core.warning(trace);
             return undefined;
         }
 
-        let annotation = {
+        const annotation = {
             path: path,
             start_line: line,
             end_line: line,
-            annotation_level: `failure`,
+            annotation_level: 'failure',
             title: testCase._attributes.fullname,
             message: failure.message._cdata,
             raw_details: trace
@@ -8383,7 +8384,7 @@ let converter = {
     },
 
     findAnnotationPoint: function (trace) {
-        let match = trace.match(/at .* in ((?<path>[^:]+):(?<line>\d+))/);
+        const match = trace.match(/at .* in ((?<path>[^:]+):(?<line>\d+))/);
         if (match) {
             return {
                 path: match.groups.path,
@@ -8393,9 +8394,10 @@ let converter = {
 
         return {};
     }
-}
+};
 
 module.exports = converter;
+
 
 /***/ }),
 
@@ -8407,12 +8409,12 @@ const action = __nccwpck_require__(3348);
 
 (async () => {
     try {
-        const githubToken = core.getInput(`githubToken`, {required: true});
-        const report = core.getInput(`report`, {required: true});
-        const workdirPrefix = core.getInput(`workdirPrefix`);
-        const name = core.getInput(`checkName`);
-        const failOnFailedTests = core.getInput(`failOnTestFailures`) === `true`;
-        const failIfNoTests = core.getInput(`failIfNoTests`) === `true`;
+        const githubToken = core.getInput('githubToken', { required: true });
+        const report = core.getInput('report', { required: true });
+        const workdirPrefix = core.getInput('workdirPrefix');
+        const name = core.getInput('checkName');
+        const failOnFailedTests = core.getInput('failOnTestFailures') === 'true';
+        const failIfNoTests = core.getInput('failIfNoTests') === 'true';
         core.info(`Starting analyze ${report}...`);
         await action(name, report, workdirPrefix, githubToken, failOnFailedTests, failIfNoTests);
     } catch (e) {
