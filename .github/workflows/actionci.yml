@@ -13,9 +13,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - run: npm ci
-      - run: npm run-script lint
-      - run: npm test
+      - run: npm i
+      - run: npm run all
 
   # run unity tests & analyze result
   analyze:
