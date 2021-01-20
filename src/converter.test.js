@@ -1,5 +1,5 @@
 const core = require('@actions/core');
-const converter = require('./coverter');
+const converter = require('./converter');
 
 beforeAll(() => {
     // Disable @actions/core logging for run

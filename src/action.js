@@ -2,7 +2,7 @@ const core = require('@actions/core');
 const github = require('@actions/github');
 const fs = require('fs');
 const xmljs = require('xml-js');
-const converter = require('./coverter');
+const converter = require('./converter');
 
 const action = async function (name, failedStatus, path, workdirPrefix, githubToken, failOnFailedTests = 'false', failIfNoTests = true) {
     const { meta, report } = await getReport(path, failIfNoTests);
