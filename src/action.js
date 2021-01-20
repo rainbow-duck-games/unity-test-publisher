@@ -1,7 +1,7 @@
 const core = require('@actions/core');
 const github = require('@actions/github');
 
-const createCheck = async function (githubToken, checkName, title, failIfNoTests, conclusion, annotations) {
+const createCheck = async function (githubToken, checkName, meta, conclusion) {
     const pullRequest = github.context.payload.pull_request;
     const link = (pullRequest && pullRequest.html_url) || github.context.ref;
     const headSha = (pullRequest && pullRequest.head.sha) || github.context.sha;
@@ -14,9 +14,9 @@ const createCheck = async function (githubToken, checkName, title, failIfNoTests
         status: 'completed',
         conclusion,
         output: {
-            title: title,
+            title: meta.summary(),
             summary: '',
-            annotations: annotations.slice(0, 50)
+            annotations: meta.annotations.slice(0, 50)
         }
     };
 

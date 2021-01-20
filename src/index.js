@@ -1,7 +1,7 @@
 const core = require('@actions/core');
 const glob = require('@actions/glob');
 const { cleanPaths, createCheck } = require('./action');
-const { getReport } = require('./report');
+const { getReport, getReportData } = require('./report');
 
 (async () => {
     try {
@@ -15,43 +15,36 @@ const { getReport } = require('./report');
 
         core.info(`Lookup for files matching: ${reportPaths}...`);
         const globber = await glob.create(reportPaths, { followSymbolicLinks: false });
-        const meta = {
-            total: 0,
-            passed: 0,
-            skipped: 0,
-            failed: 0
-        };
-        const annotations = [];
+        const data = getReportData();
         for await (const file of globber.globGenerator()) {
             core.info(`Processing file ${file}...`);
             const fileData = await getReport(file, failIfNoTests);
-            core.info(`Result: ${fileData.meta.passed} / ${fileData.meta.total}, skipped ${fileData.meta.skipped}, failed ${fileData.meta.failed}`);
+            core.info(data.summary());
 
-            meta.total += fileData.meta.total;
-            meta.passed += fileData.meta.passed;
-            meta.skipped += fileData.meta.skipped;
-            meta.failed += fileData.meta.failed;
+            data.total += fileData.meta.total;
+            data.passed += fileData.meta.passed;
+            data.skipped += fileData.meta.skipped;
+            data.failed += fileData.meta.failed;
 
-            annotations.push(...fileData.annotations);
+            data.annotations.push(...fileData.annotations);
         }
 
         // Convert meta
-        const results = `${meta.result}: tests: ${meta.total}, skipped: ${meta.skipped}, failed: ${meta.failed}`;
-        const conclusion = meta.failed === 0 && (meta.total > 0 || !failIfNoTests) ? 'success' : checkFailedStatus;
+        const conclusion = data.failed === 0 && (data.total > 0 || !failIfNoTests) ? 'success' : checkFailedStatus;
         core.info('=================');
         core.info('Analyze result:');
-        core.info(results);
+        core.info(data.summary());
 
-        if (failIfNoTests && meta.total === 0) {
+        if (failIfNoTests && data.total === 0) {
             core.setFailed('Not tests found in the report!');
             return;
         }
 
-        cleanPaths(annotations, workdirPrefix);
-        await createCheck(githubToken, checkName, results, failIfNoTests, conclusion, annotations);
+        cleanPaths(data.annotations, workdirPrefix);
+        await createCheck(githubToken, checkName, data, conclusion);
 
-        if (failOnFailedTests && meta.failed > 0) {
-            core.setFailed(`There were ${meta.failed} failed tests`);
+        if (failOnFailedTests && data.failed > 0) {
+            core.setFailed(`There were ${data.failed} failed tests`);
         }
     } catch (e) {
         core.setFailed(e);

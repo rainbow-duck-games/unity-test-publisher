@@ -13,13 +13,23 @@ const getReport = async function (path) {
     const meta = report['test-run']._attributes;
     if (!meta) {
         core.error('No metadata found in the file - path');
-        return { meta: { total: 0, passed: 0, skipped: 0, failed: 0 }, annotations: [] };
+        return getReportData();
     }
 
+    return getReportData(meta.total, meta.passed, meta.skipped, meta.failed, converter.convertReport(report));
+};
+
+const getReportData = function (total = 0, passed = 0, skipped = 0, failed = 0, annotations = []) {
     return {
-        meta,
-        annotations: converter.convertReport(report)
+        meta: {
+            summary: () => `Results: ${this.passed}/${this.total}, skipped: ${this.skipped}, failed: ${this.failed}`,
+            total: Number(total),
+            passed: Number(passed),
+            skipped: Number(skipped),
+            failed: Number(failed)
+        },
+        annotations
     };
 };
 
-module.exports = { getReport };
+module.exports = { getReport, getReportData };

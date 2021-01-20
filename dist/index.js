@@ -10438,7 +10438,7 @@ module.exports = function(xml, userOptions) {
 const core = __nccwpck_require__(2186);
 const github = __nccwpck_require__(5438);
 
-const createCheck = async function (githubToken, checkName, title, failIfNoTests, conclusion, annotations) {
+const createCheck = async function (githubToken, checkName, meta, conclusion) {
     const pullRequest = github.context.payload.pull_request;
     const link = (pullRequest && pullRequest.html_url) || github.context.ref;
     const headSha = (pullRequest && pullRequest.head.sha) || github.context.sha;
@@ -10451,9 +10451,9 @@ const createCheck = async function (githubToken, checkName, title, failIfNoTests
         status: 'completed',
         conclusion,
         output: {
-            title: title,
+            title: meta.summary(),
             summary: '',
-            annotations: annotations.slice(0, 50)
+            annotations: meta.annotations.slice(0, 50)
         }
     };
 
@@ -10576,7 +10576,7 @@ module.exports = converter;
 const core = __nccwpck_require__(2186);
 const glob = __nccwpck_require__(8090);
 const { cleanPaths, createCheck } = __nccwpck_require__(3348);
-const { getReport } = __nccwpck_require__(7098);
+const { getReport, getReportData } = __nccwpck_require__(7098);
 
 (async () => {
     try {
@@ -10590,43 +10590,36 @@ const { getReport } = __nccwpck_require__(7098);
 
         core.info(`Lookup for files matching: ${reportPaths}...`);
         const globber = await glob.create(reportPaths, { followSymbolicLinks: false });
-        const meta = {
-            total: 0,
-            passed: 0,
-            skipped: 0,
-            failed: 0
-        };
-        const annotations = [];
+        const data = getReportData();
         for await (const file of globber.globGenerator()) {
             core.info(`Processing file ${file}...`);
             const fileData = await getReport(file, failIfNoTests);
-            core.info(`Result: ${fileData.meta.passed} / ${fileData.meta.total}, skipped ${fileData.meta.skipped}, failed ${fileData.meta.failed}`);
+            core.info(data.summary());
 
-            meta.total += fileData.meta.total;
-            meta.passed += fileData.meta.passed;
-            meta.skipped += fileData.meta.skipped;
-            meta.failed += fileData.meta.failed;
+            data.total += fileData.meta.total;
+            data.passed += fileData.meta.passed;
+            data.skipped += fileData.meta.skipped;
+            data.failed += fileData.meta.failed;
 
-            annotations.push(...fileData.annotations);
+            data.annotations.push(...fileData.annotations);
         }
 
         // Convert meta
-        const results = `${meta.result}: tests: ${meta.total}, skipped: ${meta.skipped}, failed: ${meta.failed}`;
-        const conclusion = meta.failed === 0 && (meta.total > 0 || !failIfNoTests) ? 'success' : checkFailedStatus;
+        const conclusion = data.failed === 0 && (data.total > 0 || !failIfNoTests) ? 'success' : checkFailedStatus;
         core.info('=================');
         core.info('Analyze result:');
-        core.info(results);
+        core.info(data.summary());
 
-        if (failIfNoTests && meta.total === 0) {
+        if (failIfNoTests && data.total === 0) {
             core.setFailed('Not tests found in the report!');
             return;
         }
 
-        cleanPaths(annotations, workdirPrefix);
-        await createCheck(githubToken, checkName, results, failIfNoTests, conclusion, annotations);
+        cleanPaths(data.annotations, workdirPrefix);
+        await createCheck(githubToken, checkName, data, conclusion);
 
-        if (failOnFailedTests && meta.failed > 0) {
-            core.setFailed(`There were ${meta.failed} failed tests`);
+        if (failOnFailedTests && data.failed > 0) {
+            core.setFailed(`There were ${data.failed} failed tests`);
         }
     } catch (e) {
         core.setFailed(e);
@@ -10654,16 +10647,26 @@ const getReport = async function (path) {
     const meta = report['test-run']._attributes;
     if (!meta) {
         core.error('No metadata found in the file - path');
-        return { meta: { total: 0, passed: 0, skipped: 0, failed: 0 }, annotations: [] };
+        return getReportData();
     }
 
+    return getReportData(meta.total, meta.passed, meta.skipped, meta.failed, converter.convertReport(report));
+};
+
+const getReportData = function (total = 0, passed = 0, skipped = 0, failed = 0, annotations = []) {
     return {
-        meta,
-        annotations: converter.convertReport(report)
+        meta: {
+            summary: () => `Results: ${this.passed}/${this.total}, skipped: ${this.skipped}, failed: ${this.failed}`,
+            total: Number(total),
+            passed: Number(passed),
+            skipped: Number(skipped),
+            failed: Number(failed)
+        },
+        annotations
     };
 };
 
-module.exports = { getReport };
+module.exports = { getReport, getReportData };
 
 
 /***/ }),
