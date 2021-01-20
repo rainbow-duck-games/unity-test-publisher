@@ -14,6 +14,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - run: npm ci
+    - run: npm run-script lint
     - run: npm test
       
   # run unity tests & analyze result
@@ -30,6 +31,7 @@ jobs:
           workdirPrefix: '/github/workspace/'
           githubToken: ${{ secrets.GITHUB_TOKEN }}
           report: ./reports/playmode-results.xml
+          checkFailedStatus: neutral
       - uses: ./
         name: 'Publish editmode results'
         if: ${{ always() }}
@@ -38,3 +40,4 @@ jobs:
           workdirPrefix: '/github/workspace/'
           githubToken: ${{ secrets.GITHUB_TOKEN }}
           report: ./reports/editmode-results.xml
+          checkFailedStatus: neutral

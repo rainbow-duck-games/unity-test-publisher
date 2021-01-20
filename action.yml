@@ -19,6 +19,10 @@ inputs:
     description: 'check name for test reports'
     required: false
     default: 'Test Report'
+  checkFailedStatus:
+    description: 'what status should be for failed check, default - failure'
+    required: false
+    default: 'failure'
   failOnTestFailures:
     description: 'fail run if there were test failures'
     required: false

@@ -2,184 +2,6 @@ require('./sourcemap-register.js');module.exports =
 /******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
-/***/ 4582:
-/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
-
-const core = __nccwpck_require__(2186);
-const github = __nccwpck_require__(5438);
-const fs = __nccwpck_require__(5747);
-const xmljs = __nccwpck_require__(8821);
-
-let action = async function (name, path, workdirPrefix, githubToken, failOnFailedTests = 'false', failIfNoTests = true) {
-    const {meta, report} = await getReport(path, failIfNoTests);
-
-    let results = `${meta.result}: tests: ${meta.total}, skipped: ${meta.skipped}, failed: ${meta.failed}`;
-    const conclusion = meta.failed === 0 && (meta.total > 0 || !failIfNoTests) ? 'success' : 'failure';
-    core.info(results);
-
-    let annotations = convertReport(report);
-    cleanPaths(annotations, workdirPrefix);
-    await createCheck(githubToken, name, results, failIfNoTests, conclusion, annotations);
-
-    if (failOnFailedTests && conclusion !== 'success') {
-        core.setFailed(`There were ${meta.failed} failed tests`);
-    }
-};
-
-let getReport = async function (path, failIfNoTests) {
-    core.info(`Try to open ${path}`);
-    const file = await fs.promises.readFile(path);
-    const report = xmljs.xml2js(file, {compact: true});
-
-    // Process results
-    core.info(`File ${path} parsed...`);
-    const meta = report['test-run']._attributes;
-    if (!meta) {
-        core.error('No metadata found in the file');
-        if (failIfNoTests) {
-            core.setFailed(`Not tests found in the report!`);
-        }
-    }
-
-    return {meta, report};
-}
-
-let createCheck = async function (githubToken, checkName, title, failIfNoTests, conclusion, annotations) {
-    const pullRequest = github.context.payload.pull_request;
-    const link = (pullRequest && pullRequest.html_url) || github.context.ref;
-    const head_sha = (pullRequest && pullRequest.head.sha) || github.context.sha;
-    core.info(`Posting status 'completed' with conclusion '${conclusion}' to ${link} (sha: ${head_sha})`);
-
-    const createCheckRequest = {
-        ...github.context.repo,
-        name: checkName,
-        head_sha,
-        status: 'completed',
-        conclusion,
-        output: {
-            title: title,
-            summary: '',
-            annotations: annotations.slice(0, 50)
-        }
-    };
-
-    core.debug(JSON.stringify(createCheckRequest, null, 2));
-
-    // make conclusion consumable by downstream actions
-    core.setOutput('conclusion', conclusion);
-
-    const octokit = github.getOctokit(githubToken);
-    await octokit.checks.create(createCheckRequest);
-}
-
-let convertReport = function (report) {
-    core.debug('Start analyzing report:');
-    core.debug(JSON.stringify(report));
-    const run = report['test-run'];
-    return convertSuite(run['test-suite']);
-}
-
-let convertSuite = function (suite) {
-    const annotations = [];
-    if (Array.isArray(suite)) {
-        for (const candidate of suite) {
-            annotations.push(...convertSuite(candidate));
-        }
-        return annotations;
-    }
-
-    core.debug(`Analyze suite ${suite._attributes.type} / ${suite._attributes.fullname}`);
-    if (suite._attributes.failed === 0) {
-        core.debug(`No failed tests, skipping`);
-        return annotations;
-    }
-
-    let innerSuite = suite['test-suite'];
-    if (innerSuite) {
-        annotations.push(...convertSuite(innerSuite));
-    }
-
-    let tests = suite['test-case'];
-    if (tests) {
-        annotations.push(...convertTests(tests));
-    }
-    return annotations;
-}
-
-let convertTests = function (tests) {
-    if (Array.isArray(tests)) {
-        const annotations = [];
-        for (const test of tests) {
-            if (test.failure) {
-                annotations.push(convertTestCase(test));
-            }
-        }
-        return annotations;
-    }
-
-    if (tests.failure) {
-        return [convertTestCase(tests)];
-    }
-
-    return [];
-}
-
-let convertTestCase = function (testCase) {
-    core.debug(`Convert data for test ${testCase._attributes.fullname}`);
-    let failure = testCase.failure;
-    let message = failure.message._cdata;
-    let trace = failure['stack-trace']._cdata;
-    let firstLine = trace.split('\n')[0];
-    let failPoint = firstLine.split(' in ')[1];
-    let [path, line] = failPoint.split(':');
-    
-    let annotation = {
-        path: path.replace('/github/workspace/', ''),
-        start_line: Number(line),
-        end_line: Number(line),
-        annotation_level: 'failure',
-        title: testCase._attributes.fullname,
-        message,
-        raw_details: trace
-    };
-    core.info(`- ${annotation.path}:${annotation.start_line} - ${annotation.title}`);
-    return annotation;
-}
-
-let cleanPaths = function(annotations, pathToClean) {
-    for (const annotation of annotations) {
-        annotation.path = annotation.path.replace(pathToClean, '')
-    }
-}
-
-module.exports = action;
-
-/***/ }),
-
-/***/ 2932:
-/***/ ((__unused_webpack_module, __unused_webpack_exports, __nccwpck_require__) => {
-
-const core = __nccwpck_require__(2186);
-const action = __nccwpck_require__(4582);
-
-(async () => {
-    try {
-        const githubToken = core.getInput('githubToken', {required: true});
-        const report = core.getInput('report', {required: true});
-        const workdirPrefix = core.getInput('workdirPrefix');
-        const name = core.getInput('checkName');
-        const failOnFailedTests = core.getInput('failOnTestFailures') === 'true';
-        const failIfNoTests = core.getInput('failIfNoTests') === 'true';
-        core.info(`Starting analyze ${report}...`);
-        await action(name, report, workdirPrefix, githubToken, failOnFailedTests, failIfNoTests);
-    } catch (e) {
-        core.setFailed(e.message);
-    }
-})();
-
-
-/***/ }),
-
 /***/ 7351:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
@@ -8404,6 +8226,206 @@ module.exports = function(xml, userOptions) {
 
 /***/ }),
 
+/***/ 3348:
+/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
+
+const core = __nccwpck_require__(2186);
+const github = __nccwpck_require__(5438);
+const fs = __nccwpck_require__(5747);
+const xmljs = __nccwpck_require__(8821);
+const converter = __nccwpck_require__(7006);
+
+const action = async function (name, failedStatus, path, workdirPrefix, githubToken, failOnFailedTests = 'false', failIfNoTests = true) {
+    const { meta, report } = await getReport(path, failIfNoTests);
+
+    const results = `${meta.result}: tests: ${meta.total}, skipped: ${meta.skipped}, failed: ${meta.failed}`;
+    const conclusion = meta.failed === 0 && (meta.total > 0 || !failIfNoTests) ? 'success' : failedStatus;
+    core.info(results);
+
+    const annotations = converter.convertReport(report);
+    cleanPaths(annotations, workdirPrefix);
+    await createCheck(githubToken, name, results, failIfNoTests, conclusion, annotations);
+
+    if (failOnFailedTests && conclusion !== 'success') {
+        core.setFailed(`There were ${meta.failed} failed tests`);
+    }
+};
+
+const getReport = async function (path, failIfNoTests) {
+    core.info(`Try to open ${path}`);
+    const file = await fs.promises.readFile(path);
+    const report = xmljs.xml2js(file, { compact: true });
+
+    // Process results
+    core.info(`File ${path} parsed...`);
+    const meta = report['test-run']._attributes;
+    if (!meta) {
+        core.error('No metadata found in the file');
+        if (failIfNoTests) {
+            core.setFailed('Not tests found in the report!');
+        }
+    }
+
+    return { meta, report };
+};
+
+const createCheck = async function (githubToken, checkName, title, failIfNoTests, conclusion, annotations) {
+    const pullRequest = github.context.payload.pull_request;
+    const link = (pullRequest && pullRequest.html_url) || github.context.ref;
+    const headSha = (pullRequest && pullRequest.head.sha) || github.context.sha;
+    core.info(`Posting status 'completed' with conclusion '${conclusion}' to ${link} (sha: ${headSha})`);
+
+    const createCheckRequest = {
+        ...github.context.repo,
+        name: checkName,
+        head_sha: headSha,
+        status: 'completed',
+        conclusion,
+        output: {
+            title: title,
+            summary: '',
+            annotations: annotations.slice(0, 50)
+        }
+    };
+
+    core.debug(JSON.stringify(createCheckRequest, null, 2));
+
+    // make conclusion consumable by downstream actions
+    core.setOutput('conclusion', conclusion);
+
+    const octokit = github.getOctokit(githubToken);
+    await octokit.checks.create(createCheckRequest);
+};
+
+const cleanPaths = function (annotations, pathToClean) {
+    for (const annotation of annotations) {
+        annotation.path = annotation.path.replace(pathToClean, '');
+    }
+};
+
+module.exports = action;
+
+
+/***/ }),
+
+/***/ 7006:
+/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
+
+const core = __nccwpck_require__(2186);
+
+const converter = {
+    convertReport: function (report) {
+        core.debug('Start analyzing report:');
+        core.debug(JSON.stringify(report));
+        const run = report['test-run'];
+        return this.convertSuite(run['test-suite']);
+    },
+
+    convertSuite: function (suite) {
+        if (Array.isArray(suite)) {
+            return suite.flatMap(suite => this.convertSuite(suite));
+        }
+
+        core.debug(`Analyze suite ${suite._attributes.type} / ${suite._attributes.fullname}`);
+        if (suite._attributes.failed === 0) {
+            core.debug('No failed tests, skipping');
+            return [];
+        }
+
+        const annotations = [];
+        const innerSuite = suite['test-suite'];
+        if (innerSuite) {
+            annotations.push(...this.convertSuite(innerSuite));
+        }
+
+        const tests = suite['test-case'];
+        if (tests) {
+            annotations.push(...this.convertTests(tests));
+        }
+        return annotations;
+    },
+
+    convertTests: function (tests) {
+        if (Array.isArray(tests)) {
+            return tests.flatMap(test => this.convertTests(test));
+        }
+
+        const result = this.convertTestCase(tests);
+        return result ? [result] : [];
+    },
+
+    convertTestCase: function (testCase) {
+        const failure = testCase.failure;
+        if (!failure) {
+            core.debug(`Skip test ${testCase._attributes.fullname} without failure data`);
+            return undefined;
+        }
+
+        core.debug(`Convert data for test ${testCase._attributes.fullname}`);
+        const trace = failure['stack-trace']._cdata;
+        const { path, line } = this.findAnnotationPoint(trace);
+        if (!path) {
+            core.warning('Not able to find entry point for failed test! Test trace:');
+            core.warning(trace);
+            return undefined;
+        }
+
+        const annotation = {
+            path: path,
+            start_line: line,
+            end_line: line,
+            annotation_level: 'failure',
+            title: testCase._attributes.fullname,
+            message: failure.message._cdata,
+            raw_details: trace
+        };
+        core.info(`- ${annotation.path}:${annotation.start_line} - ${annotation.title}`);
+        return annotation;
+    },
+
+    findAnnotationPoint: function (trace) {
+        const match = trace.match(/at .* in ((?<path>[^:]+):(?<line>\d+))/);
+        if (match) {
+            return {
+                path: match.groups.path,
+                line: Number(match.groups.line)
+            };
+        }
+
+        return {};
+    }
+};
+
+module.exports = converter;
+
+
+/***/ }),
+
+/***/ 4351:
+/***/ ((__unused_webpack_module, __unused_webpack_exports, __nccwpck_require__) => {
+
+const core = __nccwpck_require__(2186);
+const action = __nccwpck_require__(3348);
+
+(async () => {
+    try {
+        const githubToken = core.getInput('githubToken', { required: true });
+        const report = core.getInput('report', { required: true });
+        const workdirPrefix = core.getInput('workdirPrefix');
+        const checkName = core.getInput('checkName');
+        const checkFailedStatus = core.getInput('checkFailedStatus');
+        const failOnFailedTests = core.getInput('failOnTestFailures') === 'true';
+        const failIfNoTests = core.getInput('failIfNoTests') === 'true';
+        core.info(`Starting analyze ${report}...`);
+        await action(checkName, checkFailedStatus, report, workdirPrefix, githubToken, failOnFailedTests, failIfNoTests);
+    } catch (e) {
+        core.setFailed(e.message);
+    }
+})();
+
+
+/***/ }),
+
 /***/ 2877:
 /***/ ((module) => {
 
@@ -8562,7 +8584,7 @@ module.exports = require("zlib");;
 /******/ 	// module exports must be returned from runtime so entry inlining is disabled
 /******/ 	// startup
 /******/ 	// Load entry module and return exports
-/******/ 	return __nccwpck_require__(2932);
+/******/ 	return __nccwpck_require__(4351);
 /******/ })()
 ;
 //# sourceMappingURL=index.js.map
