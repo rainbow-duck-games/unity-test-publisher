@@ -10437,43 +10437,6 @@ module.exports = function(xml, userOptions) {
 
 const core = __nccwpck_require__(2186);
 const github = __nccwpck_require__(5438);
-const fs = __nccwpck_require__(5747);
-const xmljs = __nccwpck_require__(8821);
-const converter = __nccwpck_require__(4437);
-
-const action = async function (name, failedStatus, path, workdirPrefix, githubToken, failOnFailedTests = 'false', failIfNoTests = true) {
-    const { meta, report } = await getReport(path, failIfNoTests);
-
-    const results = `${meta.result}: tests: ${meta.total}, skipped: ${meta.skipped}, failed: ${meta.failed}`;
-    const conclusion = meta.failed === 0 && (meta.total > 0 || !failIfNoTests) ? 'success' : failedStatus;
-    core.info(results);
-
-    const annotations = converter.convertReport(report);
-    cleanPaths(annotations, workdirPrefix);
-    await createCheck(githubToken, name, results, failIfNoTests, conclusion, annotations);
-
-    if (failOnFailedTests && conclusion !== 'success') {
-        core.setFailed(`There were ${meta.failed} failed tests`);
-    }
-};
-
-const getReport = async function (path, failIfNoTests) {
-    core.info(`Try to open ${path}`);
-    const file = await fs.promises.readFile(path);
-    const report = xmljs.xml2js(file, { compact: true });
-
-    // Process results
-    core.info(`File ${path} parsed...`);
-    const meta = report['test-run']._attributes;
-    if (!meta) {
-        core.error('No metadata found in the file');
-        if (failIfNoTests) {
-            core.setFailed('Not tests found in the report!');
-        }
-    }
-
-    return { meta, report };
-};
 
 const createCheck = async function (githubToken, checkName, title, failIfNoTests, conclusion, annotations) {
     const pullRequest = github.context.payload.pull_request;
@@ -10509,7 +10472,7 @@ const cleanPaths = function (annotations, pathToClean) {
     }
 };
 
-module.exports = action;
+module.exports = { cleanPaths, createCheck };
 
 
 /***/ }),
@@ -10612,7 +10575,8 @@ module.exports = converter;
 
 const core = __nccwpck_require__(2186);
 const glob = __nccwpck_require__(8090);
-const action = __nccwpck_require__(3348);
+const { cleanPaths, createCheck } = __nccwpck_require__(3348);
+const { getReport } = __nccwpck_require__(7098);
 
 (async () => {
     try {
@@ -10626,14 +10590,80 @@ const action = __nccwpck_require__(3348);
 
         core.info(`Lookup for files matching: ${reportPaths}...`);
         const globber = await glob.create(reportPaths, { followSymbolicLinks: false });
-        const results = await globber.glob();
-        core.info(`Matched files: ${results}`);
+        const meta = {
+            total: 0,
+            passed: 0,
+            skipped: 0,
+            failed: 0
+        };
+        const annotations = [];
+        for await (const file of globber.globGenerator()) {
+            core.info(`Processing file ${file}...`);
+            const { fileMeta, fileAnnotations } = await getReport(file, failIfNoTests);
+            core.info(`Result: ${fileMeta.passed} / ${fileMeta.total}, skipped ${fileMeta.skipped}, failed ${fileMeta.failed}`);
 
-        await action(checkName, checkFailedStatus, './artifacts/playmode-results.xml', workdirPrefix, githubToken, failOnFailedTests, failIfNoTests);
+            meta.total += fileMeta.total;
+            meta.passed += fileMeta.passed;
+            meta.skipped += fileMeta.skipped;
+            meta.failed += fileMeta.failed;
+
+            annotations.push(...fileAnnotations);
+        }
+
+        // Convert meta
+        const results = `${meta.result}: tests: ${meta.total}, skipped: ${meta.skipped}, failed: ${meta.failed}`;
+        const conclusion = meta.failed === 0 && (meta.total > 0 || !failIfNoTests) ? 'success' : checkFailedStatus;
+        core.info('=================');
+        core.info('Analyze result:');
+        core.info(results);
+
+        if (failIfNoTests && meta.total === 0) {
+            core.setFailed('Not tests found in the report!');
+            return;
+        }
+
+        cleanPaths(annotations, workdirPrefix);
+        await createCheck(githubToken, checkName, results, failIfNoTests, conclusion, annotations);
+
+        if (failOnFailedTests && meta.failed > 0) {
+            core.setFailed(`There were ${meta.failed} failed tests`);
+        }
     } catch (e) {
         core.setFailed(e.message);
     }
 })();
+
+
+/***/ }),
+
+/***/ 7098:
+/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
+
+const core = __nccwpck_require__(2186);
+const fs = __nccwpck_require__(5747);
+const xmljs = __nccwpck_require__(8821);
+const converter = __nccwpck_require__(4437);
+
+const getReport = async function (path) {
+    core.debug(`Try to open ${path}`);
+    const file = await fs.promises.readFile(path);
+    const report = xmljs.xml2js(file, { compact: true });
+
+    // Process results
+    core.debug(`File ${path} parsed...`);
+    const meta = report['test-run']._attributes;
+    if (!meta) {
+        core.error('No metadata found in the file - path');
+        return { meta: { total: 0, passed: 0, skipped: 0, failed: 0 }, annotations: [] };
+    }
+
+    return {
+        meta,
+        annotations: converter.convertReport(report)
+    };
+};
+
+module.exports = { getReport };
 
 
 /***/ }),

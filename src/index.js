@@ -1,6 +1,7 @@
 const core = require('@actions/core');
 const glob = require('@actions/glob');
-const action = require('./action');
+const { cleanPaths, createCheck } = require('./action');
+const { getReport } = require('./report');
 
 (async () => {
     try {
@@ -14,10 +15,44 @@ const action = require('./action');
 
         core.info(`Lookup for files matching: ${reportPaths}...`);
         const globber = await glob.create(reportPaths, { followSymbolicLinks: false });
-        const results = await globber.glob();
-        core.info(`Matched files: ${results}`);
+        const meta = {
+            total: 0,
+            passed: 0,
+            skipped: 0,
+            failed: 0
+        };
+        const annotations = [];
+        for await (const file of globber.globGenerator()) {
+            core.info(`Processing file ${file}...`);
+            const { fileMeta, fileAnnotations } = await getReport(file, failIfNoTests);
+            core.info(`Result: ${fileMeta.passed} / ${fileMeta.total}, skipped ${fileMeta.skipped}, failed ${fileMeta.failed}`);
 
-        await action(checkName, checkFailedStatus, './artifacts/playmode-results.xml', workdirPrefix, githubToken, failOnFailedTests, failIfNoTests);
+            meta.total += fileMeta.total;
+            meta.passed += fileMeta.passed;
+            meta.skipped += fileMeta.skipped;
+            meta.failed += fileMeta.failed;
+
+            annotations.push(...fileAnnotations);
+        }
+
+        // Convert meta
+        const results = `${meta.result}: tests: ${meta.total}, skipped: ${meta.skipped}, failed: ${meta.failed}`;
+        const conclusion = meta.failed === 0 && (meta.total > 0 || !failIfNoTests) ? 'success' : checkFailedStatus;
+        core.info('=================');
+        core.info('Analyze result:');
+        core.info(results);
+
+        if (failIfNoTests && meta.total === 0) {
+            core.setFailed('Not tests found in the report!');
+            return;
+        }
+
+        cleanPaths(annotations, workdirPrefix);
+        await createCheck(githubToken, checkName, results, failIfNoTests, conclusion, annotations);
+
+        if (failOnFailedTests && meta.failed > 0) {
+            core.setFailed(`There were ${meta.failed} failed tests`);
+        }
     } catch (e) {
         core.setFailed(e.message);
     }
