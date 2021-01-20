@@ -1,20 +1,23 @@
-const core = require('@actions/core');
-const glob = require('@actions/glob');
-const { cleanPaths, createCheck } = require('./action');
-const { getReport, getReportData, getDataSummary } = require('./report');
+import * as core from '@actions/core';
+import * as glob from '@actions/glob';
+import {cleanPaths, createCheck} from './action';
+import {getDataSummary, getReport, getReportData} from './report';
 
-(async () => {
+async function run(): Promise<void> {
     try {
-        const githubToken = core.getInput('githubToken', { required: true });
-        const reportPaths = core.getInput('reportPaths', { required: true });
+        const githubToken = core.getInput('githubToken', {required: true});
+        const reportPaths = core.getInput('reportPaths', {required: true});
         const workdirPrefix = core.getInput('workdirPrefix');
         const checkName = core.getInput('checkName');
         const checkFailedStatus = core.getInput('checkFailedStatus');
-        const failOnFailedTests = core.getInput('failOnTestFailures') === 'true';
+        const failOnFailedTests =
+            core.getInput('failOnTestFailures') === 'true';
         const failIfNoTests = core.getInput('failIfNoTests') === 'true';
 
         core.info(`Lookup for files matching: ${reportPaths}...`);
-        const globber = await glob.create(reportPaths, { followSymbolicLinks: false });
+        const globber = await glob.create(reportPaths, {
+            followSymbolicLinks: false
+        });
         const data = getReportData();
         for await (const file of globber.globGenerator()) {
             core.info(`Processing file ${file}...`);
@@ -31,7 +34,10 @@ const { getReport, getReportData, getDataSummary } = require('./report');
         }
 
         // Convert meta
-        const conclusion = data.failed === 0 && (data.total > 0 || !failIfNoTests) ? 'success' : checkFailedStatus;
+        const conclusion =
+            data.failed === 0 && (data.total > 0 || !failIfNoTests)
+                ? 'success'
+                : checkFailedStatus;
         core.info('=================');
         core.info('Analyze result:');
         core.info(getDataSummary(data));
@@ -50,4 +56,6 @@ const { getReport, getReportData, getDataSummary } = require('./report');
     } catch (e) {
         core.setFailed(e);
     }
-})();
+}
+
+run();

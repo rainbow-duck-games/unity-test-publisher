@@ -1,12 +1,12 @@
-const core = require('@actions/core');
-const fs = require('fs');
-const xmljs = require('xml-js');
-const converter = require('./converter');
+import * as core from '@actions/core';
+import * as fs from 'fs';
+import * as xmljs from 'xml-js';
+import * as converter from './converter';
 
-const getReportDataModel = async function (path) {
+export async function getReportDataModel(path: string): any {
     core.debug(`Try to open ${path}`);
     const file = await fs.promises.readFile(path);
-    const report = xmljs.xml2js(file, { compact: true });
+    const report = xmljs.xml2js(file, {compact: true});
 
     // Process results
     core.debug(`File ${path} parsed...`);
@@ -17,9 +17,9 @@ const getReportDataModel = async function (path) {
     }
 
     return getDataModel(meta.total, meta.passed, meta.skipped, meta.failed, converter.convertReport(report));
-};
+}
 
-const getDataModel = function (total = 0, passed = 0, skipped = 0, failed = 0, annotations = []) {
+export function getDataModel(total = 0, passed = 0, skipped = 0, failed = 0, annotations = []) {
     return {
         meta: {
             total: Number(total),
@@ -29,10 +29,8 @@ const getDataModel = function (total = 0, passed = 0, skipped = 0, failed = 0, a
         },
         annotations
     };
-};
+}
 
-const getDataSummary = function (data) {
+export function getDataSummary(data): string {
     return `Results: ${data.meta.passed}/${data.meta.total}, skipped: ${data.meta.skipped}, failed: ${data.meta.failed}`;
-};
-
-module.exports = { getReport: getReportDataModel, getReportData: getDataModel, getDataSummary };
+}
