@@ -8,27 +8,28 @@ inputs:
   githubToken:
     description: 'GITHUB_TOKEN'
     required: true
-  report:
-    description: 'unity test report xml file to analyze'
-    required: true
-  workdirPrefix:
-    description: 'prefix on build machine to ignore in report'
+  reportPaths:
+    description: 'glob expression to find Unity test reports, default - `./artifact/*.xml`'
     required: false
-    default: ''
+    default: './artifacts/*.xml'
+  workdirPrefix:
+    description: 'prefix on build machine to ignore in report, default - `/github/workspace/`'
+    required: false
+    default: '/github/workspace/'
   checkName:
     description: 'check name for test reports'
     required: false
     default: 'Test Report'
   checkFailedStatus:
-    description: 'what status should be for failed check, default - failure'
+    description: 'what status should be for failed check, default - `failure`'
     required: false
     default: 'failure'
   failOnTestFailures:
-    description: 'fail run if there were test failures'
+    description: 'fail run if there were test failures, default - `false`'
     required: false
     default: 'false'
   failIfNoTests:
-    description: 'fail run if there were no test results found'
+    description: 'fail run if there were no test results found, default - `true`'
     required: false
     default: 'true'
 outputs:
