@@ -4,11 +4,11 @@ const fs = require('fs');
 const xmljs = require('xml-js');
 const converter = require('./coverter');
 
-const action = async function (name, path, workdirPrefix, githubToken, failOnFailedTests = 'false', failIfNoTests = true) {
+const action = async function (name, failedStatus, path, workdirPrefix, githubToken, failOnFailedTests = 'false', failIfNoTests = true) {
     const { meta, report } = await getReport(path, failIfNoTests);
 
     const results = `${meta.result}: tests: ${meta.total}, skipped: ${meta.skipped}, failed: ${meta.failed}`;
-    const conclusion = meta.failed === 0 && (meta.total > 0 || !failIfNoTests) ? 'success' : 'failure';
+    const conclusion = meta.failed === 0 && (meta.total > 0 || !failIfNoTests) ? 'success' : failedStatus;
     core.info(results);
 
     const annotations = converter.convertReport(report);

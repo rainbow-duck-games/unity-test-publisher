@@ -40,5 +40,6 @@ with:
 - `report` (required) - unity test report xml file to analyze
 - `workdirPrefix` - prefix on build machine to ignore in report
 - `checkName` - check name for test reports. Change it if you use more than one publisher step
+- `checkFailedStatus` - what status should be for failed check, default - failure
 - `failOnTestFailures` - fail run if there were test failures
 - `failIfNoTests` - fail run if there were no test results found

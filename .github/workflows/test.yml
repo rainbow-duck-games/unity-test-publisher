@@ -31,6 +31,7 @@ jobs:
           workdirPrefix: '/github/workspace/'
           githubToken: ${{ secrets.GITHUB_TOKEN }}
           report: ./reports/playmode-results.xml
+          checkFailedStatus: neutral
       - uses: ./
         name: 'Publish editmode results'
         if: ${{ always() }}
@@ -39,3 +40,4 @@ jobs:
           workdirPrefix: '/github/workspace/'
           githubToken: ${{ secrets.GITHUB_TOKEN }}
           report: ./reports/editmode-results.xml
+          checkFailedStatus: neutral
