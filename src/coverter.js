@@ -10,7 +10,7 @@ const converter = {
 
     convertSuite: function (suite) {
         if (Array.isArray(suite)) {
-            return suite.flatMap(this.convertSuite);
+            return suite.flatMap(suite => this.convertSuite(suite));
         }
 
         core.debug(`Analyze suite ${suite._attributes.type} / ${suite._attributes.fullname}`);
@@ -34,11 +34,11 @@ const converter = {
 
     convertTests: function (tests) {
         if (Array.isArray(tests)) {
-            return tests.flatMap(this.convertTests);
+            return tests.flatMap(test => this.convertTests(test));
         }
 
-        const annotation = this.convertTestCase(tests);
-        return annotation ? [annotation] : [];
+        const result = this.convertTestCase(tests);
+        return result ? [result] : [];
     },
 
     convertTestCase: function (testCase) {
