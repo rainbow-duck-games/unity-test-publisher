@@ -1,21 +1,21 @@
-const core = require('@actions/core');
-const github = require('@actions/github');
-const fs = require('fs');
-const xmljs = require('xml-js');
-const converter = require("./coverter");
+const core = require(`@actions/core`);
+const github = require(`@actions/github`);
+const fs = require(`fs`);
+const xmljs = require(`xml-js`);
+const converter = require(`./coverter`);
 
-let action = async function (name, path, workdirPrefix, githubToken, failOnFailedTests = 'false', failIfNoTests = true) {
+let action = async function (name, path, workdirPrefix, githubToken, failOnFailedTests = `false`, failIfNoTests = true) {
     const {meta, report} = await getReport(path, failIfNoTests);
 
     let results = `${meta.result}: tests: ${meta.total}, skipped: ${meta.skipped}, failed: ${meta.failed}`;
-    const conclusion = meta.failed === 0 && (meta.total > 0 || !failIfNoTests) ? 'success' : 'failure';
+    const conclusion = meta.failed === 0 && (meta.total > 0 || !failIfNoTests) ? `success` : `failure`;
     core.info(results);
 
     let annotations = converter.convertReport(report);
     cleanPaths(annotations, workdirPrefix);
     await createCheck(githubToken, name, results, failIfNoTests, conclusion, annotations);
 
-    if (failOnFailedTests && conclusion !== 'success') {
+    if (failOnFailedTests && conclusion !== `success`) {
         core.setFailed(`There were ${meta.failed} failed tests`);
     }
 };
@@ -27,9 +27,9 @@ let getReport = async function (path, failIfNoTests) {
 
     // Process results
     core.info(`File ${path} parsed...`);
-    const meta = report['test-run']._attributes;
+    const meta = report[`test-run`]._attributes;
     if (!meta) {
-        core.error('No metadata found in the file');
+        core.error(`No metadata found in the file`);
         if (failIfNoTests) {
             core.setFailed(`Not tests found in the report!`);
         }
@@ -48,11 +48,11 @@ let createCheck = async function (githubToken, checkName, title, failIfNoTests, 
         ...github.context.repo,
         name: checkName,
         head_sha,
-        status: 'completed',
+        status: `completed`,
         conclusion,
         output: {
             title: title,
-            summary: '',
+            summary: ``,
             annotations: annotations.slice(0, 50)
         }
     };
@@ -60,7 +60,7 @@ let createCheck = async function (githubToken, checkName, title, failIfNoTests, 
     core.debug(JSON.stringify(createCheckRequest, null, 2));
 
     // make conclusion consumable by downstream actions
-    core.setOutput('conclusion', conclusion);
+    core.setOutput(`conclusion`, conclusion);
 
     const octokit = github.getOctokit(githubToken);
     await octokit.checks.create(createCheckRequest);
@@ -68,7 +68,7 @@ let createCheck = async function (githubToken, checkName, title, failIfNoTests, 
 
 let cleanPaths = function (annotations, pathToClean) {
     for (const annotation of annotations) {
-        annotation.path = annotation.path.replace(pathToClean, '')
+        annotation.path = annotation.path.replace(pathToClean, ``)
     }
 }
 
