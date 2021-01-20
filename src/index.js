@@ -21,10 +21,11 @@ const { getReport, getReportData, getDataSummary } = require('./report');
             const fileData = await getReport(file, failIfNoTests);
             core.info(getDataSummary(fileData));
 
-            data.total += fileData.meta.total;
-            data.passed += fileData.meta.passed;
-            data.skipped += fileData.meta.skipped;
-            data.failed += fileData.meta.failed;
+            // ToDo Extract to some utility
+            data.meta.total += fileData.meta.total;
+            data.meta.passed += fileData.meta.passed;
+            data.meta.skipped += fileData.meta.skipped;
+            data.meta.failed += fileData.meta.failed;
 
             data.annotations.push(...fileData.annotations);
         }

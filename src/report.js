@@ -3,7 +3,7 @@ const fs = require('fs');
 const xmljs = require('xml-js');
 const converter = require('./converter');
 
-const getReport = async function (path) {
+const getReportDataModel = async function (path) {
     core.debug(`Try to open ${path}`);
     const file = await fs.promises.readFile(path);
     const report = xmljs.xml2js(file, { compact: true });
@@ -35,4 +35,4 @@ const getDataSummary = function (data) {
     return `Results: ${data.meta.passed}/${data.meta.total}, skipped: ${data.meta.skipped}, failed: ${data.meta.failed}`;
 };
 
-module.exports = { getReport, getReportData: getDataModel, getDataSummary };
+module.exports = { getReport: getReportDataModel, getReportData: getDataModel, getDataSummary };

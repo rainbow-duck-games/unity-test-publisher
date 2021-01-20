@@ -10597,10 +10597,11 @@ const { getReport, getReportData, getDataSummary } = __nccwpck_require__(7098);
             const fileData = await getReport(file, failIfNoTests);
             core.info(getDataSummary(fileData));
 
-            data.total += fileData.meta.total;
-            data.passed += fileData.meta.passed;
-            data.skipped += fileData.meta.skipped;
-            data.failed += fileData.meta.failed;
+            // ToDo Extract to some utility
+            data.meta.total += fileData.meta.total;
+            data.meta.passed += fileData.meta.passed;
+            data.meta.skipped += fileData.meta.skipped;
+            data.meta.failed += fileData.meta.failed;
 
             data.annotations.push(...fileData.annotations);
         }
@@ -10638,7 +10639,7 @@ const fs = __nccwpck_require__(5747);
 const xmljs = __nccwpck_require__(8821);
 const converter = __nccwpck_require__(4437);
 
-const getReport = async function (path) {
+const getReportDataModel = async function (path) {
     core.debug(`Try to open ${path}`);
     const file = await fs.promises.readFile(path);
     const report = xmljs.xml2js(file, { compact: true });
@@ -10670,7 +10671,7 @@ const getDataSummary = function (data) {
     return `Results: ${data.meta.passed}/${data.meta.total}, skipped: ${data.meta.skipped}, failed: ${data.meta.failed}`;
 };
 
-module.exports = { getReport, getReportData: getDataModel, getDataSummary };
+module.exports = { getReport: getReportDataModel, getReportData: getDataModel, getDataSummary };
 
 
 /***/ }),
