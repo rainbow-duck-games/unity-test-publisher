@@ -1,5 +1,6 @@
 const core = require('@actions/core');
 const github = require('@actions/github');
+const { getDataSummary } = require('./report');
 
 const createCheck = async function (githubToken, checkName, meta, conclusion) {
     const pullRequest = github.context.payload.pull_request;
@@ -14,7 +15,7 @@ const createCheck = async function (githubToken, checkName, meta, conclusion) {
         status: 'completed',
         conclusion,
         output: {
-            title: meta.summary(),
+            title: getDataSummary(meta),
             summary: '',
             annotations: meta.annotations.slice(0, 50)
         }

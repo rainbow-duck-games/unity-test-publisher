@@ -1,7 +1,7 @@
 const core = require('@actions/core');
 const glob = require('@actions/glob');
 const { cleanPaths, createCheck } = require('./action');
-const { getReport, getReportData } = require('./report');
+const { getReport, getReportData, getDataSummary } = require('./report');
 
 (async () => {
     try {
@@ -19,7 +19,7 @@ const { getReport, getReportData } = require('./report');
         for await (const file of globber.globGenerator()) {
             core.info(`Processing file ${file}...`);
             const fileData = await getReport(file, failIfNoTests);
-            core.info(data.summary());
+            core.info(getDataSummary(fileData));
 
             data.total += fileData.meta.total;
             data.passed += fileData.meta.passed;
@@ -33,7 +33,7 @@ const { getReport, getReportData } = require('./report');
         const conclusion = data.failed === 0 && (data.total > 0 || !failIfNoTests) ? 'success' : checkFailedStatus;
         core.info('=================');
         core.info('Analyze result:');
-        core.info(data.summary());
+        core.info(getDataSummary(data));
 
         if (failIfNoTests && data.total === 0) {
             core.setFailed('Not tests found in the report!');

@@ -22,7 +22,6 @@ const getReport = async function (path) {
 const getReportData = function (total = 0, passed = 0, skipped = 0, failed = 0, annotations = []) {
     return {
         meta: {
-            summary: () => `Results: ${this.passed}/${this.total}, skipped: ${this.skipped}, failed: ${this.failed}`,
             total: Number(total),
             passed: Number(passed),
             skipped: Number(skipped),
@@ -32,4 +31,8 @@ const getReportData = function (total = 0, passed = 0, skipped = 0, failed = 0, 
     };
 };
 
-module.exports = { getReport, getReportData };
+const getDataSummary = function (data) {
+    return `Results: ${data.passed}/${data.total}, skipped: ${data.skipped}, failed: ${data.failed}`;
+};
+
+module.exports = { getReport, getReportData, getDataSummary };

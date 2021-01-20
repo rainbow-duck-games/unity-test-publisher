@@ -10437,6 +10437,7 @@ module.exports = function(xml, userOptions) {
 
 const core = __nccwpck_require__(2186);
 const github = __nccwpck_require__(5438);
+const { getDataSummary } = __nccwpck_require__(7098);
 
 const createCheck = async function (githubToken, checkName, meta, conclusion) {
     const pullRequest = github.context.payload.pull_request;
@@ -10451,7 +10452,7 @@ const createCheck = async function (githubToken, checkName, meta, conclusion) {
         status: 'completed',
         conclusion,
         output: {
-            title: meta.summary(),
+            title: getDataSummary(meta),
             summary: '',
             annotations: meta.annotations.slice(0, 50)
         }
@@ -10576,7 +10577,7 @@ module.exports = converter;
 const core = __nccwpck_require__(2186);
 const glob = __nccwpck_require__(8090);
 const { cleanPaths, createCheck } = __nccwpck_require__(3348);
-const { getReport, getReportData } = __nccwpck_require__(7098);
+const { getReport, getReportData, getDataSummary } = __nccwpck_require__(7098);
 
 (async () => {
     try {
@@ -10594,7 +10595,7 @@ const { getReport, getReportData } = __nccwpck_require__(7098);
         for await (const file of globber.globGenerator()) {
             core.info(`Processing file ${file}...`);
             const fileData = await getReport(file, failIfNoTests);
-            core.info(data.summary());
+            core.info(getDataSummary(fileData));
 
             data.total += fileData.meta.total;
             data.passed += fileData.meta.passed;
@@ -10608,7 +10609,7 @@ const { getReport, getReportData } = __nccwpck_require__(7098);
         const conclusion = data.failed === 0 && (data.total > 0 || !failIfNoTests) ? 'success' : checkFailedStatus;
         core.info('=================');
         core.info('Analyze result:');
-        core.info(data.summary());
+        core.info(getDataSummary(data));
 
         if (failIfNoTests && data.total === 0) {
             core.setFailed('Not tests found in the report!');
@@ -10656,7 +10657,6 @@ const getReport = async function (path) {
 const getReportData = function (total = 0, passed = 0, skipped = 0, failed = 0, annotations = []) {
     return {
         meta: {
-            summary: () => `Results: ${this.passed}/${this.total}, skipped: ${this.skipped}, failed: ${this.failed}`,
             total: Number(total),
             passed: Number(passed),
             skipped: Number(skipped),
@@ -10666,7 +10666,11 @@ const getReportData = function (total = 0, passed = 0, skipped = 0, failed = 0, 
     };
 };
 
-module.exports = { getReport, getReportData };
+const getDataSummary = function (data) {
+    return `Results: ${data.passed}/${data.total}, skipped: ${data.skipped}, failed: ${data.failed}`;
+};
+
+module.exports = { getReport, getReportData, getDataSummary };
 
 
 /***/ }),
