@@ -235,12 +235,12 @@ function run() {
             const globber = yield glob.create(reportPaths, {
                 followSymbolicLinks: false
             });
-            const data = report_1.getReportData();
+            const data = report_1.getDataModel();
             try {
                 for (var _b = __asyncValues(globber.globGenerator()), _c; _c = yield _b.next(), !_c.done;) {
                     const file = _c.value;
                     core.info(`Processing file ${file}...`);
-                    const fileData = yield report_1.getReport(file, failIfNoTests);
+                    const fileData = yield report_1.getReportDataModel(file);
                     core.info(report_1.getDataSummary(fileData));
                     // ToDo Extract to some utility
                     data.meta.total += fileData.meta.total;
@@ -326,7 +326,7 @@ const converter = __importStar(__webpack_require__(7292));
 function getReportDataModel(path) {
     return __awaiter(this, void 0, void 0, function* () {
         core.debug(`Try to open ${path}`);
-        const file = yield fs.promises.readFile(path);
+        const file = yield fs.promises.readFile(path, 'utf8');
         const report = xmljs.xml2js(file, { compact: true });
         // Process results
         core.debug(`File ${path} parsed...`);

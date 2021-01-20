@@ -2,7 +2,7 @@ import * as core from '@actions/core';
 import * as github from '@actions/github';
 import {getDataSummary} from './report';
 
-export async function createCheck(githubToken: string, checkName: string, meta: any, conclusion: string): void {
+export async function createCheck(githubToken: string, checkName: string, meta: any, conclusion: string): Promise<void> {
     const pullRequest = github.context.payload.pull_request;
     const link = (pullRequest && pullRequest.html_url) || github.context.ref;
     const headSha = (pullRequest && pullRequest.head.sha) || github.context.sha;
@@ -29,7 +29,7 @@ export async function createCheck(githubToken: string, checkName: string, meta: 
     core.setOutput('conclusion', conclusion);
 
     const octokit = github.getOctokit(githubToken);
-    await octokit.checks.create(createCheckRequest);
+    await octokit.checks.create(createCheckRequest as any);
 }
 
 export function cleanPaths(annotations: any, pathToClean: string): void {

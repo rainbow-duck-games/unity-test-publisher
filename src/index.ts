@@ -1,7 +1,7 @@
 import * as core from '@actions/core';
 import * as glob from '@actions/glob';
 import {cleanPaths, createCheck} from './action';
-import {getDataSummary, getReport, getReportData} from './report';
+import {getDataSummary, getReportDataModel, getDataModel} from './report';
 
 async function run(): Promise<void> {
     try {
@@ -18,10 +18,10 @@ async function run(): Promise<void> {
         const globber = await glob.create(reportPaths, {
             followSymbolicLinks: false
         });
-        const data = getReportData();
+        const data = getDataModel();
         for await (const file of globber.globGenerator()) {
             core.info(`Processing file ${file}...`);
-            const fileData = await getReport(file, failIfNoTests);
+            const fileData = await getReportDataModel(file);
             core.info(getDataSummary(fileData));
 
             // ToDo Extract to some utility

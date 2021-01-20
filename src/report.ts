@@ -3,9 +3,9 @@ import * as fs from 'fs';
 import * as xmljs from 'xml-js';
 import * as converter from './converter';
 
-export async function getReportDataModel(path: string): any {
+export async function getReportDataModel(path: string): Promise<any> {
     core.debug(`Try to open ${path}`);
-    const file = await fs.promises.readFile(path);
+    const file = await fs.promises.readFile(path, 'utf8');
     const report = xmljs.xml2js(file, {compact: true});
 
     // Process results
@@ -19,7 +19,7 @@ export async function getReportDataModel(path: string): any {
     return getDataModel(meta.total, meta.passed, meta.skipped, meta.failed, converter.convertReport(report));
 }
 
-export function getDataModel(total = 0, passed = 0, skipped = 0, failed = 0, annotations = []) {
+export function getDataModel(total = 0, passed = 0, skipped = 0, failed = 0, annotations = []): any {
     return {
         meta: {
             total: Number(total),
