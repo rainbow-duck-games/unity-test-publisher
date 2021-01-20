@@ -10629,7 +10629,8 @@ const { getReport } = __nccwpck_require__(7098);
             core.setFailed(`There were ${meta.failed} failed tests`);
         }
     } catch (e) {
-        core.setFailed(e.message);
+        core.setFailed(e);
+        core.error(e);
     }
 })();
 

@@ -54,6 +54,7 @@ const { getReport } = require('./report');
             core.setFailed(`There were ${meta.failed} failed tests`);
         }
     } catch (e) {
-        core.setFailed(e.message);
+        core.error(e);
+        core.setFailed(e);
     }
 })();
