@@ -29,7 +29,7 @@ export interface TestSuite {
     _attributes: TestSuiteAttributes;
     'test-suite': TestSuite | TestSuite[];
     'test-case': TestCase | TestCase[];
-    failure: FailureMessage;
+    failure?: FailureMessage;
 }
 
 export interface TestSuiteAttributes extends CommonSuiteAttributes {
@@ -40,7 +40,7 @@ export interface TestSuiteAttributes extends CommonSuiteAttributes {
 
 export interface TestCase {
     _attributes: TestCaseAttributes;
-    failure: FailureMessage;
+    failure?: FailureMessage;
 }
 
 export interface TestCaseAttributes extends CommonAttributes {

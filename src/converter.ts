@@ -47,19 +47,25 @@ export function convertSuite(suites: TestSuite | TestSuite[]): Annotation[] {
     return annotations;
 }
 
-export function convertTests(tests: TestCase | TestCase[]): Annotation[] {
+export function convertTests(
+    tests: TestCase | TestCase[],
+    convertTestCaseFn = convertTestCase
+): Annotation[] {
     if (Array.isArray(tests)) {
         return tests.reduce(
-            (acc, test) => acc.concat(convertTests(test)),
+            (acc, test) => acc.concat(convertTests(test, convertTestCaseFn)),
             [] as Annotation[]
         );
     }
 
-    const result = convertTestCase(tests);
+    const result = convertTestCaseFn(tests);
     return result !== undefined ? [result] : [];
 }
 
-export function convertTestCase(testCase: TestCase): Annotation | undefined {
+export function convertTestCase(
+    testCase: TestCase,
+    findAnnotationPointFn = findAnnotationPoint
+): Annotation | undefined {
     const failure = testCase.failure;
     if (!failure) {
         core.debug(
@@ -77,7 +83,7 @@ export function convertTestCase(testCase: TestCase): Annotation | undefined {
     }
 
     const trace = failure['stack-trace']._cdata;
-    const point = findAnnotationPoint(trace);
+    const point = findAnnotationPointFn(trace);
     if (point === undefined) {
         core.warning(
             'Not able to find entry point for failed test! Test trace:'
