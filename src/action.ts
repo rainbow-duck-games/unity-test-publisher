@@ -1,8 +1,14 @@
 import * as core from '@actions/core';
 import * as github from '@actions/github';
-import {getDataSummary} from './report';
+import {Endpoints} from '@octokit/types';
+import {Annotation, Meta} from './meta';
 
-export async function createCheck(githubToken: string, checkName: string, meta: any, conclusion: string): Promise<void> {
+export async function createCheck(
+    githubToken: string,
+    checkName: string,
+    meta: Meta,
+    conclusion: string
+): Promise<void> {
     const pullRequest = github.context.payload.pull_request;
     const link = (pullRequest && pullRequest.html_url) || github.context.ref;
     const headSha = (pullRequest && pullRequest.head.sha) || github.context.sha;
@@ -17,11 +23,11 @@ export async function createCheck(githubToken: string, checkName: string, meta: 
         status: 'completed',
         conclusion,
         output: {
-            title: getDataSummary(meta),
+            title: meta.getSummary(),
             summary: '',
-            annotations: meta.annotations.slice(0, 50)
-        }
-    };
+            annotations: meta.annotations.slice(0, 50),
+        },
+    } as Endpoints['POST /repos/{owner}/{repo}/check-runs']['parameters'];
 
     core.debug(JSON.stringify(createCheckRequest, null, 2));
 
@@ -29,10 +35,13 @@ export async function createCheck(githubToken: string, checkName: string, meta: 
     core.setOutput('conclusion', conclusion);
 
     const octokit = github.getOctokit(githubToken);
-    await octokit.checks.create(createCheckRequest as any);
+    await octokit.checks.create(createCheckRequest);
 }
 
-export function cleanPaths(annotations: any, pathToClean: string): void {
+export function cleanPaths(
+    annotations: Annotation[],
+    pathToClean: string
+): void {
     for (const annotation of annotations) {
         annotation.path = annotation.path.replace(pathToClean, '');
     }

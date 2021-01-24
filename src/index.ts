@@ -1,37 +1,29 @@
 import * as core from '@actions/core';
 import * as glob from '@actions/glob';
 import {cleanPaths, createCheck} from './action';
-import {getDataSummary, getReportDataModel, getDataModel} from './report';
+import {parseReport} from './report';
+import {Meta} from './meta';
 
 async function run(): Promise<void> {
     try {
-        const githubToken = core.getInput('githubToken', {required: true});
+        // Get all report files
         const reportPaths = core.getInput('reportPaths', {required: true});
-        const workdirPrefix = core.getInput('workdirPrefix');
-        const checkName = core.getInput('checkName');
-        const checkFailedStatus = core.getInput('checkFailedStatus');
-        const failOnFailedTests =
-            core.getInput('failOnTestFailures') === 'true';
-        const failIfNoTests = core.getInput('failIfNoTests') === 'true';
-
         core.info(`Lookup for files matching: ${reportPaths}...`);
         const globber = await glob.create(reportPaths, {
-            followSymbolicLinks: false
+            followSymbolicLinks: false,
         });
-        const data = getDataModel();
+        const data = new Meta();
         for await (const file of globber.globGenerator()) {
             core.info(`Processing file ${file}...`);
-            const fileData = await getReportDataModel(file);
-            core.info(getDataSummary(fileData));
-
-            // ToDo Extract to some utility
-            data.meta.total += fileData.meta.total;
-            data.meta.passed += fileData.meta.passed;
-            data.meta.skipped += fileData.meta.skipped;
-            data.meta.failed += fileData.meta.failed;
-
-            data.annotations.push(...fileData.annotations);
+            const fileData = await parseReport(file);
+            core.info(fileData.getSummary());
+            data.addChild(fileData);
         }
+
+        // Prepare report settings
+        const checkName = core.getInput('checkName');
+        const checkFailedStatus = core.getInput('checkFailedStatus');
+        const failIfNoTests = core.getInput('failIfNoTests') === 'true';
 
         // Convert meta
         const conclusion =
@@ -40,17 +32,21 @@ async function run(): Promise<void> {
                 : checkFailedStatus;
         core.info('=================');
         core.info('Analyze result:');
-        core.info(getDataSummary(data));
+        core.info(data.getSummary());
 
         if (failIfNoTests && data.total === 0) {
             core.setFailed('Not tests found in the report!');
             return;
         }
 
+        // Create check
+        const githubToken = core.getInput('githubToken', {required: true});
+        const workdirPrefix = core.getInput('workdirPrefix');
         cleanPaths(data.annotations, workdirPrefix);
         await createCheck(githubToken, checkName, data, conclusion);
 
-        if (failOnFailedTests && data.failed > 0) {
+        const failOnFailed = core.getInput('failOnTestFailures') === 'true';
+        if (failOnFailed && data.failed > 0) {
             core.setFailed(`There were ${data.failed} failed tests`);
         }
     } catch (e) {
