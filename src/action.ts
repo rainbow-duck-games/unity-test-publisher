@@ -1,12 +1,13 @@
 import * as core from '@actions/core';
 import * as github from '@actions/github';
 import {Endpoints} from '@octokit/types';
-import {Annotation, Meta} from './meta';
+import {Annotation, SuiteMeta} from './meta.model';
 
 export async function createCheck(
     githubToken: string,
     checkName: string,
-    meta: Meta,
+    meta: SuiteMeta,
+    annotations: Annotation[],
     conclusion: string
 ): Promise<void> {
     const pullRequest = github.context.payload.pull_request;
@@ -25,7 +26,7 @@ export async function createCheck(
         output: {
             title: meta.getSummary(),
             summary: '',
-            annotations: meta.annotations.slice(0, 50),
+            annotations: annotations.slice(0, 50),
         },
     } as Endpoints['POST /repos/{owner}/{repo}/check-runs']['parameters'];
 

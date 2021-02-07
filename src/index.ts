@@ -2,7 +2,7 @@ import * as core from '@actions/core';
 import * as glob from '@actions/glob';
 import {cleanPaths, createCheck} from './action';
 import {parseReport} from './report';
-import {Meta} from './meta';
+import {Annotation, SuiteMeta, TestMeta} from './meta.model';
 
 async function run(): Promise<void> {
     try {
@@ -12,12 +12,12 @@ async function run(): Promise<void> {
         const globber = await glob.create(reportPaths, {
             followSymbolicLinks: false,
         });
-        const data = new Meta();
+        const data = [];
         for await (const file of globber.globGenerator()) {
             core.info(`Processing file ${file}...`);
             const fileData = await parseReport(file);
             core.info(fileData.getSummary());
-            data.addChild(fileData);
+            data.push(fileData);
         }
 
         // Prepare report settings
@@ -25,16 +25,26 @@ async function run(): Promise<void> {
         const checkFailedStatus = core.getInput('checkFailedStatus');
         const failIfNoTests = core.getInput('failIfNoTests') === 'true';
 
+        const summary = data.reduce((acc, suite) => {
+            acc.total += suite.total;
+            acc.passed += suite.passed;
+            acc.skipped += suite.skipped;
+            acc.failed += suite.failed;
+            acc.duration += suite.duration;
+            acc.addChild(suite);
+            return acc;
+        }, new SuiteMeta('run'));
+
         // Convert meta
         const conclusion =
-            data.failed === 0 && (data.total > 0 || !failIfNoTests)
+            summary.failed === 0 && (summary.total > 0 || !failIfNoTests)
                 ? 'success'
                 : checkFailedStatus;
         core.info('=================');
         core.info('Analyze result:');
-        core.info(data.getSummary());
+        core.info(summary.getSummary());
 
-        if (failIfNoTests && data.total === 0) {
+        if (failIfNoTests && summary.total === 0) {
             core.setFailed('Not tests found in the report!');
             return;
         }
@@ -42,16 +52,35 @@ async function run(): Promise<void> {
         // Create check
         const githubToken = core.getInput('githubToken', {required: true});
         const workdirPrefix = core.getInput('workdirPrefix');
-        cleanPaths(data.annotations, workdirPrefix);
-        await createCheck(githubToken, checkName, data, conclusion);
+        const annotations = extractAnnotations(summary);
+        cleanPaths(annotations, workdirPrefix);
+        await createCheck(
+            githubToken,
+            checkName,
+            summary,
+            annotations,
+            conclusion
+        );
 
         const failOnFailed = core.getInput('failOnTestFailures') === 'true';
-        if (failOnFailed && data.failed > 0) {
-            core.setFailed(`There were ${data.failed} failed tests`);
+        if (failOnFailed && summary.failed > 0) {
+            core.setFailed(`There were ${summary.failed} failed tests`);
         }
     } catch (e) {
         core.setFailed(e);
     }
+}
+
+function extractAnnotations(suite: SuiteMeta): Annotation[] {
+    const result = [] as Annotation[];
+    for (const child of suite.children) {
+        if (child instanceof TestMeta && child.annotation !== undefined) {
+            result.push(child.annotation);
+        } else if (child instanceof SuiteMeta) {
+            result.push(...extractAnnotations(child));
+        }
+    }
+    return [];
 }
 
 run();

@@ -1,27 +1,34 @@
 ﻿import {components} from '@octokit/openapi-types/generated/types';
 
-export class Meta {
-    title: string | undefined; // ToDo
+export abstract class Meta {
+    title: string;
+    duration = 0;
+
+    constructor(title: string) {
+        this.title = title;
+    }
+}
+
+export class SuiteMeta extends Meta {
     total = 0;
     passed = 0;
     skipped = 0;
     failed = 0;
-    annotations: Annotation[] = [];
+
     children: Meta[] = [];
 
-    addChild(child: Meta): void {
-        this.total += child.total;
-        this.passed += child.passed;
-        this.skipped += child.skipped;
-        this.failed += child.failed;
-
-        this.children.push(child);
-        this.annotations.push(...child.annotations);
+    addChild(...children: Meta[]): void {
+        this.children.push(...children);
     }
 
     getSummary(): string {
         return `Results: ${this.passed}/${this.total}, skipped: ${this.skipped}, failed: ${this.failed}`;
     }
+}
+
+export class TestMeta extends Meta {
+    result: string | undefined;
+    annotation: Annotation | undefined;
 }
 
 export type Annotation = components['schemas']['check-annotation'];

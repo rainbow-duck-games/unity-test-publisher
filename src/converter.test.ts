@@ -1,6 +1,7 @@
 import * as core from '@actions/core';
 import * as converter from '../src/converter';
 import {TestCase, TestCaseAttributes} from '../src/report.model';
+import {Annotation} from './meta.model';
 
 beforeAll(() => {
     // Disable @actions/core logging for run
@@ -38,52 +39,54 @@ describe('convertTests', () => {
         expect(mock).toHaveBeenCalledTimes(1);
         expect(mock).toHaveBeenCalledWith(testResult);
     });
-
-    test('convert single - no result', () => {
-        const mock = jest.fn().mockReturnValueOnce(undefined);
-        const testResult = {} as TestCase;
-        const result = converter.convertTests(testResult, mock);
-
-        expect(result).toMatchObject([]);
-        expect(mock).toHaveBeenCalledTimes(1);
-        expect(mock).toHaveBeenCalledWith(testResult);
-    });
 });
 
 describe('convertTestCase', () => {
     test('not failed', () => {
         const result = converter.convertTestCase({
-            _attributes: {fullname: 'Test Case'} as TestCaseAttributes,
+            _attributes: {
+                name: 'Test Name',
+                fullname: 'Test Full Name',
+                duration: '3.14',
+            } as TestCaseAttributes,
         });
 
-        expect(result).toBeUndefined();
+        expect(result.title).toBe('Test Name');
+        expect(result.duration).toBe(3.14);
+        expect(result.annotation).toBeUndefined();
+    });
+
+    test('no stack trace', () => {
+        const mock = jest.fn().mockReturnValueOnce(undefined);
+        const result = converter.convertTestCase(
+            {
+                _attributes: {
+                    name: 'Test Name',
+                    fullname: 'Test Full Name',
+                    duration: '3.14',
+                } as TestCaseAttributes,
+                failure: {
+                    message: {_cdata: 'Message CDATA'},
+                },
+            },
+            mock
+        );
+
+        expect(result.title).toBe('Test Name');
+        expect(result.duration).toBe(3.14);
+        expect(result.annotation).toBeUndefined();
+        expect(mock).toHaveBeenCalledTimes(0);
     });
 
     test('no annotation path', () => {
         const mock = jest.fn().mockReturnValueOnce(undefined);
         const result = converter.convertTestCase(
             {
-                _attributes: {fullname: 'Test Case'} as TestCaseAttributes,
-                failure: {
-                    message: {_cdata: 'Test Message'},
-                    'stack-trace': {_cdata: 'Test Trace'},
-                },
-            },
-            mock
-        );
-
-        expect(result).toBeUndefined();
-        expect(mock).toHaveBeenCalledTimes(1);
-        expect(mock).toHaveBeenCalledWith('Test Trace');
-    });
-
-    test('prepare annotation', () => {
-        const mock = jest
-            .fn()
-            .mockReturnValueOnce({path: 'test/path', line: 42});
-        const result = converter.convertTestCase(
-            {
-                _attributes: {fullname: 'Test Case'} as TestCaseAttributes,
+                _attributes: {
+                    name: 'Test Name',
+                    fullname: 'Test Full Name',
+                    duration: '3.14',
+                } as TestCaseAttributes,
                 failure: {
                     message: {_cdata: 'Message CDATA'},
                     'stack-trace': {_cdata: 'Test CDATA'},
@@ -92,15 +95,43 @@ describe('convertTestCase', () => {
             mock
         );
 
-        expect(result).toMatchObject({
+        expect(result.title).toBe('Test Name');
+        expect(result.duration).toBe(3.14);
+        expect(result.annotation).toBeUndefined();
+        expect(mock).toHaveBeenCalledTimes(1);
+        expect(mock).toHaveBeenCalledWith('Test CDATA');
+    });
+
+    test('prepare annotation', () => {
+        const mock = jest
+            .fn()
+            .mockReturnValueOnce({path: 'test/path', line: 42});
+        const result = converter.convertTestCase(
+            {
+                _attributes: {
+                    name: 'Test Name',
+                    fullname: 'Test Full Name',
+                    duration: '3.14',
+                } as TestCaseAttributes,
+                failure: {
+                    message: {_cdata: 'Message CDATA'},
+                    'stack-trace': {_cdata: 'Test CDATA'},
+                },
+            },
+            mock
+        );
+
+        expect(result.title).toBe('Test Name');
+        expect(result.duration).toBe(3.14);
+        expect(result.annotation).toMatchObject({
             annotation_level: 'failure',
             end_line: 42,
             message: 'Message CDATA',
             path: 'test/path',
             raw_details: 'Test CDATA',
             start_line: 42,
-            title: 'Test Case',
-        });
+            title: 'Test Full Name',
+        } as Annotation);
         expect(mock).toHaveBeenCalledTimes(1);
         expect(mock).toHaveBeenCalledWith('Test CDATA');
     });
