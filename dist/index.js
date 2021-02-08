@@ -144,6 +144,7 @@ function convertReport(path, report) {
     meta.failed = Number(run._attributes.failed);
     meta.skipped = Number(run._attributes.skipped);
     meta.passed = Number(run._attributes.passed);
+    meta.duration = Number(run._attributes.duration);
     meta.addTests(convertSuite(run['test-suite']));
     return meta;
 }
