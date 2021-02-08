@@ -1,7 +1,7 @@
 import * as core from '@actions/core';
 import * as converter from '../src/converter';
 import {TestCase, TestCaseAttributes} from '../src/report.model';
-import {Annotation} from './meta.model';
+import {Annotation} from '../src/meta';
 
 beforeAll(() => {
     // Disable @actions/core logging for run

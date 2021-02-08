@@ -17,12 +17,24 @@ export class SuiteMeta extends Meta {
 
     children: Meta[] = [];
 
+    extractAnnotations(): Annotation[] {
+        const result = [] as Annotation[];
+        for (const child of this.children) {
+            if (child instanceof TestMeta && child.annotation !== undefined) {
+                result.push(child.annotation);
+            } else if (child instanceof SuiteMeta) {
+                result.push(...child.extractAnnotations());
+            }
+        }
+        return result;
+    }
+
     addChild(...children: Meta[]): void {
         this.children.push(...children);
     }
 
     getSummary(): string {
-        return `Results: ${this.passed}/${this.total}, skipped: ${this.skipped}, failed: ${this.failed}`;
+        return `Results: ${this.passed}/${this.total}, skipped: ${this.skipped}, failed: ${this.failed} in ${this.duration}`;
     }
 }
 

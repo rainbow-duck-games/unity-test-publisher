@@ -96,12 +96,12 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.findAnnotationPoint = exports.convertTestCase = exports.convertTests = exports.convertSuite = exports.convertReport = void 0;
 const core = __importStar(__webpack_require__(2186));
-const meta_model_1 = __webpack_require__(132);
+const meta_1 = __webpack_require__(3714);
 function convertReport(path, report) {
     core.debug('Start analyzing report:');
     core.debug(JSON.stringify(report));
     const run = report['test-run'];
-    const meta = new meta_model_1.SuiteMeta(path);
+    const meta = new meta_1.SuiteMeta(path);
     meta.total = Number(run._attributes.total);
     meta.failed = Number(run._attributes.failed);
     meta.skipped = Number(run._attributes.skipped);
@@ -115,7 +115,7 @@ function convertSuite(suites) {
         return suites.reduce((acc, suite) => acc.concat(convertSuite(suite)), []);
     }
     core.debug(`Analyze suite ${suites._attributes.type} / ${suites._attributes.fullname}`);
-    const meta = new meta_model_1.SuiteMeta(suites._attributes.fullname);
+    const meta = new meta_1.SuiteMeta(suites._attributes.fullname);
     meta.total = Number(suites._attributes.total);
     meta.failed = Number(suites._attributes.failed);
     meta.skipped = Number(suites._attributes.skipped);
@@ -139,7 +139,7 @@ function convertTests(tests, convertTestCaseFn = convertTestCase) {
 }
 exports.convertTests = convertTests;
 function convertTestCase(testCase, findAnnotationPointFn = findAnnotationPoint) {
-    const meta = new meta_model_1.TestMeta(testCase._attributes.name);
+    const meta = new meta_1.TestMeta(testCase._attributes.name);
     meta.result = testCase._attributes.result;
     meta.duration = Number(testCase._attributes.duration);
     const failure = testCase.failure;
@@ -232,7 +232,7 @@ const core = __importStar(__webpack_require__(2186));
 const glob = __importStar(__webpack_require__(8090));
 const action_1 = __webpack_require__(9139);
 const report_1 = __webpack_require__(8269);
-const meta_model_1 = __webpack_require__(132);
+const meta_1 = __webpack_require__(3714);
 function run() {
     var e_1, _a;
     return __awaiter(this, void 0, void 0, function* () {
@@ -272,7 +272,7 @@ function run() {
                 acc.duration += suite.duration;
                 acc.addChild(suite);
                 return acc;
-            }, new meta_model_1.SuiteMeta('run'));
+            }, new meta_1.SuiteMeta('run'));
             // Convert meta
             const conclusion = summary.failed === 0 && (summary.total > 0 || !failIfNoTests)
                 ? 'success'
@@ -287,7 +287,7 @@ function run() {
             // Create check
             const githubToken = core.getInput('githubToken', { required: true });
             const workdirPrefix = core.getInput('workdirPrefix');
-            const annotations = extractAnnotations(summary);
+            const annotations = summary.extractAnnotations();
             action_1.cleanPaths(annotations, workdirPrefix);
             yield action_1.createCheck(githubToken, checkName, summary, annotations, conclusion);
             const failOnFailed = core.getInput('failOnTestFailures') === 'true';
@@ -300,24 +300,12 @@ function run() {
         }
     });
 }
-function extractAnnotations(suite) {
-    const result = [];
-    for (const child of suite.children) {
-        if (child instanceof meta_model_1.TestMeta && child.annotation !== undefined) {
-            result.push(child.annotation);
-        }
-        else if (child instanceof meta_model_1.SuiteMeta) {
-            result.push(...extractAnnotations(child));
-        }
-    }
-    return [];
-}
 run();
 
 
 /***/ }),
 
-/***/ 132:
+/***/ 3714:
 /***/ ((__unused_webpack_module, exports) => {
 
 "use strict";
@@ -340,11 +328,23 @@ class SuiteMeta extends Meta {
         this.failed = 0;
         this.children = [];
     }
+    extractAnnotations() {
+        const result = [];
+        for (const child of this.children) {
+            if (child instanceof TestMeta && child.annotation !== undefined) {
+                result.push(child.annotation);
+            }
+            else if (child instanceof SuiteMeta) {
+                result.push(...child.extractAnnotations());
+            }
+        }
+        return result;
+    }
     addChild(...children) {
         this.children.push(...children);
     }
     getSummary() {
-        return `Results: ${this.passed}/${this.total}, skipped: ${this.skipped}, failed: ${this.failed}`;
+        return `Results: ${this.passed}/${this.total}, skipped: ${this.skipped}, failed: ${this.failed} in ${this.duration}`;
     }
 }
 exports.SuiteMeta = SuiteMeta;
@@ -394,7 +394,7 @@ const core = __importStar(__webpack_require__(2186));
 const fs = __importStar(__webpack_require__(5747));
 const xmljs = __importStar(__webpack_require__(8821));
 const converter = __importStar(__webpack_require__(7292));
-const meta_model_1 = __webpack_require__(132);
+const meta_1 = __webpack_require__(3714);
 function parseReport(path) {
     return __awaiter(this, void 0, void 0, function* () {
         core.debug(`Try to open ${path}`);
@@ -404,7 +404,7 @@ function parseReport(path) {
         core.debug(`File ${path} parsed...`);
         if (!report['test-run']) {
             core.error('No metadata found in the file - path');
-            return new meta_model_1.SuiteMeta(path);
+            return new meta_1.SuiteMeta(path);
         }
         return converter.convertReport(path, report);
     });

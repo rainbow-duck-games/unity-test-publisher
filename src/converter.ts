@@ -1,5 +1,5 @@
 import * as core from '@actions/core';
-import {Annotation, SuiteMeta, TestMeta} from './meta.model';
+import {Annotation, SuiteMeta, TestMeta} from './meta';
 import {TestCase, TestRun, TestSuite} from './report.model';
 
 export function convertReport(

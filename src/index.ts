@@ -2,7 +2,7 @@ import * as core from '@actions/core';
 import * as glob from '@actions/glob';
 import {cleanPaths, createCheck} from './action';
 import {parseReport} from './report';
-import {Annotation, SuiteMeta, TestMeta} from './meta.model';
+import {SuiteMeta} from './meta';
 
 async function run(): Promise<void> {
     try {
@@ -52,7 +52,7 @@ async function run(): Promise<void> {
         // Create check
         const githubToken = core.getInput('githubToken', {required: true});
         const workdirPrefix = core.getInput('workdirPrefix');
-        const annotations = extractAnnotations(summary);
+        const annotations = summary.extractAnnotations();
         cleanPaths(annotations, workdirPrefix);
         await createCheck(
             githubToken,
@@ -69,18 +69,6 @@ async function run(): Promise<void> {
     } catch (e) {
         core.setFailed(e);
     }
-}
-
-function extractAnnotations(suite: SuiteMeta): Annotation[] {
-    const result = [] as Annotation[];
-    for (const child of suite.children) {
-        if (child instanceof TestMeta && child.annotation !== undefined) {
-            result.push(child.annotation);
-        } else if (child instanceof SuiteMeta) {
-            result.push(...extractAnnotations(child));
-        }
-    }
-    return [];
 }
 
 run();

@@ -2,7 +2,7 @@ import * as core from '@actions/core';
 import * as fs from 'fs';
 import * as xmljs from 'xml-js';
 import * as converter from './converter';
-import {SuiteMeta} from './meta.model';
+import {SuiteMeta} from './meta';
 import {TestRun} from './report.model';
 
 export async function parseReport(path: string): Promise<SuiteMeta> {

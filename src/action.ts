@@ -1,7 +1,7 @@
 import * as core from '@actions/core';
 import * as github from '@actions/github';
 import {Endpoints} from '@octokit/types';
-import {Annotation, SuiteMeta} from './meta.model';
+import {Annotation, SuiteMeta} from './meta';
 
 export async function createCheck(
     githubToken: string,
