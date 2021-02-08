@@ -100,7 +100,7 @@ function markHelper(arg) {
 function indentHelper(arg) {
     return arg
         .split('\n')
-        .map(s => `    ${s}`)
+        .map(s => `        ${s}`)
         .join('\n');
 }
 

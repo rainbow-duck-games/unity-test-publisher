@@ -78,6 +78,6 @@ function markHelper(arg: string | RunMeta): string {
 function indentHelper(arg: string): string {
     return arg
         .split('\n')
-        .map(s => `    ${s}`)
+        .map(s => `        ${s}`)
         .join('\n');
 }

@@ -1,28 +1,29 @@
 ﻿import {renderSummaryBody} from './action';
 import {RunMeta, TestMeta} from './meta';
 
-const model = `## Test
+const model = `### Test
 
 <details><summary>:warning: 3/6, failed 2, skipped 1 - duration 3.14s</summary>
 
-##### suiteA
+#### suiteA
 
 * :x: **Test A** - 1.23s
-    
-    Error message
-    
-    Raw details
-    Test
-    
+        
+        Error message
+        
+        Raw details
+        Test
+        
 * :warning: **Test B** - 2.34s
 
 
-##### suiteB
+#### suiteB
 
 * :heavy_check_mark: **Test C** - 3.45s
 * :heavy_check_mark: **Test D** - 4.56s
 
 </details>
+
 `;
 
 describe('CheckAction', () => {
