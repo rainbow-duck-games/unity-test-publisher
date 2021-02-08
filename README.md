@@ -1,6 +1,6 @@
 # Unity Test Publisher
 
-<p align="center">
+<p>
   <a href="https://github.com/rainbow-duck-games/unity-test-publisher/actions?query=workflow%3A%22Action+CI%22"><img alt="Action CI status" src="https://github.com/rainbow-duck-games/unity-test-publisher/workflows/Action CI/badge.svg"></a>
   <a href="https://twitter.com/RainbowDuckGms"><img alt="Follow Twitter" src="https://img.shields.io/badge/Twitter-Follow-blue"></a>
   <a href="https://discord.gg/2b9BhDhVBJ"><img alt="Join Discord" src="https://img.shields.io/badge/Discord-Join-blueviolet"></a>
