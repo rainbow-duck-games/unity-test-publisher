@@ -59,8 +59,8 @@ async function run(): Promise<void> {
         await createCheck(
             githubToken,
             checkName,
-            conclusion,
             summary.getSummary(),
+            conclusion,
             runs,
             annotations
         );

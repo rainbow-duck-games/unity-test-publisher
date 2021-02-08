@@ -318,7 +318,7 @@ function run() {
             const workdirPrefix = core.getInput('workdirPrefix');
             const annotations = summary.extractAnnotations();
             action_1.cleanPaths(annotations, workdirPrefix);
-            yield action_1.createCheck(githubToken, checkName, conclusion, summary.getSummary(), runs, annotations);
+            yield action_1.createCheck(githubToken, checkName, summary.getSummary(), conclusion, runs, annotations);
             const failOnFailed = core.getInput('failOnTestFailures') === 'true';
             if (failOnFailed && summary.failed > 0) {
                 core.setFailed(`There were ${summary.failed} failed tests`);

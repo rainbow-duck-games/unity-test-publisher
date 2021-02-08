@@ -41,6 +41,6 @@ Please check [unity_run_tests.yml](.github/workflows/unity_run_tests.yml) to fin
 - `reportPaths` - 'glob expression to find Unity test reports, default - `./artifact/*.xml`
 - `workdirPrefix` - prefix on build machine to ignore in report, default - `/github/workspace/`
 - `checkName` - check name for test reports. Change it if you use more than one publisher step
-- `checkFailedStatus` - what status should be for failed check, default - `failure`
+- `checkFailedStatus` - what status should be for failed check, default - `failure`, allowed values: `success`, `failure`, `neutral`, `cancelled`, `skipped`, `timed_out`, or `action_required`
 - `failOnTestFailures` - fail run if there were test failures, default - `false`
 - `failIfNoTests` - fail run if there were no test results found, default - `true`
