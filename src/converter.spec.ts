@@ -1,7 +1,12 @@
 import * as core from '@actions/core';
 import * as converter from '../src/converter';
-import {TestCase, TestCaseAttributes} from '../src/report.model';
-import {Annotation} from '../src/meta';
+import {
+    TestCase,
+    TestCaseAttributes,
+    TestSuite,
+    TestSuiteAttributes,
+} from './report.model';
+import {Annotation, TestMeta} from './meta';
 
 beforeAll(() => {
     // Disable @actions/core logging for run
@@ -11,13 +16,77 @@ beforeAll(() => {
     jest.spyOn(core, 'debug').mockImplementation(jest.fn());
 });
 
+describe('convertSuite', () => {
+    test('convert single', () => {
+        const mock = jest.fn().mockImplementation(test => {
+            return Array.isArray(test)
+                ? test.map(t => ({title: t._attributes.name} as TestMeta))
+                : [{title: test._attributes.name} as TestMeta];
+        });
+        const targetSuite = {
+            _attributes: {
+                fullname: 'Suite Full Name',
+                total: '6',
+                failed: '1',
+                skipped: '2',
+                passed: '3',
+                duration: '1.34',
+            } as TestSuiteAttributes,
+            'test-case': [
+                {_attributes: {name: 'testA'}} as TestCase,
+                {_attributes: {name: 'testB'}} as TestCase,
+            ],
+            'test-suite': [
+                {
+                    _attributes: {
+                        fullname: 'Inner Suite Full Name',
+                        total: '9',
+                        failed: '2',
+                        skipped: '3',
+                        passed: '4',
+                        duration: '0.34',
+                    } as TestSuiteAttributes,
+                    'test-case': {_attributes: {name: 'testC'}} as TestCase,
+                    'test-suite': [],
+                } as TestSuite,
+            ],
+        } as TestSuite;
+        const result = converter.convertSuite(targetSuite, mock);
+
+        expect(result).toMatchObject([
+            {
+                duration: 1.34,
+                title: 'Suite Full Name',
+                total: 6,
+                passed: 3,
+                skipped: 2,
+                failed: 1,
+                children: [
+                    {
+                        duration: 0.34,
+                        title: 'Inner Suite Full Name',
+                        total: 9,
+                        passed: 4,
+                        skipped: 3,
+                        failed: 2,
+                        children: [{title: 'testC'}],
+                    },
+                    {title: 'testA'},
+                    {title: 'testB'},
+                ],
+            },
+        ]);
+        expect(mock).toHaveBeenCalledTimes(2);
+    });
+});
+
 describe('convertTests', () => {
     test('convert array', () => {
         const mock = jest.fn().mockImplementation(test => {
-            return {title: `Test case ${test._attributes.fullname}`};
+            return {title: `Test case ${test._attributes.name}`};
         });
-        const testA = {_attributes: {fullname: 'testA'}} as TestCase;
-        const testB = {_attributes: {fullname: 'testB'}} as TestCase;
+        const testA = {_attributes: {name: 'testA'}} as TestCase;
+        const testB = {_attributes: {name: 'testB'}} as TestCase;
         const testResult = [testA, testB];
         const result = converter.convertTests(testResult, mock);
 
@@ -46,7 +115,6 @@ describe('convertTestCase', () => {
         const result = converter.convertTestCase({
             _attributes: {
                 name: 'Test Name',
-                fullname: 'Test Full Name',
                 duration: '3.14',
             } as TestCaseAttributes,
         });
@@ -62,7 +130,6 @@ describe('convertTestCase', () => {
             {
                 _attributes: {
                     name: 'Test Name',
-                    fullname: 'Test Full Name',
                     duration: '3.14',
                 } as TestCaseAttributes,
                 failure: {
@@ -84,7 +151,6 @@ describe('convertTestCase', () => {
             {
                 _attributes: {
                     name: 'Test Name',
-                    fullname: 'Test Full Name',
                     duration: '3.14',
                 } as TestCaseAttributes,
                 failure: {

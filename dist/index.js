@@ -110,9 +110,9 @@ function convertReport(path, report) {
     return meta;
 }
 exports.convertReport = convertReport;
-function convertSuite(suites) {
+function convertSuite(suites, convertTestsFn = convertTests) {
     if (Array.isArray(suites)) {
-        return suites.reduce((acc, suite) => acc.concat(convertSuite(suite)), []);
+        return suites.reduce((acc, suite) => acc.concat(convertSuite(suite, convertTestsFn)), []);
     }
     core.debug(`Analyze suite ${suites._attributes.type} / ${suites._attributes.fullname}`);
     const meta = new meta_1.SuiteMeta(suites._attributes.fullname);
@@ -120,13 +120,14 @@ function convertSuite(suites) {
     meta.failed = Number(suites._attributes.failed);
     meta.skipped = Number(suites._attributes.skipped);
     meta.passed = Number(suites._attributes.passed);
+    meta.duration = Number(suites._attributes.duration);
     const innerSuite = suites['test-suite'];
     if (innerSuite) {
-        meta.addChild(...convertSuite(innerSuite));
+        meta.addChild(...convertSuite(innerSuite, convertTestsFn));
     }
     const tests = suites['test-case'];
     if (tests) {
-        meta.addChild(...convertTests(tests));
+        meta.addChild(...convertTestsFn(tests));
     }
     return [meta];
 }

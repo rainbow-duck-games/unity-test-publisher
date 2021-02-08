@@ -21,10 +21,13 @@ export function convertReport(
     return meta;
 }
 
-export function convertSuite(suites: TestSuite | TestSuite[]): SuiteMeta[] {
+export function convertSuite(
+    suites: TestSuite | TestSuite[],
+    convertTestsFn = convertTests
+): SuiteMeta[] {
     if (Array.isArray(suites)) {
         return suites.reduce(
-            (acc, suite) => acc.concat(convertSuite(suite)),
+            (acc, suite) => acc.concat(convertSuite(suite, convertTestsFn)),
             [] as SuiteMeta[]
         );
     }
@@ -37,15 +40,16 @@ export function convertSuite(suites: TestSuite | TestSuite[]): SuiteMeta[] {
     meta.failed = Number(suites._attributes.failed);
     meta.skipped = Number(suites._attributes.skipped);
     meta.passed = Number(suites._attributes.passed);
+    meta.duration = Number(suites._attributes.duration);
 
     const innerSuite = suites['test-suite'];
     if (innerSuite) {
-        meta.addChild(...convertSuite(innerSuite));
+        meta.addChild(...convertSuite(innerSuite, convertTestsFn));
     }
 
     const tests = suites['test-case'];
     if (tests) {
-        meta.addChild(...convertTests(tests));
+        meta.addChild(...convertTestsFn(tests));
     }
 
     return [meta];
