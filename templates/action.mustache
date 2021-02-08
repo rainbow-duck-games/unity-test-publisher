@@ -1,0 +1,18 @@
+{{#runs}}
+## {{title}}
+
+<details><summary>:x: {{passed}}/{{total}}, failed {{failed}}, skipped {{skipped}} - duration {{duration}}s</summary>
+
+{{#suites}}
+#### {{title}} - duration {{duration}}s
+
+{{#tests}}
+* {{mark}} **{{title}}** - {{duration}}s{{#out?}}
+        {{out}}
+
+        {{trace}}
+{{/out?}}{{/tests}}
+{{/suites}}
+
+</details>
+{{/runs}}

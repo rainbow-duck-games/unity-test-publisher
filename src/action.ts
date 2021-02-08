@@ -1,12 +1,14 @@
 import * as core from '@actions/core';
 import * as github from '@actions/github';
 import {Endpoints} from '@octokit/types';
-import {Annotation, SuiteMeta} from './meta';
+import {Annotation, RunMeta} from './meta';
+import * as fs from 'fs';
+import Mustache from 'mustache';
 
 export async function createCheck(
     githubToken: string,
     checkName: string,
-    meta: SuiteMeta,
+    meta: RunMeta,
     annotations: Annotation[],
     conclusion: string
 ): Promise<void> {
@@ -17,6 +19,7 @@ export async function createCheck(
         `Posting status 'completed' with conclusion '${conclusion}' to ${link} (sha: ${headSha})`
     );
 
+    const summary = await renderSummary(meta);
     const createCheckRequest = {
         ...github.context.repo,
         name: checkName,
@@ -24,8 +27,8 @@ export async function createCheck(
         status: 'completed',
         conclusion,
         output: {
-            title: meta.getSummary(),
-            summary: '',
+            title: meta.getTitle(),
+            summary,
             annotations: annotations.slice(0, 50),
         },
     } as Endpoints['POST /repos/{owner}/{repo}/check-runs']['parameters'];
@@ -48,4 +51,10 @@ export function cleanPaths(
     }
 }
 
-module.exports = {cleanPaths, createCheck};
+export async function renderSummary(runMeta: RunMeta): Promise<string> {
+    const template = await fs.promises.readFile(
+        'templates/action.mustache',
+        'utf8'
+    );
+    return Mustache.render(template, runMeta);
+}

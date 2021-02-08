@@ -2,7 +2,7 @@ import * as core from '@actions/core';
 import * as glob from '@actions/glob';
 import {cleanPaths, createCheck} from './action';
 import {parseReport} from './report';
-import {SuiteMeta} from './meta';
+import {RunMeta} from './meta';
 
 async function run(): Promise<void> {
     try {
@@ -16,7 +16,7 @@ async function run(): Promise<void> {
         for await (const file of globber.globGenerator()) {
             core.info(`Processing file ${file}...`);
             const fileData = await parseReport(file);
-            core.info(fileData.getSummary());
+            core.info(fileData.getTitle());
             data.push(fileData);
         }
 
@@ -31,9 +31,11 @@ async function run(): Promise<void> {
             acc.skipped += suite.skipped;
             acc.failed += suite.failed;
             acc.duration += suite.duration;
-            acc.addChild(suite);
+            for (const key in suite.suites) {
+                acc.addTests(suite.suites[key]);
+            }
             return acc;
-        }, new SuiteMeta('run'));
+        }, new RunMeta('run'));
 
         // Convert meta
         const conclusion =
@@ -42,7 +44,7 @@ async function run(): Promise<void> {
                 : checkFailedStatus;
         core.info('=================');
         core.info('Analyze result:');
-        core.info(summary.getSummary());
+        core.info(summary.getTitle());
 
         if (failIfNoTests && summary.total === 0) {
             core.setFailed('Not tests found in the report!');

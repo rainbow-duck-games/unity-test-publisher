@@ -1,37 +1,38 @@
-﻿import {Annotation, SuiteMeta, TestMeta} from '../src/meta';
+﻿import {Annotation, RunMeta, TestMeta} from './meta';
 
 describe('SuiteMeta', () => {
-    test('getSummary', () => {
-        const suite = new SuiteMeta('Test Suite');
+    test('getTitle', () => {
+        const suite = new RunMeta('Test Suite');
         suite.total = 6;
         suite.passed = 1;
         suite.failed = 2;
         suite.skipped = 3;
         suite.duration = 2.2;
-        expect(suite.getSummary()).toBe(
+        expect(suite.getTitle()).toBe(
             'Results: 1/6, skipped: 3, failed: 2 in 2.2'
         );
     });
 
-    test('addChild', () => {
-        const suite = new SuiteMeta('Test Suite');
-        const innerSuite = new SuiteMeta('Inner Suite');
-        const test = new TestMeta('Test');
-        suite.addChild(innerSuite, test);
-        expect(suite.children).toContain(innerSuite);
-        expect(suite.children).toContain(test);
+    test('addTests', () => {
+        const suite = new RunMeta('Test Suite');
+        const testA = new TestMeta('suiteA', 'testA');
+        const testB = new TestMeta('suiteB', 'testB');
+        const testC = new TestMeta('suiteB', 'testC');
+        suite.addTests([testA, testB, testC]);
+        expect(suite.suites).toMatchObject({
+            suiteA: [testA],
+            suiteB: [testB, testC],
+        });
     });
 
     test('extractAnnotations', () => {
-        const suite = new SuiteMeta('Test Suite');
-        const testA = new TestMeta('Test A');
+        const suite = new RunMeta('Test Suite');
+        const testA = new TestMeta('suiteA', 'testA');
         testA.annotation = {title: 'Test A Annotation'} as Annotation;
-        const testB = new TestMeta('Test B');
+        const testB = new TestMeta('suiteB', 'testB');
         testB.annotation = {title: 'Test B Annotation'} as Annotation;
-        const innerSuite = new SuiteMeta('Inner Suite');
-        innerSuite.addChild(testB);
+        suite.addTests([testA, testB]);
 
-        suite.addChild(innerSuite, testA);
         const results = suite.extractAnnotations();
         expect(results).toContain(testA.annotation);
         expect(results).toContain(testB.annotation);

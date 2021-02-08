@@ -1,22 +1,22 @@
 import * as core from '@actions/core';
-import {Annotation, SuiteMeta, TestMeta} from './meta';
+import {Annotation, RunMeta, TestMeta} from './meta';
 import {TestCase, TestRun, TestSuite} from './report.model';
 
 export function convertReport(
     path: string,
     report: {'test-run': TestRun}
-): SuiteMeta {
+): RunMeta {
     core.debug('Start analyzing report:');
     core.debug(JSON.stringify(report));
     const run = report['test-run'];
-    const meta = new SuiteMeta(path);
+    const meta = new RunMeta(path);
 
     meta.total = Number(run._attributes.total);
     meta.failed = Number(run._attributes.failed);
     meta.skipped = Number(run._attributes.skipped);
     meta.passed = Number(run._attributes.passed);
 
-    meta.addChild(...convertSuite(run['test-suite']));
+    meta.addTests(convertSuite(run['test-suite']));
 
     return meta;
 }
@@ -24,56 +24,53 @@ export function convertReport(
 export function convertSuite(
     suites: TestSuite | TestSuite[],
     convertTestsFn = convertTests
-): SuiteMeta[] {
+): TestMeta[] {
     if (Array.isArray(suites)) {
         return suites.reduce(
             (acc, suite) => acc.concat(convertSuite(suite, convertTestsFn)),
-            [] as SuiteMeta[]
+            [] as TestMeta[]
         );
     }
 
     core.debug(
         `Analyze suite ${suites._attributes.type} / ${suites._attributes.fullname}`
     );
-    const meta = new SuiteMeta(suites._attributes.fullname);
-    meta.total = Number(suites._attributes.total);
-    meta.failed = Number(suites._attributes.failed);
-    meta.skipped = Number(suites._attributes.skipped);
-    meta.passed = Number(suites._attributes.passed);
-    meta.duration = Number(suites._attributes.duration);
-
+    const result = [];
     const innerSuite = suites['test-suite'];
     if (innerSuite) {
-        meta.addChild(...convertSuite(innerSuite, convertTestsFn));
+        result.push(...convertSuite(innerSuite, convertTestsFn));
     }
 
     const tests = suites['test-case'];
     if (tests) {
-        meta.addChild(...convertTestsFn(tests));
+        result.push(...convertTestsFn(suites._attributes.fullname, tests));
     }
 
-    return [meta];
+    return result;
 }
 
 export function convertTests(
+    suite: string,
     tests: TestCase | TestCase[],
     convertTestCaseFn = convertTestCase
 ): TestMeta[] {
     if (Array.isArray(tests)) {
         return tests.reduce(
-            (acc, test) => acc.concat(convertTests(test, convertTestCaseFn)),
+            (acc, test) =>
+                acc.concat(convertTests(suite, test, convertTestCaseFn)),
             [] as TestMeta[]
         );
     }
 
-    return [convertTestCaseFn(tests)];
+    return [convertTestCaseFn(suite, tests)];
 }
 
 export function convertTestCase(
+    suite: string,
     testCase: TestCase,
     findAnnotationPointFn = findAnnotationPoint
 ): TestMeta {
-    const meta = new TestMeta(testCase._attributes.name);
+    const meta = new TestMeta(suite, testCase._attributes.name);
     meta.result = testCase._attributes.result;
     meta.duration = Number(testCase._attributes.duration);
 

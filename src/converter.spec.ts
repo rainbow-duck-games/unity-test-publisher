@@ -8,6 +8,13 @@ import {
 } from './report.model';
 import {Annotation, TestMeta} from './meta';
 
+const mockTestParser = (suite: string, test: TestCase): TestMeta => {
+    return {
+        suite,
+        title: test._attributes.name,
+    } as TestMeta;
+};
+
 beforeAll(() => {
     // Disable @actions/core logging for run
     jest.spyOn(core, 'error').mockImplementation(jest.fn());
@@ -18,19 +25,14 @@ beforeAll(() => {
 
 describe('convertSuite', () => {
     test('convert single', () => {
-        const mock = jest.fn().mockImplementation(test => {
+        const mock = jest.fn().mockImplementation((suite, test) => {
             return Array.isArray(test)
-                ? test.map(t => ({title: t._attributes.name} as TestMeta))
-                : [{title: test._attributes.name} as TestMeta];
+                ? test.map(t => mockTestParser(suite, t))
+                : [mockTestParser(suite, test)];
         });
         const targetSuite = {
             _attributes: {
                 fullname: 'Suite Full Name',
-                total: '6',
-                failed: '1',
-                skipped: '2',
-                passed: '3',
-                duration: '1.34',
             } as TestSuiteAttributes,
             'test-case': [
                 {_attributes: {name: 'testA'}} as TestCase,
@@ -40,11 +42,6 @@ describe('convertSuite', () => {
                 {
                     _attributes: {
                         fullname: 'Inner Suite Full Name',
-                        total: '9',
-                        failed: '2',
-                        skipped: '3',
-                        passed: '4',
-                        duration: '0.34',
                     } as TestSuiteAttributes,
                     'test-case': {_attributes: {name: 'testC'}} as TestCase,
                     'test-suite': [],
@@ -54,27 +51,9 @@ describe('convertSuite', () => {
         const result = converter.convertSuite(targetSuite, mock);
 
         expect(result).toMatchObject([
-            {
-                duration: 1.34,
-                title: 'Suite Full Name',
-                total: 6,
-                passed: 3,
-                skipped: 2,
-                failed: 1,
-                children: [
-                    {
-                        duration: 0.34,
-                        title: 'Inner Suite Full Name',
-                        total: 9,
-                        passed: 4,
-                        skipped: 3,
-                        failed: 2,
-                        children: [{title: 'testC'}],
-                    },
-                    {title: 'testA'},
-                    {title: 'testB'},
-                ],
-            },
+            {suite: 'Inner Suite Full Name', title: 'testC'},
+            {suite: 'Suite Full Name', title: 'testA'},
+            {suite: 'Suite Full Name', title: 'testB'},
         ]);
         expect(mock).toHaveBeenCalledTimes(2);
     });
@@ -82,43 +61,42 @@ describe('convertSuite', () => {
 
 describe('convertTests', () => {
     test('convert array', () => {
-        const mock = jest.fn().mockImplementation(test => {
-            return {title: `Test case ${test._attributes.name}`};
-        });
+        const mock = jest.fn().mockImplementation(mockTestParser);
         const testA = {_attributes: {name: 'testA'}} as TestCase;
         const testB = {_attributes: {name: 'testB'}} as TestCase;
         const testResult = [testA, testB];
-        const result = converter.convertTests(testResult, mock);
+        const result = converter.convertTests('Test Suite', testResult, mock);
 
         expect(result).toMatchObject([
-            {title: 'Test case testA'},
-            {title: 'Test case testB'},
+            {suite: 'Test Suite', title: 'testA'},
+            {suite: 'Test Suite', title: 'testB'},
         ]);
         expect(mock).toHaveBeenCalledTimes(2);
-        expect(mock).toHaveBeenNthCalledWith(1, testA);
-        expect(mock).toHaveBeenNthCalledWith(2, testB);
+        expect(mock).toHaveBeenNthCalledWith(1, 'Test Suite', testA);
+        expect(mock).toHaveBeenNthCalledWith(2, 'Test Suite', testB);
     });
 
     test('convert single', () => {
-        const mock = jest.fn().mockReturnValueOnce({title: 'Test case result'});
-        const testResult = {} as TestCase;
-        const result = converter.convertTests(testResult, mock);
+        const mock = jest.fn().mockImplementation(mockTestParser);
+        const testA = {_attributes: {name: 'testA'}} as TestCase;
+        const result = converter.convertTests('Test Suite', testA, mock);
 
-        expect(result).toMatchObject([{title: 'Test case result'}]);
+        expect(result).toMatchObject([{suite: 'Test Suite', title: 'testA'}]);
         expect(mock).toHaveBeenCalledTimes(1);
-        expect(mock).toHaveBeenCalledWith(testResult);
+        expect(mock).toHaveBeenCalledWith('Test Suite', testA);
     });
 });
 
 describe('convertTestCase', () => {
     test('not failed', () => {
-        const result = converter.convertTestCase({
+        const result = converter.convertTestCase('Test Suite', {
             _attributes: {
                 name: 'Test Name',
                 duration: '3.14',
             } as TestCaseAttributes,
         });
 
+        expect(result.suite).toBe('Test Suite');
         expect(result.title).toBe('Test Name');
         expect(result.duration).toBe(3.14);
         expect(result.annotation).toBeUndefined();
@@ -127,6 +105,7 @@ describe('convertTestCase', () => {
     test('no stack trace', () => {
         const mock = jest.fn().mockReturnValueOnce(undefined);
         const result = converter.convertTestCase(
+            'Test Suite',
             {
                 _attributes: {
                     name: 'Test Name',
@@ -139,6 +118,7 @@ describe('convertTestCase', () => {
             mock
         );
 
+        expect(result.suite).toBe('Test Suite');
         expect(result.title).toBe('Test Name');
         expect(result.duration).toBe(3.14);
         expect(result.annotation).toBeUndefined();
@@ -148,6 +128,7 @@ describe('convertTestCase', () => {
     test('no annotation path', () => {
         const mock = jest.fn().mockReturnValueOnce(undefined);
         const result = converter.convertTestCase(
+            'Test Suite',
             {
                 _attributes: {
                     name: 'Test Name',
@@ -161,6 +142,7 @@ describe('convertTestCase', () => {
             mock
         );
 
+        expect(result.suite).toBe('Test Suite');
         expect(result.title).toBe('Test Name');
         expect(result.duration).toBe(3.14);
         expect(result.annotation).toBeUndefined();
@@ -173,6 +155,7 @@ describe('convertTestCase', () => {
             .fn()
             .mockReturnValueOnce({path: 'test/path', line: 42});
         const result = converter.convertTestCase(
+            'Test Suite',
             {
                 _attributes: {
                     name: 'Test Name',
@@ -187,6 +170,7 @@ describe('convertTestCase', () => {
             mock
         );
 
+        expect(result.suite).toBe('Test Suite');
         expect(result.title).toBe('Test Name');
         expect(result.duration).toBe(3.14);
         expect(result.annotation).toMatchObject({
