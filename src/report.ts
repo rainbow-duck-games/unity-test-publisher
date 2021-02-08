@@ -7,6 +7,7 @@ import {TestRun} from './report.model';
 
 export async function parseReport(path: string): Promise<RunMeta> {
     core.debug(`Try to open ${path}`);
+    core.info(`Current directory ${__dirname}`);
     const file = await fs.promises.readFile(path, 'utf8');
     const report = xmljs.xml2js(file, {compact: true}) as {
         'test-run': TestRun;
