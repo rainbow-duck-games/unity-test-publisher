@@ -21,7 +21,7 @@ inputs:
     required: false
     default: 'Test Report'
   checkFailedStatus:
-    description: 'what status should be for failed check, default - `failure`'
+    description: 'what status should be for failed check, default - `failure`, allowed values: `success`, `failure`, `neutral`, `cancelled`, `skipped`, `timed_out`, or `action_required`'
     required: false
     default: 'failure'
   failOnTestFailures:
