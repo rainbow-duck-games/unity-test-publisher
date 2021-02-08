@@ -73,7 +73,7 @@ function cleanPaths(annotations, pathToClean) {
 exports.cleanPaths = cleanPaths;
 function renderSummaryBody(runMetas) {
     return __awaiter(this, void 0, void 0, function* () {
-        const source = yield fs.promises.readFile('templates/action.hbs', 'utf8');
+        const source = yield fs.promises.readFile(__webpack_require__.ab + "action.hbs", 'utf8');
         handlebars_1.default.registerHelper('mark', markHelper);
         handlebars_1.default.registerHelper('indent', indentHelper);
         const template = handlebars_1.default.compile(source);

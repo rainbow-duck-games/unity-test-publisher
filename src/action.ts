@@ -53,7 +53,10 @@ export function cleanPaths(
 }
 
 export async function renderSummaryBody(runMetas: RunMeta[]): Promise<string> {
-    const source = await fs.promises.readFile('templates/action.hbs', 'utf8');
+    const source = await fs.promises.readFile(
+        `${__dirname}/../src/action.hbs`,
+        'utf8'
+    );
     Handlebars.registerHelper('mark', markHelper);
     Handlebars.registerHelper('indent', indentHelper);
     const template = Handlebars.compile(source);
