@@ -4,16 +4,18 @@
 <details><summary>{{mark this}} {{passed}}/{{total}}, failed {{failed}}, skipped {{skipped}} - duration {{duration}}s</summary>
 {{#each suites}}
 
-#### {{@key}}
+##### {{@key}}
+
 {{#this}}
 * {{mark result}} **{{title}}** - {{duration}}s{{#if annotation}}
-        
+    
 {{indent annotation.message}}
-        
+    
 {{indent annotation.raw_details}}
-        
+    
 {{else}}
 
-{{/if}}{{/this}}{{/each}}
+{{/if}}{{/this}}
+{{/each}}
 </details>
 {{/runs}}
