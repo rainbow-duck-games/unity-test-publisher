@@ -12,12 +12,12 @@ async function run(): Promise<void> {
         const globber = await glob.create(reportPaths, {
             followSymbolicLinks: false,
         });
-        const data = [];
+        const runs = [];
         for await (const file of globber.globGenerator()) {
             core.info(`Processing file ${file}...`);
             const fileData = await parseReport(file);
-            core.info(fileData.getTitle());
-            data.push(fileData);
+            core.info(fileData.getSummary());
+            runs.push(fileData);
         }
 
         // Prepare report settings
@@ -25,7 +25,7 @@ async function run(): Promise<void> {
         const checkFailedStatus = core.getInput('checkFailedStatus');
         const failIfNoTests = core.getInput('failIfNoTests') === 'true';
 
-        const summary = data.reduce((acc, suite) => {
+        const summary = runs.reduce((acc, suite) => {
             acc.total += suite.total;
             acc.passed += suite.passed;
             acc.skipped += suite.skipped;
@@ -44,7 +44,7 @@ async function run(): Promise<void> {
                 : checkFailedStatus;
         core.info('=================');
         core.info('Analyze result:');
-        core.info(summary.getTitle());
+        core.info(summary.getSummary());
 
         if (failIfNoTests && summary.total === 0) {
             core.setFailed('Not tests found in the report!');
@@ -59,9 +59,10 @@ async function run(): Promise<void> {
         await createCheck(
             githubToken,
             checkName,
-            summary,
-            annotations,
-            conclusion
+            conclusion,
+            summary.getSummary(),
+            runs,
+            annotations
         );
 
         const failOnFailed = core.getInput('failOnTestFailures') === 'true';

@@ -8,7 +8,7 @@ describe('SuiteMeta', () => {
         suite.failed = 2;
         suite.skipped = 3;
         suite.duration = 2.2;
-        expect(suite.getTitle()).toBe(
+        expect(suite.getSummary()).toBe(
             'Results: 1/6, skipped: 3, failed: 2 in 2.2'
         );
     });

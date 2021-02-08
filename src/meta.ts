@@ -48,7 +48,7 @@ export class RunMeta extends Meta {
         target.push(test);
     }
 
-    getTitle(): string {
+    getSummary(): string {
         return `Results: ${this.passed}/${this.total}, skipped: ${this.skipped}, failed: ${this.failed} in ${this.duration}`;
     }
 }
