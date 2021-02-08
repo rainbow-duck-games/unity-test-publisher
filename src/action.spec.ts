@@ -7,13 +7,17 @@ const model = `## Test
 
 #### suiteA
 * :x: **Test A** - 1.23s
+        
         Error message
-
+        
         Raw details
+        Test
+        
 * :warning: **Test B** - 2.34s
 
 #### suiteB
 * :heavy_check_mark: **Test C** - 3.45s
+* :heavy_check_mark: **Test D** - 4.56s
 
 </details>
 `;
@@ -36,7 +40,7 @@ describe('CheckAction', () => {
                         duration: 1.23,
                         annotation: {
                             message: 'Error message',
-                            raw_details: 'Raw details',
+                            raw_details: 'Raw details\nTest',
                         },
                     } as TestMeta,
                     {
@@ -52,6 +56,12 @@ describe('CheckAction', () => {
                         title: 'Test C',
                         result: 'Passed',
                         duration: 3.45,
+                    } as TestMeta,
+                    {
+                        suite: 'suite B',
+                        title: 'Test D',
+                        result: 'Passed',
+                        duration: 4.56,
                     } as TestMeta,
                 ],
             } as {[key: string]: TestMeta[]},

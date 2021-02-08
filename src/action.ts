@@ -55,6 +55,7 @@ export function cleanPaths(
 export async function renderSummaryBody(runMetas: RunMeta[]): Promise<string> {
     const source = await fs.promises.readFile('templates/action.hbs', 'utf8');
     Handlebars.registerHelper('mark', markHelper);
+    Handlebars.registerHelper('indent', indentHelper);
     const template = Handlebars.compile(source);
     return template({runs: runMetas});
 }
@@ -72,4 +73,11 @@ function markHelper(arg: string | RunMeta): string {
         return ':x:';
     }
     return ':warning:';
+}
+
+function indentHelper(arg: string): string {
+    return arg
+        .split('\n')
+        .map(s => `        ${s}`)
+        .join('\n');
 }

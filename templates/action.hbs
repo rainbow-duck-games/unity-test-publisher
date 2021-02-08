@@ -7,11 +7,13 @@
 #### {{@key}}
 {{#this}}
 * {{mark result}} **{{title}}** - {{duration}}s{{#if annotation}}
-        {{annotation.message}}
+        
+{{indent annotation.message}}
+        
+{{indent annotation.raw_details}}
+        
+{{else}}
 
-        {{annotation.raw_details}}{{/if}}
-{{/this}}
-{{/each}}
-
+{{/if}}{{/this}}{{/each}}
 </details>
 {{/runs}}
