@@ -73,7 +73,7 @@ function cleanPaths(annotations, pathToClean) {
 exports.cleanPaths = cleanPaths;
 function renderSummaryBody(runMetas) {
     return __awaiter(this, void 0, void 0, function* () {
-        const source = yield fs.promises.readFile('templates/action.hbs', 'utf8');
+        const source = yield fs.promises.readFile(__webpack_require__.ab + "action.hbs", 'utf8');
         handlebars_1.default.registerHelper('mark', markHelper);
         handlebars_1.default.registerHelper('indent', indentHelper);
         const template = handlebars_1.default.compile(source);
@@ -450,6 +450,7 @@ const meta_1 = __webpack_require__(3714);
 function parseReport(path) {
     return __awaiter(this, void 0, void 0, function* () {
         core.debug(`Try to open ${path}`);
+        core.info(`Current directory ${__dirname}`);
         const file = yield fs.promises.readFile(path, 'utf8');
         const report = xmljs.xml2js(file, { compact: true });
         // Process results
