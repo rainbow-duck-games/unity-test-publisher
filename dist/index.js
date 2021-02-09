@@ -39,21 +39,26 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.timeHelper = exports.renderSummaryBody = exports.cleanPaths = exports.createCheck = void 0;
+exports.timeHelper = exports.renderText = exports.renderSummary = exports.cleanPaths = exports.createCheck = void 0;
 const core = __importStar(__webpack_require__(2186));
 const github = __importStar(__webpack_require__(5438));
 const fs = __importStar(__webpack_require__(5747));
 const handlebars_1 = __importDefault(__webpack_require__(7492));
+handlebars_1.default.registerHelper('summary', summaryHelper);
+handlebars_1.default.registerHelper('indent', indentHelper);
+handlebars_1.default.registerHelper('time', timeHelper);
 function createCheck(githubToken, checkName, title, conclusion, runs, annotations) {
     return __awaiter(this, void 0, void 0, function* () {
         const pullRequest = github.context.payload.pull_request;
         const link = (pullRequest && pullRequest.html_url) || github.context.ref;
         const headSha = (pullRequest && pullRequest.head.sha) || github.context.sha;
         core.info(`Posting status 'completed' with conclusion '${conclusion}' to ${link} (sha: ${headSha})`);
-        const summary = yield renderSummaryBody(runs);
+        const summary = yield renderSummary(runs);
+        const text = yield renderText(runs);
         const createCheckRequest = Object.assign(Object.assign({}, github.context.repo), { name: checkName, head_sha: headSha, status: 'completed', conclusion, output: {
                 title,
                 summary,
+                text,
                 annotations: annotations.slice(0, 50),
             } });
         core.debug(JSON.stringify(createCheckRequest, null, 2));
@@ -70,17 +75,25 @@ function cleanPaths(annotations, pathToClean) {
     }
 }
 exports.cleanPaths = cleanPaths;
-function renderSummaryBody(runMetas) {
+function renderSummary(runMetas) {
     return __awaiter(this, void 0, void 0, function* () {
-        const source = yield fs.promises.readFile(__webpack_require__.ab + "action.hbs", 'utf8');
-        handlebars_1.default.registerHelper('summary', summaryHelper);
-        handlebars_1.default.registerHelper('indent', indentHelper);
-        handlebars_1.default.registerHelper('time', timeHelper);
+        return render(__webpack_require__.ab + "summary.hbs", runMetas);
+    });
+}
+exports.renderSummary = renderSummary;
+function renderText(runMetas) {
+    return __awaiter(this, void 0, void 0, function* () {
+        return render(__webpack_require__.ab + "text.hbs", runMetas);
+    });
+}
+exports.renderText = renderText;
+function render(viewPath, runMetas) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const source = yield fs.promises.readFile(viewPath, 'utf8');
         const template = handlebars_1.default.compile(source);
         return template({ runs: runMetas });
     });
 }
-exports.renderSummaryBody = renderSummaryBody;
 function summaryHelper(meta) {
     return meta.summary;
 }
