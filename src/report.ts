@@ -22,5 +22,5 @@ export async function parseReport(
         return new RunMeta(filename);
     }
 
-    return converter.convertReport(path, report);
+    return converter.convertReport(filename, report);
 }

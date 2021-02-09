@@ -144,11 +144,11 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.findAnnotationPoint = exports.convertTestCase = exports.convertTests = exports.convertSuite = exports.convertReport = void 0;
 const core = __importStar(__webpack_require__(2186));
 const meta_1 = __webpack_require__(3714);
-function convertReport(path, report) {
+function convertReport(filename, report) {
     core.debug('Start analyzing report:');
     core.debug(JSON.stringify(report));
     const run = report['test-run'];
-    const meta = new meta_1.RunMeta(path);
+    const meta = new meta_1.RunMeta(filename);
     meta.total = Number(run._attributes.total);
     meta.failed = Number(run._attributes.failed);
     meta.skipped = Number(run._attributes.skipped);
@@ -279,20 +279,22 @@ const report_1 = __webpack_require__(8269);
 const meta_1 = __webpack_require__(3714);
 function run() {
     var e_1, _a;
+    var _b;
     return __awaiter(this, void 0, void 0, function* () {
         try {
             // Get all report files
-            const workdir = process.env['GITHUB_WORKSPACE'];
+            const workdir = (_b = core.getInput('reportWorkspace')) !== null && _b !== void 0 ? _b : process.env['GITHUB_WORKSPACE'];
             const reportPaths = core.getInput('reportPaths', { required: true });
             const lookup = `${workdir}/${reportPaths}`;
             core.info(`Lookup for files matching: ${lookup}...`);
             const globber = yield glob.create(lookup, {
                 followSymbolicLinks: false,
             });
+            // Parse all reports
             const runs = [];
             try {
-                for (var _b = __asyncValues(globber.globGenerator()), _c; _c = yield _b.next(), !_c.done;) {
-                    const path = _c.value;
+                for (var _c = __asyncValues(globber.globGenerator()), _d; _d = yield _c.next(), !_d.done;) {
+                    const path = _d.value;
                     const filename = path.replace(workdir, '');
                     core.startGroup(`Processing file ${filename}...`);
                     const fileData = yield report_1.parseReport(path, filename);
@@ -304,7 +306,7 @@ function run() {
             catch (e_1_1) { e_1 = { error: e_1_1 }; }
             finally {
                 try {
-                    if (_c && !_c.done && (_a = _b.return)) yield _a.call(_b);
+                    if (_d && !_d.done && (_a = _c.return)) yield _a.call(_c);
                 }
                 finally { if (e_1) throw e_1.error; }
             }
@@ -476,7 +478,7 @@ function parseReport(path, filename) {
             core.error('No metadata found in the file - path');
             return new meta_1.RunMeta(filename);
         }
-        return converter.convertReport(path, report);
+        return converter.convertReport(filename, report);
     });
 }
 exports.parseReport = parseReport;

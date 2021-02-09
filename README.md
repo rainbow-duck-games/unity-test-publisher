@@ -45,7 +45,11 @@ with:
 Please check [unity_run_tests.yml](.github/workflows/unity_run_tests.yml) to find real unity build & consume of the result
 
 ## Full list of options
+Keep in mind that this action provides reasonable default to be compatible with [unity-test-runner](https://github.com/game-ci/unity-test-runner).
+Most of these options required for advanced setups far from the default ones.
+
 - `githubToken` (required) - GITHUB_TOKEN, in most cases keep it as `${{ secrets.GITHUB_TOKEN }}`
+- `reportWorkspace` - if this is empty action will work relative to `GITHUB_WORKSPACE` directory
 - `reportPaths` - 'glob expression to find Unity test reports, default - `artifact/*.xml`
 - `workdirPrefix` - prefix on build machine to ignore in report, default - `/github/workspace/`
 - `checkName` - check name for test reports. Change it if you use more than one publisher step, default - `Test Results`

@@ -8,6 +8,10 @@ inputs:
   githubToken:
     description: 'GITHUB_TOKEN'
     required: true
+  reportWorkspace:
+    description: 'if this is empty action will work relative to GITHUB_WORKSPACE directory'
+    required: false
+    default: ''
   reportPaths:
     description: 'glob expression to find Unity test reports, default - `artifact/*.xml`'
     required: false
