@@ -1,5 +1,5 @@
 ﻿import {components} from '@octokit/openapi-types/generated/types';
-import {markHelper, timeHelper} from './action';
+import {timeHelper} from './action';
 
 export abstract class Meta {
     title: string;
@@ -8,6 +8,10 @@ export abstract class Meta {
     constructor(title: string) {
         this.title = title;
     }
+
+    abstract get summary(): string;
+
+    abstract get mark(): string;
 }
 
 export class RunMeta extends Meta {
@@ -16,15 +20,17 @@ export class RunMeta extends Meta {
     skipped = 0;
     failed = 0;
 
-    suites: {[key: string]: TestMeta[]} = {};
+    tests: TestMeta[] = [];
+    suites: RunMeta[] = [];
 
     extractAnnotations(): Annotation[] {
         const result = [] as Annotation[];
-        for (const suite in this.suites) {
-            for (const test of this.suites[suite]) {
-                if (test.annotation !== undefined) {
-                    result.push(test.annotation);
-                }
+        for (const suite of this.suites) {
+            result.push(...suite.extractAnnotations());
+        }
+        for (const test of this.tests) {
+            if (test.annotation !== undefined) {
+                result.push(test.annotation);
             }
         }
         return result;
@@ -40,22 +46,37 @@ export class RunMeta extends Meta {
         if (test.suite === undefined) {
             return;
         }
-
-        let target = this.suites[test.suite];
-        if (target === undefined) {
-            this.suites[test.suite] = target = [];
+        if (test.suite === this.title) {
+            this.total++;
+            this.duration += test.duration;
+            this.tests.push(test);
+            if (test.result === 'Passed') this.passed++;
+            else if (test.result === 'Failed') this.failed++;
+            else this.skipped++;
+            return;
         }
 
-        target.push(test);
+        let target = this.suites.find(s => s.title === test.suite);
+        if (target === undefined) {
+            target = new RunMeta(test.suite);
+            this.suites.push(target);
+        }
+
+        target.addTest(test);
     }
 
     get summary(): string {
         const result = this.failed > 0 ? 'Failed' : 'Passed';
-        const mark = markHelper(result);
         const sPart = this.skipped > 0 ? `, skipped: ${this.skipped}` : '';
         const fPart = this.failed > 0 ? `, failed: ${this.failed}` : '';
-        const dPart = timeHelper(this.duration);
-        return `${mark} ${result}: ${this.passed}/${this.total}${sPart}${fPart} in ${dPart}`;
+        const dPart = ` in ${timeHelper(this.duration)}`;
+        return `${this.mark} ${this.title} - ${this.passed}/${this.total}${sPart}${fPart} - ${result}${dPart}`;
+    }
+
+    get mark(): string {
+        if (this.failed > 0) return '❌️';
+        else if (this.skipped === 0) return '✔️';
+        return '⚠️';
     }
 }
 
@@ -67,6 +88,18 @@ export class TestMeta extends Meta {
     constructor(suite: string, title: string) {
         super(title);
         this.suite = suite;
+    }
+
+    get summary(): string {
+        const dPart =
+            this.result === 'Skipped' ? '' : ` in ${timeHelper(this.duration)}`;
+        return `${this.mark} **${this.title}** - ${this.result}${dPart}`;
+    }
+
+    get mark(): string {
+        if (this.result === 'Failed') return '❌️';
+        else if (this.result === 'Passed') return '✔️';
+        return '⚠️';
     }
 }
 

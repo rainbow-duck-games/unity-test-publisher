@@ -39,8 +39,8 @@ async function run(): Promise<void> {
             acc.skipped += suite.skipped;
             acc.failed += suite.failed;
             acc.duration += suite.duration;
-            for (const key in suite.suites) {
-                acc.addTests(suite.suites[key]);
+            for (const s of suite.suites) {
+                acc.addTests(s.tests);
             }
             return acc;
         }, new RunMeta('run'));

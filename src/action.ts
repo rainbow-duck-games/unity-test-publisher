@@ -1,7 +1,7 @@
 import * as core from '@actions/core';
 import * as github from '@actions/github';
 import {Endpoints} from '@octokit/types';
-import {Annotation, RunMeta} from './meta';
+import {Annotation, Meta, RunMeta} from './meta';
 import * as fs from 'fs';
 import Handlebars from 'handlebars';
 
@@ -58,24 +58,14 @@ export async function renderSummaryBody(runMetas: RunMeta[]): Promise<string> {
         'utf8'
     );
     Handlebars.registerHelper('summary', summaryHelper);
-    Handlebars.registerHelper('mark', markHelper);
     Handlebars.registerHelper('indent', indentHelper);
     Handlebars.registerHelper('time', timeHelper);
     const template = Handlebars.compile(source);
     return template({runs: runMetas});
 }
 
-function summaryHelper(meta: RunMeta): string {
+function summaryHelper(meta: Meta): string {
     return meta.summary;
-}
-
-export function markHelper(arg: string): string {
-    if (arg === 'Passed') {
-        return '✔️';
-    } else if (arg === 'Failed') {
-        return '❌️';
-    }
-    return '⚠️';
 }
 
 function indentHelper(arg: string): string {

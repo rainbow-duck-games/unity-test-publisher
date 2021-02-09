@@ -39,7 +39,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.timeHelper = exports.markHelper = exports.renderSummaryBody = exports.cleanPaths = exports.createCheck = void 0;
+exports.timeHelper = exports.renderSummaryBody = exports.cleanPaths = exports.createCheck = void 0;
 const core = __importStar(__webpack_require__(2186));
 const github = __importStar(__webpack_require__(5438));
 const fs = __importStar(__webpack_require__(5747));
@@ -74,7 +74,6 @@ function renderSummaryBody(runMetas) {
     return __awaiter(this, void 0, void 0, function* () {
         const source = yield fs.promises.readFile(__webpack_require__.ab + "action.hbs", 'utf8');
         handlebars_1.default.registerHelper('summary', summaryHelper);
-        handlebars_1.default.registerHelper('mark', markHelper);
         handlebars_1.default.registerHelper('indent', indentHelper);
         handlebars_1.default.registerHelper('time', timeHelper);
         const template = handlebars_1.default.compile(source);
@@ -85,16 +84,6 @@ exports.renderSummaryBody = renderSummaryBody;
 function summaryHelper(meta) {
     return meta.summary;
 }
-function markHelper(arg) {
-    if (arg === 'Passed') {
-        return '✔️';
-    }
-    else if (arg === 'Failed') {
-        return '❌️';
-    }
-    return '⚠️';
-}
-exports.markHelper = markHelper;
 function indentHelper(arg) {
     return arg
         .split('\n')
@@ -313,8 +302,8 @@ function run() {
                 acc.skipped += suite.skipped;
                 acc.failed += suite.failed;
                 acc.duration += suite.duration;
-                for (const key in suite.suites) {
-                    acc.addTests(suite.suites[key]);
+                for (const s of suite.suites) {
+                    acc.addTests(s.tests);
                 }
                 return acc;
             }, new meta_1.RunMeta('run'));
@@ -372,15 +361,17 @@ class RunMeta extends Meta {
         this.passed = 0;
         this.skipped = 0;
         this.failed = 0;
-        this.suites = {};
+        this.tests = [];
+        this.suites = [];
     }
     extractAnnotations() {
         const result = [];
-        for (const suite in this.suites) {
-            for (const test of this.suites[suite]) {
-                if (test.annotation !== undefined) {
-                    result.push(test.annotation);
-                }
+        for (const suite of this.suites) {
+            result.push(...suite.extractAnnotations());
+        }
+        for (const test of this.tests) {
+            if (test.annotation !== undefined) {
+                result.push(test.annotation);
             }
         }
         return result;
@@ -394,19 +385,38 @@ class RunMeta extends Meta {
         if (test.suite === undefined) {
             return;
         }
-        let target = this.suites[test.suite];
-        if (target === undefined) {
-            this.suites[test.suite] = target = [];
+        if (test.suite === this.title) {
+            this.total++;
+            this.duration += test.duration;
+            this.tests.push(test);
+            if (test.result === 'Passed')
+                this.passed++;
+            else if (test.result === 'Failed')
+                this.failed++;
+            else
+                this.skipped++;
+            return;
         }
-        target.push(test);
+        let target = this.suites.find(s => s.title === test.suite);
+        if (target === undefined) {
+            target = new RunMeta(test.suite);
+            this.suites.push(target);
+        }
+        target.addTest(test);
     }
     get summary() {
         const result = this.failed > 0 ? 'Failed' : 'Passed';
-        const mark = action_1.markHelper(result);
         const sPart = this.skipped > 0 ? `, skipped: ${this.skipped}` : '';
         const fPart = this.failed > 0 ? `, failed: ${this.failed}` : '';
-        const dPart = action_1.timeHelper(this.duration);
-        return `${mark} ${result}: ${this.passed}/${this.total}${sPart}${fPart} in ${dPart}`;
+        const dPart = ` in ${action_1.timeHelper(this.duration)}`;
+        return `${this.mark} ${this.title} - ${this.passed}/${this.total}${sPart}${fPart} - ${result}${dPart}`;
+    }
+    get mark() {
+        if (this.failed > 0)
+            return '❌️';
+        else if (this.skipped === 0)
+            return '✔️';
+        return '⚠️';
     }
 }
 exports.RunMeta = RunMeta;
@@ -414,6 +424,17 @@ class TestMeta extends Meta {
     constructor(suite, title) {
         super(title);
         this.suite = suite;
+    }
+    get summary() {
+        const dPart = this.result === 'Skipped' ? '' : ` in ${action_1.timeHelper(this.duration)}`;
+        return `${this.mark} **${this.title}** - ${this.result}${dPart}`;
+    }
+    get mark() {
+        if (this.result === 'Failed')
+            return '❌️';
+        else if (this.result === 'Passed')
+            return '✔️';
+        return '⚠️';
     }
 }
 exports.TestMeta = TestMeta;
