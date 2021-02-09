@@ -272,13 +272,13 @@ const report_1 = __webpack_require__(8269);
 const meta_1 = __webpack_require__(3714);
 function run() {
     var e_1, _a;
-    var _b;
     return __awaiter(this, void 0, void 0, function* () {
         try {
             // Get all report files
-            const workdir = (_b = core.getInput('reportWorkspace')) !== null && _b !== void 0 ? _b : process.env['GITHUB_WORKSPACE'];
+            const workspace = core.getInput('reportWorkspace') ||
+                process.env['GITHUB_WORKSPACE'];
             const reportPaths = core.getInput('reportPaths', { required: true });
-            const lookup = `${workdir}/${reportPaths}`;
+            const lookup = `${workspace}/${reportPaths}`;
             core.info(`Lookup for files matching: ${lookup}...`);
             const globber = yield glob.create(lookup, {
                 followSymbolicLinks: false,
@@ -286,9 +286,9 @@ function run() {
             // Parse all reports
             const runs = [];
             try {
-                for (var _c = __asyncValues(globber.globGenerator()), _d; _d = yield _c.next(), !_d.done;) {
-                    const path = _d.value;
-                    const filename = path.replace(workdir, '');
+                for (var _b = __asyncValues(globber.globGenerator()), _c; _c = yield _b.next(), !_c.done;) {
+                    const path = _c.value;
+                    const filename = path.replace(workspace, '');
                     core.startGroup(`Processing file ${filename}...`);
                     const fileData = yield report_1.parseReport(path, filename);
                     core.info(fileData.summary);
@@ -299,7 +299,7 @@ function run() {
             catch (e_1_1) { e_1 = { error: e_1_1 }; }
             finally {
                 try {
-                    if (_d && !_d.done && (_a = _c.return)) yield _a.call(_c);
+                    if (_c && !_c.done && (_a = _b.return)) yield _a.call(_b);
                 }
                 finally { if (e_1) throw e_1.error; }
             }

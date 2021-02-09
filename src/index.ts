@@ -7,11 +7,11 @@ import {RunMeta} from './meta';
 async function run(): Promise<void> {
     try {
         // Get all report files
-        const workdir =
-            core.getInput('reportWorkspace') ??
+        const workspace =
+            core.getInput('reportWorkspace') ||
             (process.env['GITHUB_WORKSPACE'] as string);
         const reportPaths = core.getInput('reportPaths', {required: true});
-        const lookup = `${workdir}/${reportPaths}`;
+        const lookup = `${workspace}/${reportPaths}`;
         core.info(`Lookup for files matching: ${lookup}...`);
         const globber = await glob.create(lookup, {
             followSymbolicLinks: false,
@@ -20,7 +20,7 @@ async function run(): Promise<void> {
         // Parse all reports
         const runs = [];
         for await (const path of globber.globGenerator()) {
-            const filename = path.replace(workdir, '');
+            const filename = path.replace(workspace, '');
             core.startGroup(`Processing file ${filename}...`);
             const fileData = await parseReport(path, filename);
             core.info(fileData.summary);
