@@ -9,15 +9,17 @@ async function run(): Promise<void> {
         // Get all report files
         const reportPaths = core.getInput('reportPaths', {required: true});
         core.info(`Lookup for files matching: ${reportPaths}...`);
+        core.info(`Env GITHUB_WORKSPACE: ${process.env['GITHUB_WORKSPACE']}`);
         const globber = await glob.create(reportPaths, {
             followSymbolicLinks: false,
         });
         const runs = [];
         for await (const file of globber.globGenerator()) {
-            core.info(`Processing file ${file}...`);
+            core.startGroup(`Processing file ${file}...`);
             const fileData = await parseReport(file);
             core.info(fileData.summary);
             runs.push(fileData);
+            core.endGroup();
         }
 
         // Prepare report settings

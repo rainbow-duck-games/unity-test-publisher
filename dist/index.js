@@ -39,7 +39,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.renderSummaryBody = exports.cleanPaths = exports.createCheck = void 0;
+exports.timeHelper = exports.renderSummaryBody = exports.cleanPaths = exports.createCheck = void 0;
 const core = __importStar(__webpack_require__(2186));
 const github = __importStar(__webpack_require__(5438));
 const meta_1 = __webpack_require__(3714);
@@ -74,13 +74,18 @@ exports.cleanPaths = cleanPaths;
 function renderSummaryBody(runMetas) {
     return __awaiter(this, void 0, void 0, function* () {
         const source = yield fs.promises.readFile(__webpack_require__.ab + "action.hbs", 'utf8');
+        handlebars_1.default.registerHelper('summary', summaryHelper);
         handlebars_1.default.registerHelper('mark', markHelper);
         handlebars_1.default.registerHelper('indent', indentHelper);
+        handlebars_1.default.registerHelper('time', timeHelper);
         const template = handlebars_1.default.compile(source);
         return template({ runs: runMetas });
     });
 }
 exports.renderSummaryBody = renderSummaryBody;
+function summaryHelper(meta) {
+    return meta.summary;
+}
 function markHelper(arg) {
     if (arg instanceof meta_1.RunMeta) {
         return arg.failed > 0
@@ -103,6 +108,10 @@ function indentHelper(arg) {
         .map(s => `        ${s}`)
         .join('\n');
 }
+function timeHelper(seconds) {
+    return `${seconds.toFixed(3)}s`;
+}
+exports.timeHelper = timeHelper;
 
 
 /***/ }),
@@ -275,6 +284,7 @@ function run() {
             // Get all report files
             const reportPaths = core.getInput('reportPaths', { required: true });
             core.info(`Lookup for files matching: ${reportPaths}...`);
+            core.info(`Env GITHUB_WORKSPACE: ${process.env['GITHUB_WORKSPACE']}`);
             const globber = yield glob.create(reportPaths, {
                 followSymbolicLinks: false,
             });
@@ -282,10 +292,11 @@ function run() {
             try {
                 for (var _b = __asyncValues(globber.globGenerator()), _c; _c = yield _b.next(), !_c.done;) {
                     const file = _c.value;
-                    core.info(`Processing file ${file}...`);
+                    core.startGroup(`Processing file ${file}...`);
                     const fileData = yield report_1.parseReport(file);
-                    core.info(fileData.getSummary());
+                    core.info(fileData.summary);
                     runs.push(fileData);
+                    core.endGroup();
                 }
             }
             catch (e_1_1) { e_1 = { error: e_1_1 }; }
@@ -316,7 +327,7 @@ function run() {
                 : checkFailedStatus;
             core.info('=================');
             core.info('Analyze result:');
-            core.info(summary.getSummary());
+            core.info(summary.summary);
             if (failIfNoTests && summary.total === 0) {
                 core.setFailed('Not tests found in the report!');
                 return;
@@ -326,7 +337,7 @@ function run() {
             const workdirPrefix = core.getInput('workdirPrefix');
             const annotations = summary.extractAnnotations();
             action_1.cleanPaths(annotations, workdirPrefix);
-            yield action_1.createCheck(githubToken, checkName, summary.getSummary(), conclusion, runs, annotations);
+            yield action_1.createCheck(githubToken, checkName, summary.summary, conclusion, runs, annotations);
             const failOnFailed = core.getInput('failOnTestFailures') === 'true';
             if (failOnFailed && summary.failed > 0) {
                 core.setFailed(`There were ${summary.failed} failed tests`);
@@ -343,12 +354,13 @@ run();
 /***/ }),
 
 /***/ 3714:
-/***/ ((__unused_webpack_module, exports) => {
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.TestMeta = exports.RunMeta = exports.Meta = void 0;
+const action_1 = __webpack_require__(9139);
 class Meta {
     constructor(title) {
         this.duration = 0;
@@ -391,8 +403,12 @@ class RunMeta extends Meta {
         }
         target.push(test);
     }
-    getSummary() {
-        return `Results: ${this.passed}/${this.total}, skipped: ${this.skipped}, failed: ${this.failed} in ${this.duration}`;
+    get summary() {
+        const result = this.failed > 0 ? 'Failed' : 'Passed';
+        const sPart = this.skipped > 0 ? `, skipped: ${this.skipped}` : '';
+        const fPart = this.failed > 0 ? `, failed: ${this.failed}` : '';
+        const dPart = action_1.timeHelper(this.duration);
+        return `${result}: ${this.passed}/${this.total}${sPart}${fPart} in ${dPart}`;
     }
 }
 exports.RunMeta = RunMeta;
