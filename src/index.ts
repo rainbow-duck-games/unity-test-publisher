@@ -43,7 +43,7 @@ async function run(): Promise<void> {
                 acc.addTests(s.tests);
             }
             return acc;
-        }, new RunMeta('run'));
+        }, new RunMeta(checkName));
 
         // Convert meta
         const conclusion =

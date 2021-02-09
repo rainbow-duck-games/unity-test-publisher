@@ -306,7 +306,7 @@ function run() {
                     acc.addTests(s.tests);
                 }
                 return acc;
-            }, new meta_1.RunMeta('run'));
+            }, new meta_1.RunMeta(checkName));
             // Convert meta
             const conclusion = summary.failed === 0 && (summary.total > 0 || !failIfNoTests)
                 ? 'success'
