@@ -282,18 +282,20 @@ function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             // Get all report files
+            const workdir = process.env['GITHUB_WORKSPACE'];
             const reportPaths = core.getInput('reportPaths', { required: true });
-            core.info(`Lookup for files matching: ${reportPaths}...`);
-            core.info(`Env GITHUB_WORKSPACE: ${process.env['GITHUB_WORKSPACE']}`);
-            const globber = yield glob.create(reportPaths, {
+            const lookup = `${workdir}/${reportPaths}`;
+            core.info(`Lookup for files matching: ${lookup}...`);
+            const globber = yield glob.create(lookup, {
                 followSymbolicLinks: false,
             });
             const runs = [];
             try {
                 for (var _b = __asyncValues(globber.globGenerator()), _c; _c = yield _b.next(), !_c.done;) {
-                    const file = _c.value;
-                    core.startGroup(`Processing file ${file}...`);
-                    const fileData = yield report_1.parseReport(file);
+                    const path = _c.value;
+                    const filename = path.replace(workdir, '');
+                    core.startGroup(`Processing file ${filename}...`);
+                    const fileData = yield report_1.parseReport(path, filename);
                     core.info(fileData.summary);
                     runs.push(fileData);
                     core.endGroup();
@@ -463,17 +465,16 @@ const fs = __importStar(__webpack_require__(5747));
 const xmljs = __importStar(__webpack_require__(8821));
 const converter = __importStar(__webpack_require__(7292));
 const meta_1 = __webpack_require__(3714);
-function parseReport(path) {
+function parseReport(path, filename) {
     return __awaiter(this, void 0, void 0, function* () {
         core.debug(`Try to open ${path}`);
-        core.info(`Current directory ${__dirname}`);
         const file = yield fs.promises.readFile(path, 'utf8');
         const report = xmljs.xml2js(file, { compact: true });
         // Process results
         core.debug(`File ${path} parsed...`);
         if (!report['test-run']) {
             core.error('No metadata found in the file - path');
-            return new meta_1.RunMeta(path);
+            return new meta_1.RunMeta(filename);
         }
         return converter.convertReport(path, report);
     });

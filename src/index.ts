@@ -7,16 +7,18 @@ import {RunMeta} from './meta';
 async function run(): Promise<void> {
     try {
         // Get all report files
+        const workdir = process.env['GITHUB_WORKSPACE'] as string;
         const reportPaths = core.getInput('reportPaths', {required: true});
-        core.info(`Lookup for files matching: ${reportPaths}...`);
-        core.info(`Env GITHUB_WORKSPACE: ${process.env['GITHUB_WORKSPACE']}`);
-        const globber = await glob.create(reportPaths, {
+        const lookup = `${workdir}/${reportPaths}`;
+        core.info(`Lookup for files matching: ${lookup}...`);
+        const globber = await glob.create(lookup, {
             followSymbolicLinks: false,
         });
         const runs = [];
-        for await (const file of globber.globGenerator()) {
-            core.startGroup(`Processing file ${file}...`);
-            const fileData = await parseReport(file);
+        for await (const path of globber.globGenerator()) {
+            const filename = path.replace(workdir, '');
+            core.startGroup(`Processing file ${filename}...`);
+            const fileData = await parseReport(path, filename);
             core.info(fileData.summary);
             runs.push(fileData);
             core.endGroup();
