@@ -8,10 +8,13 @@ inputs:
   githubToken:
     description: 'GITHUB_TOKEN'
     required: true
-  reportPaths:
-    description: 'glob expression to find Unity test reports, default - `./artifact/*.xml`'
+  reportWorkspace:
+    description: 'if this is empty action will work relative to GITHUB_WORKSPACE directory'
     required: false
-    default: './artifacts/*.xml'
+  reportPaths:
+    description: 'glob expression to find Unity test reports, default - `artifact/*.xml`'
+    required: false
+    default: 'artifacts/*.xml'
   workdirPrefix:
     description: 'prefix on build machine to ignore in report, default - `/github/workspace/`'
     required: false

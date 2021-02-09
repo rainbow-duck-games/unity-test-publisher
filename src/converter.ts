@@ -3,13 +3,13 @@ import {Annotation, RunMeta, TestMeta} from './meta';
 import {TestCase, TestRun, TestSuite} from './report.model';
 
 export function convertReport(
-    path: string,
+    filename: string,
     report: {'test-run': TestRun}
 ): RunMeta {
     core.debug('Start analyzing report:');
     core.debug(JSON.stringify(report));
     const run = report['test-run'];
-    const meta = new RunMeta(path);
+    const meta = new RunMeta(filename);
 
     meta.total = Number(run._attributes.total);
     meta.failed = Number(run._attributes.failed);

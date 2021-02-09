@@ -7,17 +7,25 @@ import {RunMeta} from './meta';
 async function run(): Promise<void> {
     try {
         // Get all report files
+        const workspace =
+            core.getInput('reportWorkspace') ||
+            (process.env['GITHUB_WORKSPACE'] as string);
         const reportPaths = core.getInput('reportPaths', {required: true});
-        core.info(`Lookup for files matching: ${reportPaths}...`);
-        const globber = await glob.create(reportPaths, {
+        const lookup = `${workspace}/${reportPaths}`;
+        core.info(`Lookup for files matching: ${lookup}...`);
+        const globber = await glob.create(lookup, {
             followSymbolicLinks: false,
         });
+
+        // Parse all reports
         const runs = [];
-        for await (const file of globber.globGenerator()) {
-            core.info(`Processing file ${file}...`);
-            const fileData = await parseReport(file);
-            core.info(fileData.getSummary());
+        for await (const path of globber.globGenerator()) {
+            const filename = path.replace(workspace, '');
+            core.startGroup(`Processing file ${filename}...`);
+            const fileData = await parseReport(path, filename);
+            core.info(fileData.summary);
             runs.push(fileData);
+            core.endGroup();
         }
 
         // Prepare report settings
@@ -31,11 +39,11 @@ async function run(): Promise<void> {
             acc.skipped += suite.skipped;
             acc.failed += suite.failed;
             acc.duration += suite.duration;
-            for (const key in suite.suites) {
-                acc.addTests(suite.suites[key]);
+            for (const s of suite.suites) {
+                acc.addTests(s.tests);
             }
             return acc;
-        }, new RunMeta('run'));
+        }, new RunMeta(checkName));
 
         // Convert meta
         const conclusion =
@@ -44,7 +52,7 @@ async function run(): Promise<void> {
                 : checkFailedStatus;
         core.info('=================');
         core.info('Analyze result:');
-        core.info(summary.getSummary());
+        core.info(summary.summary);
 
         if (failIfNoTests && summary.total === 0) {
             core.setFailed('Not tests found in the report!');
@@ -59,7 +67,7 @@ async function run(): Promise<void> {
         await createCheck(
             githubToken,
             checkName,
-            summary.getSummary(),
+            summary.summary,
             conclusion,
             runs,
             annotations

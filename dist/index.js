@@ -39,10 +39,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.renderSummaryBody = exports.cleanPaths = exports.createCheck = void 0;
+exports.timeHelper = exports.renderSummaryBody = exports.cleanPaths = exports.createCheck = void 0;
 const core = __importStar(__webpack_require__(2186));
 const github = __importStar(__webpack_require__(5438));
-const meta_1 = __webpack_require__(3714);
 const fs = __importStar(__webpack_require__(5747));
 const handlebars_1 = __importDefault(__webpack_require__(7492));
 function createCheck(githubToken, checkName, title, conclusion, runs, annotations) {
@@ -74,28 +73,16 @@ exports.cleanPaths = cleanPaths;
 function renderSummaryBody(runMetas) {
     return __awaiter(this, void 0, void 0, function* () {
         const source = yield fs.promises.readFile(__webpack_require__.ab + "action.hbs", 'utf8');
-        handlebars_1.default.registerHelper('mark', markHelper);
+        handlebars_1.default.registerHelper('summary', summaryHelper);
         handlebars_1.default.registerHelper('indent', indentHelper);
+        handlebars_1.default.registerHelper('time', timeHelper);
         const template = handlebars_1.default.compile(source);
         return template({ runs: runMetas });
     });
 }
 exports.renderSummaryBody = renderSummaryBody;
-function markHelper(arg) {
-    if (arg instanceof meta_1.RunMeta) {
-        return arg.failed > 0
-            ? ':x:'
-            : arg.skipped > 0
-                ? ':warning:'
-                : ':heavy_check_mark:';
-    }
-    else if (arg === 'Passed') {
-        return ':heavy_check_mark:';
-    }
-    else if (arg === 'Failed') {
-        return ':x:';
-    }
-    return ':warning:';
+function summaryHelper(meta) {
+    return meta.summary;
 }
 function indentHelper(arg) {
     return arg
@@ -103,6 +90,10 @@ function indentHelper(arg) {
         .map(s => `        ${s}`)
         .join('\n');
 }
+function timeHelper(seconds) {
+    return `${seconds.toFixed(3)}s`;
+}
+exports.timeHelper = timeHelper;
 
 
 /***/ }),
@@ -135,11 +126,11 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.findAnnotationPoint = exports.convertTestCase = exports.convertTests = exports.convertSuite = exports.convertReport = void 0;
 const core = __importStar(__webpack_require__(2186));
 const meta_1 = __webpack_require__(3714);
-function convertReport(path, report) {
+function convertReport(filename, report) {
     core.debug('Start analyzing report:');
     core.debug(JSON.stringify(report));
     const run = report['test-run'];
-    const meta = new meta_1.RunMeta(path);
+    const meta = new meta_1.RunMeta(filename);
     meta.total = Number(run._attributes.total);
     meta.failed = Number(run._attributes.failed);
     meta.skipped = Number(run._attributes.skipped);
@@ -273,19 +264,25 @@ function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             // Get all report files
+            const workspace = core.getInput('reportWorkspace') ||
+                process.env['GITHUB_WORKSPACE'];
             const reportPaths = core.getInput('reportPaths', { required: true });
-            core.info(`Lookup for files matching: ${reportPaths}...`);
-            const globber = yield glob.create(reportPaths, {
+            const lookup = `${workspace}/${reportPaths}`;
+            core.info(`Lookup for files matching: ${lookup}...`);
+            const globber = yield glob.create(lookup, {
                 followSymbolicLinks: false,
             });
+            // Parse all reports
             const runs = [];
             try {
                 for (var _b = __asyncValues(globber.globGenerator()), _c; _c = yield _b.next(), !_c.done;) {
-                    const file = _c.value;
-                    core.info(`Processing file ${file}...`);
-                    const fileData = yield report_1.parseReport(file);
-                    core.info(fileData.getSummary());
+                    const path = _c.value;
+                    const filename = path.replace(workspace, '');
+                    core.startGroup(`Processing file ${filename}...`);
+                    const fileData = yield report_1.parseReport(path, filename);
+                    core.info(fileData.summary);
                     runs.push(fileData);
+                    core.endGroup();
                 }
             }
             catch (e_1_1) { e_1 = { error: e_1_1 }; }
@@ -305,18 +302,18 @@ function run() {
                 acc.skipped += suite.skipped;
                 acc.failed += suite.failed;
                 acc.duration += suite.duration;
-                for (const key in suite.suites) {
-                    acc.addTests(suite.suites[key]);
+                for (const s of suite.suites) {
+                    acc.addTests(s.tests);
                 }
                 return acc;
-            }, new meta_1.RunMeta('run'));
+            }, new meta_1.RunMeta(checkName));
             // Convert meta
             const conclusion = summary.failed === 0 && (summary.total > 0 || !failIfNoTests)
                 ? 'success'
                 : checkFailedStatus;
             core.info('=================');
             core.info('Analyze result:');
-            core.info(summary.getSummary());
+            core.info(summary.summary);
             if (failIfNoTests && summary.total === 0) {
                 core.setFailed('Not tests found in the report!');
                 return;
@@ -326,7 +323,7 @@ function run() {
             const workdirPrefix = core.getInput('workdirPrefix');
             const annotations = summary.extractAnnotations();
             action_1.cleanPaths(annotations, workdirPrefix);
-            yield action_1.createCheck(githubToken, checkName, summary.getSummary(), conclusion, runs, annotations);
+            yield action_1.createCheck(githubToken, checkName, summary.summary, conclusion, runs, annotations);
             const failOnFailed = core.getInput('failOnTestFailures') === 'true';
             if (failOnFailed && summary.failed > 0) {
                 core.setFailed(`There were ${summary.failed} failed tests`);
@@ -343,12 +340,13 @@ run();
 /***/ }),
 
 /***/ 3714:
-/***/ ((__unused_webpack_module, exports) => {
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.TestMeta = exports.RunMeta = exports.Meta = void 0;
+const action_1 = __webpack_require__(9139);
 class Meta {
     constructor(title) {
         this.duration = 0;
@@ -363,15 +361,17 @@ class RunMeta extends Meta {
         this.passed = 0;
         this.skipped = 0;
         this.failed = 0;
-        this.suites = {};
+        this.tests = [];
+        this.suites = [];
     }
     extractAnnotations() {
         const result = [];
-        for (const suite in this.suites) {
-            for (const test of this.suites[suite]) {
-                if (test.annotation !== undefined) {
-                    result.push(test.annotation);
-                }
+        for (const suite of this.suites) {
+            result.push(...suite.extractAnnotations());
+        }
+        for (const test of this.tests) {
+            if (test.annotation !== undefined) {
+                result.push(test.annotation);
             }
         }
         return result;
@@ -385,14 +385,38 @@ class RunMeta extends Meta {
         if (test.suite === undefined) {
             return;
         }
-        let target = this.suites[test.suite];
-        if (target === undefined) {
-            this.suites[test.suite] = target = [];
+        if (test.suite === this.title) {
+            this.total++;
+            this.duration += test.duration;
+            this.tests.push(test);
+            if (test.result === 'Passed')
+                this.passed++;
+            else if (test.result === 'Failed')
+                this.failed++;
+            else
+                this.skipped++;
+            return;
         }
-        target.push(test);
+        let target = this.suites.find(s => s.title === test.suite);
+        if (target === undefined) {
+            target = new RunMeta(test.suite);
+            this.suites.push(target);
+        }
+        target.addTest(test);
     }
-    getSummary() {
-        return `Results: ${this.passed}/${this.total}, skipped: ${this.skipped}, failed: ${this.failed} in ${this.duration}`;
+    get summary() {
+        const result = this.failed > 0 ? 'Failed' : 'Passed';
+        const sPart = this.skipped > 0 ? `, skipped: ${this.skipped}` : '';
+        const fPart = this.failed > 0 ? `, failed: ${this.failed}` : '';
+        const dPart = ` in ${action_1.timeHelper(this.duration)}`;
+        return `${this.mark} ${this.title} - ${this.passed}/${this.total}${sPart}${fPart} - ${result}${dPart}`;
+    }
+    get mark() {
+        if (this.failed > 0)
+            return '❌️';
+        else if (this.skipped === 0)
+            return '✔️';
+        return '⚠️';
     }
 }
 exports.RunMeta = RunMeta;
@@ -400,6 +424,17 @@ class TestMeta extends Meta {
     constructor(suite, title) {
         super(title);
         this.suite = suite;
+    }
+    get summary() {
+        const dPart = this.result === 'Skipped' ? '' : ` in ${action_1.timeHelper(this.duration)}`;
+        return `${this.mark} **${this.title}** - ${this.result}${dPart}`;
+    }
+    get mark() {
+        if (this.result === 'Failed')
+            return '❌️';
+        else if (this.result === 'Passed')
+            return '✔️';
+        return '⚠️';
     }
 }
 exports.TestMeta = TestMeta;
@@ -447,19 +482,18 @@ const fs = __importStar(__webpack_require__(5747));
 const xmljs = __importStar(__webpack_require__(8821));
 const converter = __importStar(__webpack_require__(7292));
 const meta_1 = __webpack_require__(3714);
-function parseReport(path) {
+function parseReport(path, filename) {
     return __awaiter(this, void 0, void 0, function* () {
         core.debug(`Try to open ${path}`);
-        core.info(`Current directory ${__dirname}`);
         const file = yield fs.promises.readFile(path, 'utf8');
         const report = xmljs.xml2js(file, { compact: true });
         // Process results
         core.debug(`File ${path} parsed...`);
         if (!report['test-run']) {
             core.error('No metadata found in the file - path');
-            return new meta_1.RunMeta(path);
+            return new meta_1.RunMeta(filename);
         }
-        return converter.convertReport(path, report);
+        return converter.convertReport(filename, report);
     });
 }
 exports.parseReport = parseReport;

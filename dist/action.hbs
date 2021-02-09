@@ -1,13 +1,11 @@
 {{#runs}}
 ### {{title}}
+{{#suites}}
 
-<details><summary>{{mark this}} {{passed}}/{{total}}, failed {{failed}}, skipped {{skipped}} - duration {{duration}}s</summary>
-{{#each suites}}
+<details><summary>{{summary this}}</summary>
 
-#### {{@key}}
-
-{{#this}}
-* {{mark result}} **{{title}}** - {{duration}}s{{#if annotation}}
+{{#tests}}
+* {{summary this}}{{#if annotation}}
         
 {{indent annotation.message}}
         
@@ -15,8 +13,8 @@
         
 {{else}}
 
-{{/if}}{{/this}}
-{{/each}}
+{{/if}}{{/tests}}
 </details>
+{{/suites}}
 
 {{/runs}}

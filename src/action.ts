@@ -1,7 +1,7 @@
 import * as core from '@actions/core';
 import * as github from '@actions/github';
 import {Endpoints} from '@octokit/types';
-import {Annotation, RunMeta} from './meta';
+import {Annotation, Meta, RunMeta} from './meta';
 import * as fs from 'fs';
 import Handlebars from 'handlebars';
 
@@ -57,25 +57,15 @@ export async function renderSummaryBody(runMetas: RunMeta[]): Promise<string> {
         `${__dirname}/../src/action.hbs`,
         'utf8'
     );
-    Handlebars.registerHelper('mark', markHelper);
+    Handlebars.registerHelper('summary', summaryHelper);
     Handlebars.registerHelper('indent', indentHelper);
+    Handlebars.registerHelper('time', timeHelper);
     const template = Handlebars.compile(source);
     return template({runs: runMetas});
 }
 
-function markHelper(arg: string | RunMeta): string {
-    if (arg instanceof RunMeta) {
-        return arg.failed > 0
-            ? ':x:'
-            : arg.skipped > 0
-            ? ':warning:'
-            : ':heavy_check_mark:';
-    } else if (arg === 'Passed') {
-        return ':heavy_check_mark:';
-    } else if (arg === 'Failed') {
-        return ':x:';
-    }
-    return ':warning:';
+function summaryHelper(meta: Meta): string {
+    return meta.summary;
 }
 
 function indentHelper(arg: string): string {
@@ -83,4 +73,8 @@ function indentHelper(arg: string): string {
         .split('\n')
         .map(s => `        ${s}`)
         .join('\n');
+}
+
+export function timeHelper(seconds: number): string {
+    return `${seconds.toFixed(3)}s`;
 }

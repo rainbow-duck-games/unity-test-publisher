@@ -5,9 +5,11 @@ import * as converter from './converter';
 import {RunMeta} from './meta';
 import {TestRun} from './report.model';
 
-export async function parseReport(path: string): Promise<RunMeta> {
+export async function parseReport(
+    path: string,
+    filename: string
+): Promise<RunMeta> {
     core.debug(`Try to open ${path}`);
-    core.info(`Current directory ${__dirname}`);
     const file = await fs.promises.readFile(path, 'utf8');
     const report = xmljs.xml2js(file, {compact: true}) as {
         'test-run': TestRun;
@@ -17,8 +19,8 @@ export async function parseReport(path: string): Promise<RunMeta> {
     core.debug(`File ${path} parsed...`);
     if (!report['test-run']) {
         core.error('No metadata found in the file - path');
-        return new RunMeta(path);
+        return new RunMeta(filename);
     }
 
-    return converter.convertReport(path, report);
+    return converter.convertReport(filename, report);
 }
