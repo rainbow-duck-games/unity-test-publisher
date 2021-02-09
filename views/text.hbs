@@ -1,8 +1,8 @@
 {{#runs}}
-### {{title}}
+<details><summary>{{summary}}</summary>
 {{#suites}}
 
-<details><summary>{{summary}}</summary>
+#### {{summary}}
 
 {{#tests}}
 * {{summary}}{{#if annotation}}
@@ -13,8 +13,7 @@
         
 {{else}}
 
-{{/if}}{{/tests}}
+{{/if}}{{/tests}}{{/suites}}
 </details>
-{{/suites}}
 
 {{/runs}}

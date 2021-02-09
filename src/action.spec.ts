@@ -11,9 +11,9 @@ const summaryModel = `### ❌️ Test - 3/6, skipped: 1, failed: 2 - Failed in 3
 * ⚠️ **Test C** - Skipped
 
 `;
-const textModel = `### Test
+const textModel = `<details><summary>❌️ Test - 3/6, skipped: 1, failed: 2 - Failed in 3.140s</summary>
 
-<details><summary>❌️ Suite A - 0/2, skipped: 1, failed: 1 - Failed in 3.570s</summary>
+#### ❌️ Suite A - 0/2, skipped: 1, failed: 1 - Failed in 3.570s
 
 * ❌️ **Test A** - Failed in 1.230s
         
@@ -24,9 +24,7 @@ const textModel = `### Test
         
 * ⚠️ **Test B** - Skipped
 
-</details>
-
-<details><summary>✔️ Suite B - 2/2 - Passed in 5.560s</summary>
+#### ✔️ Suite B - 2/2 - Passed in 5.560s
 
 * ✔️ **Test C** - Passed in 1.000s
 * ✔️ **Test D** - Passed in 4.560s
