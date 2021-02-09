@@ -1,11 +1,13 @@
 ﻿import {renderSummary, renderText} from './action';
 import {Annotation, RunMeta, TestMeta} from './meta';
 
-const summaryModel = `### Test
+const summaryModel = `### ❌️ Test - 3/6, skipped: 1, failed: 2 - Failed in 3.140s
 * ❌️ **Test A** - Failed in 1.230s
         /test/file:3
+
 * ❌️ **Test B** - Failed in 2.340s
         /test/file/b:54
+
 `;
 const textModel = `### Test
 

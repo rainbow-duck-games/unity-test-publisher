@@ -1,6 +1,7 @@
 {{#runs}}
-### {{title}}
+### {{summary this}}
 {{#suites}}{{#tests}}{{#if annotation}}* {{summary this}}
-        {{annotation.path}}:{{annotation.start_line}}{{/if}}{{/tests}}
+        {{annotation.path}}:{{annotation.start_line}}
+{{/if}}{{/tests}}
 {{/suites}}
 {{/runs}}
