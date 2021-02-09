@@ -1,5 +1,5 @@
 ﻿import {components} from '@octokit/openapi-types/generated/types';
-import {timeHelper} from './action';
+import {markHelper, timeHelper} from './action';
 
 export abstract class Meta {
     title: string;
@@ -51,10 +51,11 @@ export class RunMeta extends Meta {
 
     get summary(): string {
         const result = this.failed > 0 ? 'Failed' : 'Passed';
+        const mark = markHelper(result);
         const sPart = this.skipped > 0 ? `, skipped: ${this.skipped}` : '';
         const fPart = this.failed > 0 ? `, failed: ${this.failed}` : '';
         const dPart = timeHelper(this.duration);
-        return `${result}: ${this.passed}/${this.total}${sPart}${fPart} in ${dPart}`;
+        return `${mark} ${result}: ${this.passed}/${this.total}${sPart}${fPart} in ${dPart}`;
     }
 }
 

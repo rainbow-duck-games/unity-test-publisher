@@ -9,7 +9,7 @@ describe('SuiteMeta', () => {
         suite.skipped = 3;
         suite.duration = 1;
         expect(suite.summary).toBe(
-            'Failed: 1/6, skipped: 3, failed: 2 in 1.000s'
+            '❌️ Failed: 1/6, skipped: 3, failed: 2 in 1.000s'
         );
     });
 
@@ -18,7 +18,7 @@ describe('SuiteMeta', () => {
         suite.total = 6;
         suite.passed = 6;
         suite.duration = 1.1234567;
-        expect(suite.summary).toBe('Passed: 6/6 in 1.123s');
+        expect(suite.summary).toBe('✔️ Passed: 6/6 in 1.123s');
     });
 
     test('getSummary - Skipped', () => {
@@ -27,7 +27,7 @@ describe('SuiteMeta', () => {
         suite.passed = 4;
         suite.skipped = 2;
         suite.duration = 2.2;
-        expect(suite.summary).toBe('Passed: 4/6, skipped: 2 in 2.200s');
+        expect(suite.summary).toBe('✔️ Passed: 4/6, skipped: 2 in 2.200s');
     });
 
     test('getSummary - Failed', () => {
@@ -36,7 +36,7 @@ describe('SuiteMeta', () => {
         suite.passed = 2;
         suite.failed = 4;
         suite.duration = 0.123456789;
-        expect(suite.summary).toBe('Failed: 2/6, failed: 4 in 0.123s');
+        expect(suite.summary).toBe('❌️ Failed: 2/6, failed: 4 in 0.123s');
     });
 
     test('addTests', () => {

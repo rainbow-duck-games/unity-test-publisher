@@ -3,24 +3,24 @@ import {RunMeta, TestMeta} from './meta';
 
 const model = `### Test
 
-<details><summary>:x: Failed: 3/6, skipped: 1, failed: 2 in 3.140s</summary>
+<details><summary>❌️ Failed: 3/6, skipped: 1, failed: 2 in 3.140s</summary>
 
 #### suite A
 
-* :x: **Test A** - 1.230s
+* ❌️ **Test A** - 1.230s
         
         Error message
         
         Raw details
         Test
         
-* :warning: **Test B** - 2.340s
+* ⚠️ **Test B** - 2.340s
 
 
 #### suite B
 
-* :heavy_check_mark: **Test C** - 1.000s
-* :heavy_check_mark: **Test D** - 4.560s
+* ✔️ **Test C** - 1.000s
+* ✔️ **Test D** - 4.560s
 
 </details>
 

@@ -39,10 +39,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.timeHelper = exports.renderSummaryBody = exports.cleanPaths = exports.createCheck = void 0;
+exports.timeHelper = exports.markHelper = exports.renderSummaryBody = exports.cleanPaths = exports.createCheck = void 0;
 const core = __importStar(__webpack_require__(2186));
 const github = __importStar(__webpack_require__(5438));
-const meta_1 = __webpack_require__(3714);
 const fs = __importStar(__webpack_require__(5747));
 const handlebars_1 = __importDefault(__webpack_require__(7492));
 function createCheck(githubToken, checkName, title, conclusion, runs, annotations) {
@@ -87,21 +86,15 @@ function summaryHelper(meta) {
     return meta.summary;
 }
 function markHelper(arg) {
-    if (arg instanceof meta_1.RunMeta) {
-        return arg.failed > 0
-            ? ':x:'
-            : arg.skipped > 0
-                ? ':warning:'
-                : ':heavy_check_mark:';
-    }
-    else if (arg === 'Passed') {
-        return ':heavy_check_mark:';
+    if (arg === 'Passed') {
+        return '✔️';
     }
     else if (arg === 'Failed') {
-        return ':x:';
+        return '❌️';
     }
-    return ':warning:';
+    return '⚠️';
 }
+exports.markHelper = markHelper;
 function indentHelper(arg) {
     return arg
         .split('\n')
@@ -409,10 +402,11 @@ class RunMeta extends Meta {
     }
     get summary() {
         const result = this.failed > 0 ? 'Failed' : 'Passed';
+        const mark = action_1.markHelper(result);
         const sPart = this.skipped > 0 ? `, skipped: ${this.skipped}` : '';
         const fPart = this.failed > 0 ? `, failed: ${this.failed}` : '';
         const dPart = action_1.timeHelper(this.duration);
-        return `${result}: ${this.passed}/${this.total}${sPart}${fPart} in ${dPart}`;
+        return `${mark} ${result}: ${this.passed}/${this.total}${sPart}${fPart} in ${dPart}`;
     }
 }
 exports.RunMeta = RunMeta;

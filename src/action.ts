@@ -69,19 +69,13 @@ function summaryHelper(meta: RunMeta): string {
     return meta.summary;
 }
 
-function markHelper(arg: string | RunMeta): string {
-    if (arg instanceof RunMeta) {
-        return arg.failed > 0
-            ? ':x:'
-            : arg.skipped > 0
-            ? ':warning:'
-            : ':heavy_check_mark:';
-    } else if (arg === 'Passed') {
-        return ':heavy_check_mark:';
+export function markHelper(arg: string): string {
+    if (arg === 'Passed') {
+        return '✔️';
     } else if (arg === 'Failed') {
-        return ':x:';
+        return '❌️';
     }
-    return ':warning:';
+    return '⚠️';
 }
 
 function indentHelper(arg: string): string {
