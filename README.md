@@ -46,7 +46,7 @@ Please check [unity_run_tests.yml](.github/workflows/unity_run_tests.yml) to fin
 
 ## Full list of options
 - `githubToken` (required) - GITHUB_TOKEN, in most cases keep it as `${{ secrets.GITHUB_TOKEN }}`
-- `reportPaths` - 'glob expression to find Unity test reports, default - `./artifact/*.xml`
+- `reportPaths` - 'glob expression to find Unity test reports, default - `artifact/*.xml`
 - `workdirPrefix` - prefix on build machine to ignore in report, default - `/github/workspace/`
 - `checkName` - check name for test reports. Change it if you use more than one publisher step, default - `Test Results`
 - `checkFailedStatus` - what status should be for failed check, default - `failure`, allowed values: `success`, `failure`, `neutral`, `cancelled`, `skipped`, `timed_out`, or `action_required`
