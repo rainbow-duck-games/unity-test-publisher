@@ -3,24 +3,24 @@ import {RunMeta, TestMeta} from './meta';
 
 const model = `### Test
 
-<details><summary>:warning: 3/6, failed 2, skipped 1 - duration 3.14s</summary>
+<details><summary>:x: Failed: 3/6, skipped: 1, failed: 2 in 3.140s</summary>
 
-#### suiteA
+#### suite A
 
-* :x: **Test A** - 1.23s
+* :x: **Test A** - 1.230s
         
         Error message
         
         Raw details
         Test
         
-* :warning: **Test B** - 2.34s
+* :warning: **Test B** - 2.340s
 
 
-#### suiteB
+#### suite B
 
-* :heavy_check_mark: **Test C** - 3.45s
-* :heavy_check_mark: **Test D** - 4.56s
+* :heavy_check_mark: **Test C** - 1.000s
+* :heavy_check_mark: **Test D** - 4.560s
 
 </details>
 
@@ -28,48 +28,43 @@ const model = `### Test
 
 describe('CheckAction', () => {
     test('renderSummary', async () => {
-        const run = {
-            title: 'Test',
-            total: 6,
-            passed: 3,
-            failed: 2,
-            skipped: 1,
-            duration: 3.14,
-            suites: {
-                suiteA: [
-                    {
-                        suite: 'suite A',
-                        title: 'Test A',
-                        result: 'Failed',
-                        duration: 1.23,
-                        annotation: {
-                            message: 'Error message',
-                            raw_details: 'Raw details\nTest',
-                        },
-                    } as TestMeta,
-                    {
-                        suite: 'suite A',
-                        title: 'Test B',
-                        result: 'Skipped',
-                        duration: 2.34,
-                    } as TestMeta,
-                ],
-                suiteB: [
-                    {
-                        suite: 'suite B',
-                        title: 'Test C',
-                        result: 'Passed',
-                        duration: 3.45,
-                    } as TestMeta,
-                    {
-                        suite: 'suite B',
-                        title: 'Test D',
-                        result: 'Passed',
-                        duration: 4.56,
-                    } as TestMeta,
-                ],
-            } as {[key: string]: TestMeta[]},
-        } as RunMeta;
+        const run = new RunMeta('Test');
+        run.title = 'Test';
+        run.total = 6;
+        run.passed = 3;
+        run.failed = 2;
+        run.skipped = 1;
+        run.duration = 3.14;
+        run.addTests([
+            {
+                suite: 'suite A',
+                title: 'Test A',
+                result: 'Failed',
+                duration: 1.23,
+                annotation: {
+                    message: 'Error message',
+                    raw_details: 'Raw details\nTest',
+                },
+            } as TestMeta,
+            {
+                suite: 'suite A',
+                title: 'Test B',
+                result: 'Skipped',
+                duration: 2.34,
+            } as TestMeta,
+            {
+                suite: 'suite B',
+                title: 'Test C',
+                result: 'Passed',
+                duration: 1,
+            } as TestMeta,
+            {
+                suite: 'suite B',
+                title: 'Test D',
+                result: 'Passed',
+                duration: 4.56,
+            } as TestMeta,
+        ]);
         const result = await renderSummaryBody([run]);
         expect(result).toBe(model);
     });

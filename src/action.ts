@@ -57,10 +57,16 @@ export async function renderSummaryBody(runMetas: RunMeta[]): Promise<string> {
         `${__dirname}/../src/action.hbs`,
         'utf8'
     );
+    Handlebars.registerHelper('summary', summaryHelper);
     Handlebars.registerHelper('mark', markHelper);
     Handlebars.registerHelper('indent', indentHelper);
+    Handlebars.registerHelper('time', timeHelper);
     const template = Handlebars.compile(source);
     return template({runs: runMetas});
+}
+
+function summaryHelper(meta: RunMeta): string {
+    return meta.summary;
 }
 
 function markHelper(arg: string | RunMeta): string {
@@ -83,4 +89,8 @@ function indentHelper(arg: string): string {
         .split('\n')
         .map(s => `        ${s}`)
         .join('\n');
+}
+
+export function timeHelper(seconds: number): string {
+    return `${seconds.toFixed(3)}s`;
 }

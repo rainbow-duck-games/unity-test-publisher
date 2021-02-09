@@ -16,7 +16,7 @@ async function run(): Promise<void> {
         for await (const file of globber.globGenerator()) {
             core.info(`Processing file ${file}...`);
             const fileData = await parseReport(file);
-            core.info(fileData.getSummary());
+            core.info(fileData.summary);
             runs.push(fileData);
         }
 
@@ -44,7 +44,7 @@ async function run(): Promise<void> {
                 : checkFailedStatus;
         core.info('=================');
         core.info('Analyze result:');
-        core.info(summary.getSummary());
+        core.info(summary.summary);
 
         if (failIfNoTests && summary.total === 0) {
             core.setFailed('Not tests found in the report!');
@@ -59,7 +59,7 @@ async function run(): Promise<void> {
         await createCheck(
             githubToken,
             checkName,
-            summary.getSummary(),
+            summary.summary,
             conclusion,
             runs,
             annotations
