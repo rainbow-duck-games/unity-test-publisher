@@ -8,6 +8,8 @@ const summaryModel = `### ❌️ Test - 3/6, skipped: 1, failed: 2 - Failed in 3
 * ❌️ **Test B** - Failed in 2.340s
         /test/file/b:54
 
+* ⚠️ **Test C** - Skipped
+
 `;
 const textModel = `### Test
 
@@ -83,6 +85,9 @@ describe('CheckAction', () => {
             start_line: 54,
         } as Annotation;
         const testC = new TestMeta('Suite B', 'Test C');
+        testC.result = 'Skipped';
+
+        const testD = new TestMeta('Suite B', 'Test D');
 
         const run = new RunMeta('Test');
         run.title = 'Test';
@@ -91,7 +96,7 @@ describe('CheckAction', () => {
         run.failed = 2;
         run.skipped = 1;
         run.duration = 3.14;
-        run.addTests([testA, testB, testC]);
+        run.addTests([testA, testB, testC, testD]);
         const result = await renderSummary([run]);
         expect(result).toBe(summaryModel);
     });

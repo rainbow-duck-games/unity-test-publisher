@@ -1,11 +1,10 @@
 import * as core from '@actions/core';
 import * as github from '@actions/github';
 import {Endpoints} from '@octokit/types';
-import {Annotation, Meta, RunMeta} from './meta';
+import {Annotation, RunMeta} from './meta';
 import * as fs from 'fs';
 import Handlebars from 'handlebars';
 
-Handlebars.registerHelper('summary', summaryHelper);
 Handlebars.registerHelper('indent', indentHelper);
 Handlebars.registerHelper('time', timeHelper);
 
@@ -69,11 +68,13 @@ export async function renderText(runMetas: RunMeta[]): Promise<string> {
 async function render(viewPath: string, runMetas: RunMeta[]): Promise<string> {
     const source = await fs.promises.readFile(viewPath, 'utf8');
     const template = Handlebars.compile(source);
-    return template({runs: runMetas});
-}
-
-function summaryHelper(meta: Meta): string {
-    return meta.summary;
+    return template(
+        {runs: runMetas},
+        {
+            allowProtoMethodsByDefault: true,
+            allowProtoPropertiesByDefault: true,
+        }
+    );
 }
 
 function indentHelper(arg: string): string {

@@ -90,16 +90,25 @@ export class TestMeta extends Meta {
         this.suite = suite;
     }
 
+    isSkipped(): boolean {
+        return this.result === 'Skipped';
+    }
+
+    isFailed(): boolean {
+        return this.result === 'Failed';
+    }
+
     get summary(): string {
-        const dPart =
-            this.result === 'Skipped' ? '' : ` in ${timeHelper(this.duration)}`;
+        const dPart = this.isSkipped()
+            ? ''
+            : ` in ${timeHelper(this.duration)}`;
         return `${this.mark} **${this.title}** - ${this.result}${dPart}`;
     }
 
     get mark(): string {
-        if (this.result === 'Failed') return '❌️';
-        else if (this.result === 'Passed') return '✔️';
-        return '⚠️';
+        if (this.isFailed()) return '❌️';
+        else if (this.isSkipped()) return '⚠️';
+        return '✔️';
     }
 }
 

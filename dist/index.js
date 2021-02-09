@@ -44,7 +44,6 @@ const core = __importStar(__webpack_require__(2186));
 const github = __importStar(__webpack_require__(5438));
 const fs = __importStar(__webpack_require__(5747));
 const handlebars_1 = __importDefault(__webpack_require__(7492));
-handlebars_1.default.registerHelper('summary', summaryHelper);
 handlebars_1.default.registerHelper('indent', indentHelper);
 handlebars_1.default.registerHelper('time', timeHelper);
 function createCheck(githubToken, checkName, title, conclusion, runs, annotations) {
@@ -91,11 +90,11 @@ function render(viewPath, runMetas) {
     return __awaiter(this, void 0, void 0, function* () {
         const source = yield fs.promises.readFile(viewPath, 'utf8');
         const template = handlebars_1.default.compile(source);
-        return template({ runs: runMetas });
+        return template({ runs: runMetas }, {
+            allowProtoMethodsByDefault: true,
+            allowProtoPropertiesByDefault: true,
+        });
     });
-}
-function summaryHelper(meta) {
-    return meta.summary;
 }
 function indentHelper(arg) {
     return arg
@@ -438,16 +437,24 @@ class TestMeta extends Meta {
         super(title);
         this.suite = suite;
     }
+    isSkipped() {
+        return this.result === 'Skipped';
+    }
+    isFailed() {
+        return this.result === 'Failed';
+    }
     get summary() {
-        const dPart = this.result === 'Skipped' ? '' : ` in ${action_1.timeHelper(this.duration)}`;
+        const dPart = this.isSkipped()
+            ? ''
+            : ` in ${action_1.timeHelper(this.duration)}`;
         return `${this.mark} **${this.title}** - ${this.result}${dPart}`;
     }
     get mark() {
-        if (this.result === 'Failed')
+        if (this.isFailed())
             return '❌️';
-        else if (this.result === 'Passed')
-            return '✔️';
-        return '⚠️';
+        else if (this.isSkipped())
+            return '⚠️';
+        return '✔️';
     }
 }
 exports.TestMeta = TestMeta;
