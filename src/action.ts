@@ -1,9 +1,12 @@
 import * as core from '@actions/core';
 import * as github from '@actions/github';
 import {Endpoints} from '@octokit/types';
-import {Annotation, Meta, RunMeta} from './meta';
+import {Annotation, RunMeta} from './meta';
 import * as fs from 'fs';
 import Handlebars from 'handlebars';
+
+Handlebars.registerHelper('indent', indentHelper);
+Handlebars.registerHelper('time', timeHelper);
 
 export async function createCheck(
     githubToken: string,
@@ -20,7 +23,8 @@ export async function createCheck(
         `Posting status 'completed' with conclusion '${conclusion}' to ${link} (sha: ${headSha})`
     );
 
-    const summary = await renderSummaryBody(runs);
+    const summary = await renderSummary(runs);
+    const text = await renderText(runs);
     const createCheckRequest = {
         ...github.context.repo,
         name: checkName,
@@ -30,6 +34,7 @@ export async function createCheck(
         output: {
             title,
             summary,
+            text,
             annotations: annotations.slice(0, 50),
         },
     } as Endpoints['POST /repos/{owner}/{repo}/check-runs']['parameters'];
@@ -52,20 +57,24 @@ export function cleanPaths(
     }
 }
 
-export async function renderSummaryBody(runMetas: RunMeta[]): Promise<string> {
-    const source = await fs.promises.readFile(
-        `${__dirname}/../src/action.hbs`,
-        'utf8'
-    );
-    Handlebars.registerHelper('summary', summaryHelper);
-    Handlebars.registerHelper('indent', indentHelper);
-    Handlebars.registerHelper('time', timeHelper);
-    const template = Handlebars.compile(source);
-    return template({runs: runMetas});
+export async function renderSummary(runMetas: RunMeta[]): Promise<string> {
+    return render(`${__dirname}/../views/summary.hbs`, runMetas);
 }
 
-function summaryHelper(meta: Meta): string {
-    return meta.summary;
+export async function renderText(runMetas: RunMeta[]): Promise<string> {
+    return render(`${__dirname}/../views/text.hbs`, runMetas);
+}
+
+async function render(viewPath: string, runMetas: RunMeta[]): Promise<string> {
+    const source = await fs.promises.readFile(viewPath, 'utf8');
+    const template = Handlebars.compile(source);
+    return template(
+        {runs: runMetas},
+        {
+            allowProtoMethodsByDefault: true,
+            allowProtoPropertiesByDefault: true,
+        }
+    );
 }
 
 function indentHelper(arg: string): string {
