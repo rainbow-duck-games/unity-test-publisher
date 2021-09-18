@@ -78,7 +78,7 @@ async function run(): Promise<void> {
             core.setFailed(`There were ${summary.failed} failed tests`);
         }
     } catch (e) {
-        core.setFailed(e);
+        core.setFailed(e as Error);
     }
 }
 

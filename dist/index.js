@@ -291,7 +291,7 @@ function run() {
                     const path = _c.value;
                     const filename = path.replace(workspace, '');
                     core.startGroup(`Processing file ${filename}...`);
-                    const fileData = yield report_1.parseReport(path, filename);
+                    const fileData = yield (0, report_1.parseReport)(path, filename);
                     core.info(fileData.summary);
                     runs.push(fileData);
                     core.endGroup();
@@ -334,8 +334,8 @@ function run() {
             const githubToken = core.getInput('githubToken', { required: true });
             const workdirPrefix = core.getInput('workdirPrefix');
             const annotations = summary.extractAnnotations();
-            action_1.cleanPaths(annotations, workdirPrefix);
-            yield action_1.createCheck(githubToken, checkName, summary.summary, conclusion, runs, annotations);
+            (0, action_1.cleanPaths)(annotations, workdirPrefix);
+            yield (0, action_1.createCheck)(githubToken, checkName, summary.summary, conclusion, runs, annotations);
             const failOnFailed = core.getInput('failOnTestFailures') === 'true';
             if (failOnFailed && summary.failed > 0) {
                 core.setFailed(`There were ${summary.failed} failed tests`);
@@ -420,7 +420,7 @@ class RunMeta extends Meta {
         const result = this.failed > 0 ? 'Failed' : 'Passed';
         const sPart = this.skipped > 0 ? `, skipped: ${this.skipped}` : '';
         const fPart = this.failed > 0 ? `, failed: ${this.failed}` : '';
-        const dPart = ` in ${action_1.timeHelper(this.duration)}`;
+        const dPart = ` in ${(0, action_1.timeHelper)(this.duration)}`;
         return `${this.mark} ${this.title} - ${this.passed}/${this.total}${sPart}${fPart} - ${result}${dPart}`;
     }
     get mark() {
@@ -446,7 +446,7 @@ class TestMeta extends Meta {
     get summary() {
         const dPart = this.isSkipped()
             ? ''
-            : ` in ${action_1.timeHelper(this.duration)}`;
+            : ` in ${(0, action_1.timeHelper)(this.duration)}`;
         return `${this.mark} **${this.title}** - ${this.result}${dPart}`;
     }
     get mark() {
