@@ -27,7 +27,7 @@
     "url": "https://github.com/rainbow-duck-games/unity-test-publisher/issues"
   },
   "dependencies": {
-    "@actions/core": "^1.2.6",
+    "@actions/core": "^1.9.1",
     "@actions/github": "^4.0.0",
     "@actions/glob": "^0.1.1",
     "@octokit/types": "^6.3.2",
