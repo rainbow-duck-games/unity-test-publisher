@@ -42,6 +42,17 @@ with:
   githubToken: ${{ secrets.GITHUB_TOKEN }}
 ```
 
+Take in mind that the job should contain permission to write `checks` for this
+token. More information about [GitHub permissions](https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#permissions)
+
+```yaml
+jobs:
+  job:
+    name: 'Test job'
+    permissions:
+      checks: write
+```
+
 Please check [unity_run_tests.yml](.github/workflows/unity_run_tests.yml) to find real unity build & consume of the result
 
 ## Full list of options
