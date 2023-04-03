@@ -1,6 +1,6 @@
 {
   "name": "unity-test-publisher",
-  "version": "0.2.4",
+  "version": "0.2.6",
   "description": "Unity Test Publisher Action",
   "main": "lib/index.js",
   "engines": {
