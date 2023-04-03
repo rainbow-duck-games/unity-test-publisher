@@ -10,6 +10,7 @@
     "rules": {
       "eslint-comments/no-use": "off",
       "import/no-namespace": "off",
+      "import/no-unresolved": "off",
       "no-unused-vars": "off",
       "@typescript-eslint/no-unused-vars": "error",
       "@typescript-eslint/explicit-member-accessibility": ["error", {"accessibility": "no-public"}],
@@ -44,7 +45,8 @@
       "semi": "error",
       "@typescript-eslint/semi": ["error", "always"],
       "@typescript-eslint/type-annotation-spacing": "error",
-      "@typescript-eslint/unbound-method": "error"
+      "@typescript-eslint/unbound-method": "error",
+      "i18n-text/no-en": "off"
     },
     "env": {
       "node": true,

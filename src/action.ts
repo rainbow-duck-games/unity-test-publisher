@@ -1,6 +1,6 @@
 import * as core from '@actions/core';
 import * as github from '@actions/github';
-import {Endpoints} from '@octokit/types';
+import {Endpoints} from '@octokit/types/dist-types/generated/Endpoints';
 import {Annotation, RunMeta} from './meta';
 import * as fs from 'fs';
 import Handlebars from 'handlebars';
@@ -45,7 +45,7 @@ export async function createCheck(
     core.setOutput('conclusion', conclusion);
 
     const octokit = github.getOctokit(githubToken);
-    await octokit.checks.create(createCheckRequest);
+    await octokit.rest.checks.create(createCheckRequest);
 }
 
 export function cleanPaths(
