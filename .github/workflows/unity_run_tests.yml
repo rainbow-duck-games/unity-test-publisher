@@ -23,7 +23,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: game-ci/unity-test-runner@main
+      - uses: game-ci/unity-test-runner@v2.1.1
         name: 'Run unity tests'
         id: tests
         with:
@@ -37,7 +37,7 @@ jobs:
         with:
           name: Test results (all)
           path: ${{ steps.tests.outputs.artifactsPath }}
-      - uses: rainbow-duck-games/unity-test-publisher@v0.1.2
+      - uses: rainbow-duck-games/unity-test-publisher@${{ github.ref_name }}
         name: 'Publish results'
         if: ${{ always() }}
         with:
