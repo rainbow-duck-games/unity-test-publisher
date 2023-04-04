@@ -13,7 +13,7 @@ jobs:
     name: Unit Tests for Action
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - run: npm ci
       - run: npm test
 
@@ -22,7 +22,7 @@ jobs:
     name: Run Tests & Analyze
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - uses: game-ci/unity-test-runner@v2.1.1
         name: 'Run unity tests'
         id: tests
