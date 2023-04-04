@@ -37,7 +37,7 @@ jobs:
         with:
           name: Test results (all)
           path: ${{ steps.tests.outputs.artifactsPath }}
-      - uses: rainbow-duck-games/unity-test-publisher@${{ github.ref_name }}
+      - uses: rainbow-duck-games/unity-test-publisher@main
         name: 'Publish results'
         if: ${{ always() }}
         with:
