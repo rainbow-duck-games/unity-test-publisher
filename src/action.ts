@@ -1,6 +1,6 @@
 import * as core from '@actions/core';
 import * as github from '@actions/github';
-import {Endpoints} from '@octokit/types/dist-types/generated/Endpoints';
+import type {Endpoints} from '@octokit/types';
 import {Annotation, RunMeta} from './meta';
 import * as fs from 'fs';
 import Handlebars from 'handlebars';
