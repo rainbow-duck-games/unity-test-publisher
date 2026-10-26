@@ -5,8 +5,6 @@ on:
       - main
   workflow_dispatch: { }
 
-# Creates tag + GitHub Release `v<package.json version>` if it does not exist yet.
-# To release: bump `version` in package.json, rebuild dist, merge to main.
 jobs:
   release:
     name: 'Tag & Release'
@@ -45,9 +43,10 @@ jobs:
       - name: 'Check dist is up to date'
         if: steps.version.outputs.exists == 'false'
         run: |
-          if [ -n "$(git status --porcelain dist)" ]; then
+          FILTER=(-- dist ':!dist/*.map' ':!dist/licenses.txt')
+          if ! git diff --quiet --text --ignore-all-space --ignore-blank-lines "${FILTER[@]}"; then
             echo "::error::dist/ differs from the build output, run 'npm run package' and commit it"
-            git status --porcelain dist
+            git diff --stat --text --ignore-all-space --ignore-blank-lines "${FILTER[@]}"
             exit 1
           fi
 
