@@ -31,6 +31,8 @@ Run the tests & build
 npm run all
 ```
 
+To release - just push a new version inside `package.json`, GitHub Actions will do the rest.
+
 ## Usage
 
 You can now consume the action by referencing the v1 branch
