@@ -5,6 +5,8 @@ on:
       - main
   workflow_dispatch: { }
 
+# Creates tag + GitHub Release `v<package.json version>` if it does not exist yet.
+# To release: bump `version` in package.json, rebuild dist, merge to main.
 jobs:
   release:
     name: 'Tag & Release'
@@ -40,25 +42,18 @@ jobs:
           npm i
           npm run all
 
-      - name: 'Commit dist'
-        id: dist
+      - name: 'Check dist is up to date'
         if: steps.version.outputs.exists == 'false'
-        env:
-          TAG: ${{ steps.version.outputs.tag }}
         run: |
           if [ -n "$(git status --porcelain dist)" ]; then
-            git config user.name 'github-actions[bot]'
-            git config user.email '41898475+github-actions[bot]@users.noreply.github.com'
-            git add dist
-            git commit -m "Build dist for $TAG"
-            git push origin "HEAD:$GITHUB_REF_NAME"
+            echo "::error::dist/ differs from the build output, run 'npm run package' and commit it"
+            git status --porcelain dist
+            exit 1
           fi
-          echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
 
       - name: 'Create release'
         if: steps.version.outputs.exists == 'false'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TAG: ${{ steps.version.outputs.tag }}
-          SHA: ${{ steps.dist.outputs.sha }}
-        run: gh release create "$TAG" --target "$SHA" --title "$TAG" --generate-notes
+        run: gh release create "$TAG" --target "$GITHUB_SHA" --title "$TAG" --generate-notes

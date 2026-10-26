@@ -31,7 +31,9 @@ Run the tests & build
 npm run all
 ```
 
-To release - just push a new version inside `package.json`, GitHub Actions will do the rest.
+### To release:
+1. Bump package version inside `package.json`
+2. `npm run package` and Push
 
 ## Usage
 
