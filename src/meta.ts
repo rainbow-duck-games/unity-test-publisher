@@ -1,4 +1,4 @@
-﻿import {components} from '@octokit/openapi-types/types';
+﻿import type {components} from '@octokit/openapi-types';
 import {timeHelper} from './action';
 
 export abstract class Meta {

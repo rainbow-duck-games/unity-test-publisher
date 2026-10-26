@@ -45,7 +45,7 @@ describe('convertSuite', () => {
                     } as TestSuiteAttributes,
                     'test-case': {_attributes: {name: 'testC'}} as TestCase,
                     'test-suite': [],
-                } as TestSuite,
+                },
             ],
         } as TestSuite;
         const result = converter.convertSuite(targetSuite, mock);
